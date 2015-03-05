@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+This component is primarily static and is only meant to show what other
+pages of the store could look like.
+
+Note that this page was put together in the Design view so you'll see more
+hard coded locations and sizes.
+
+Also note when working with a Canvas that using the constraint styles
+(e.g., left, top, right, bottom) can provide better layout predictability than
+using x and y, especially when percentage widths and heights are used.
+
+Width and height are hard-coded in the root tag to help the Design view.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="990" height="550">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+
+			public function updateMapImage():void
+			{
+				<!-- mapImage.source = mapCanvas.getStyle('dottedMap'); -->
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%" height="100%" y="0" x="0" styleName="colorPanel">
+
+		<mx:Image width="100%" height="100%"
+			 source="image/icon_construction.png"
+			 />
+	</mx:HBox>
+</mx:Canvas>

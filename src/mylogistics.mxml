@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- *************************************************************************
+Application Environment
+
+Responsibility Dashboard main application.
+
+Copyright 2009,2010 Maves International Software
+ALL RIGHTS RESERVED    
+==============================================================================
+$Id: mylogistics.mxml,v 1.4 2012/01/04 19:38:29 aprarn Exp $
+************************************************************************** -->
+
+<mx:Application     
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="absolute"
+	pageTitle="MAVES MyLogistics" 
+	creationComplete="init()"
+	backgroundImage="image/Blue3.png"
+	xmlns="*">
+	
+	<!-- *************************************************************************
+	Style  
+	************************************************************************** -->
+	
+	<mx:Style source="css/main.css"/>
+	
+	<!-- *************************************************************************
+	ActionScript
+	************************************************************************** -->
+	
+	<mx:Script source="/mylogistics/src/Handler/MyLogisticsHandler.as"/>
+	<mx:Script source="/mylogistics/src/Handler/ResultMyLogisticsHandler.as"/>
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+
+	
+	
+	<!-- *************************************************************************
+	HTTPService Definitions
+	************************************************************************** -->
+	<mx:HTTPService id="HoverHelpDomain" 
+					url="data/ConfigFile.xml"  
+					result="{hoverhelpdomainHandler(event)}" 
+					fault="{faulthoverhelpdomainHandler(event)}"/>
+	
+	<mx:HTTPService id="ConfigCompanyName" 
+					url="data/ConfigCompanyName.xml"  
+					result="{configcompanynameHandler(event)}" 
+					fault="{faultconfigcompanycodeHandler(event)}"/>
+	<mx:HTTPService
+		id="httpLogin"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		
+		result="loginResultHandler(event)"
+		fault="hsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>login</action>
+				<password>{base64pw}</password>
+				<user>{base64un}</user>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<!-- mx:HTTPService
+		id="httpCPW"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="cpwResultHandler(event)"
+		fault="cpwFaultHandler(event)"
+		/ -->
+	
+	
+	<mx:HTTPService
+		id="httpCPW"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		
+		result="loginResultHandler(event)"
+		fault="cpwFaultHandler(event)"
+		/>
+	
+	
+	<mx:HTTPService
+		id="httpGlobalVariableSo"
+		
+		/>
+	<mx:HTTPService
+		id="httpAccessVariable"
+		result="rdSet(event)"
+		/>
+	<mx:HTTPService
+		id="httpLogout"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="logoutResultHandler(event)"
+		fault="hsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>logout</action>
+				<sid>{g_sid}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService
+		id="specialhttpLogout"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="speciallogoutResultHandler(event)"
+		fault="hsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>logout</action>
+				<sid>{g_sid}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService
+		id="httpp_kpi_srv"
+		url="ae_tlch_ml_req.php"
+		method="POST"
+		contentType="application/xml"
+		result="KPIMenuResultHandler(event)"
+		>
+
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>Z0</company>
+				<sid>{g_sid}</sid>
+				<parameters>{my_pass_url}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	
+	</mx:HTTPService>
+
+	<!-- *************************************************************************
+	Begin States
+	************************************************************************** -->
+	<mx:states>
+		
+		<mx:State name="main_dashhome">
+			
+			<mx:RemoveChild target="{spacer1}"/>
+			<mx:RemoveChild target="{canvas2}"/>
+			
+			<mx:AddChild position="lastChild">
+				<mx:VBox
+					width="100%" height="100%"
+					paddingLeft="0"  
+					paddingRight="0"
+					
+					>
+					<mx:ApplicationControlBar
+						id="second"
+						width="100%"
+						styleName="storeControlBar"
+						
+						>
+						
+						<!-- mx:Button
+							label="e-Z Learn {hoverstatus}"   
+							id="ezlearn"
+							icon="@Embed(source='image/scholar_cap.png')"
+							toolTip="e-Z Learn"
+							textAlign="left"
+							
+							click="{hoverHelpSwitch()}"
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							styleName="highResolutionSystemMenu"
+							width="10%"
+							rollOver="nt_mousehovering(event,event.currentTarget.label,event.currentTarget.label,'BUTTON')"
+							rollOut="nt.stop()"
+							fontFamily="Arial"/  -->
+						
+						
+						<mx:Button
+							label="e-Z Learn {hoverstatus}"   
+							id="ezlearn"
+							icon="@Embed(source='image/scholar_cap.png')"
+							toolTip="e-Z Learn"
+							textAlign="left"
+							
+							click="{pre_nt_mousehovering(event,'MyLogistics Options','MyLogistics Options','BUTTON')}"
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							styleName="highResolutionSystemMenu"
+							width="252"
+							fontFamily="Arial"/>
+						
+						<!-- mx:Button
+						label="e-Z Learn {hoverstatus}"   
+						id="ezlearn"
+						icon="@Embed(source='image/scholar_cap.png')"
+						toolTip="e-Z Learn"
+						textAlign="left"
+						
+						click="{hoverHelpSwitch()}"
+						
+						height="28"
+						useHandCursor="true"
+						buttonMode="true"
+						mouseChildren="false"
+						styleName="highResolutionSystemMenu"
+						width="10%"
+						rollOver="nt_mousehovering(event,'e-Z Learn Options','e-Z Learn Options','BUTTON')"
+						rollOut="nt.stop()"
+						fontFamily="Arial"/ -->
+						
+						
+						
+						
+						
+						<!--
+						<mx:TextInput
+							id="jobcode"
+							width="100"
+							color="#000606"
+							enter="{g_fillcolor = (ChainCombo.getStyle('fillColors')).toString(), jobCodeHandler();}"
+							fontWeight="bold"
+							maxChars="6"
+							editable="true"
+							enabled="true"
+							themeColor="#C9E6F8"
+							backgroundColor="#A9F5F2"
+							
+							height="25"
+							toolTip="Enter Job Code"
+							restrict="A-Z 0-9"
+							styleName="highResolutionSystemMenu"
+							rollOver="nt_mousehovering(event,'Job Selector','Job Selector','JOB_SELECTOR')"
+							rollOut="nt.stop()" 
+							cornerRadius="4" 
+							borderStyle="inset"
+							fontSize="15" fontFamily="Arial"/>
+						
+						
+						
+						
+						<mx:Spacer width="100%"/>
+						<mx:ComboBox
+							id="company_code"
+							width="100%"
+							dataProvider="{tdcompany}"
+							labelField="company_desc"
+							change="{changecode(), jobcode.text = '', jobcode.setFocus()}"
+							useHandCursor="true"
+							
+							height="28"
+							styleName="highResolutionSystemMenu"
+							fontWeight="bold"
+							rollOver="nt_mousehovering(event,'Company Selector','Company Selector','COMPANY_SELECTOR')"
+							rollOut="nt.stop()" 
+							
+							fontFamily="Arial"/>
+						<mx:Spacer width="100%"/>
+						
+						
+						<mx:ComboBox
+							id="ChainCombo"
+							
+							height="28"
+							dataProvider="{FormatChainGroup}"
+							change="{getMenu(event), jobcode.text = '', jobcode.setFocus()}"
+							labelField="description"
+							useHandCursor="true"
+							width="100%"
+							fontWeight="bold"
+							styleName =  "highResolutionSystemMenujobButton{ChainCombo.selectedItem.id}"
+							rollOver="nt_mousehovering(event,'Menu Chain','Menu Chain','MENU_CHAIN')"
+							rollOut="nt.stop()"
+							fontSize="20" fontFamily="Arial"/>
+						-->
+						<mx:Spacer width="70%"/>
+						<mx:Label
+							id="title_main2"
+							text="{corporate_name}"
+							width="100%" textAlign="center"
+							fontFamily="Arial"
+							fontWeight="bold"
+							paddingTop="2" color="#FDFDFD"
+							
+							
+						 height="30" 
+							  styleName="{'highResolutionLabel'}"
+							
+							
+							/>
+						<mx:Spacer width="100%"/>
+						<mx:Button
+							id="logoff"
+							icon="@Embed('image/logoff.png')"
+							toolTip="LOGOFF/EXIT"
+							textAlign="left"
+							fontSize="10"
+							click='alertListener()'
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							width="43"
+							rollOver="nt_mousehovering(event,'Exit Button','Exit Button','EXIT_BUTTON')"
+							rollOut="nt.stop()"
+							
+							/>
+						
+					</mx:ApplicationControlBar>
+					
+					<mx:ViewStack
+						id="storeViews"
+						width="100%"
+						height="100%"
+						creationPolicy="all"
+						>
+						<MyLogMenu 
+							id="kpi"
+							label="Dispatch"
+							width="100%" height="100%"
+							pass_companycode = "{my_c_code}"
+							pass_usercode = "{username.text}"
+							pass_url="{my_pass_url}"
+							pass_arr_kpimenu = "{arr_kpimenu}"
+							icon="@Embed('image/icon_bar1.png')"
+							/>
+					</mx:ViewStack>
+					<mx:HBox width="100%">
+						<mx:Spacer width="100%"/>
+					
+						<mx:Button
+							label="Getting Started with MyLogistics"   
+							id="gettingstarted"
+							
+							toolTip="e-Z Learn"
+							textAlign="left"
+							
+							click="{eZLearn_getting_started()}"
+							
+							height="54"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							styleName="highResolutionSystemMenu"
+							width="10%"
+							fontFamily="Arial"/>
+						<mx:Spacer width="100%"/>
+					</mx:HBox>
+					<mx:VBox>
+						<mx:Spacer width="100%" height="100%"/>
+					</mx:VBox>	
+				</mx:VBox>
+			</mx:AddChild>
+		
+		</mx:State>
+		
+		
+		<mx:State name="changePassword">
+			<mx:RemoveChild target="{linkbutton1}"/>
+			<!-- mx:RemoveChild target="{button1}"/ -->
+			<mx:RemoveChild target="{img_eagle}"/>  
+			<mx:RemoveChild target="{text1}"/>
+			<mx:RemoveChild target="{pbar}"/>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Image id="img_changepassword_1"
+						  x="260" y="123" width="61" height="44"
+						  source="image/password.png"
+						  />
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Text
+					x="310" y="143"
+					text="New Password"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:TextInput
+					id="newPassword"
+					x="260" y="175" width="272" height="36"
+					displayAsPassword="true"
+					fontSize="22" fontWeight="bold"
+					color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection="right"
+					shadowDistance="10"
+					cornerRadius="4" 
+					borderStyle="solid"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Image id="img_changepassword_2"
+						  x="551" y="123" width="61" height="44"
+						  source="image/password.png"
+						  />
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Text
+					x="601" y="143"
+					text="Re-Enter New Password"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{newPassword}" position="after">
+				<mx:TextInput
+					id="newPasswordAgain"
+					x="551" y="175" width="272" height="36"
+					displayAsPassword="true"
+					fontSize="22" fontWeight="bold"
+					color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection="right"
+					shadowDistance="10"
+					enter="cpwChange()"
+					cornerRadius="4" 
+					borderStyle="solid"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:Button
+					id="cpwChangeButton"
+					x="551" y="243" width="125" height="34"
+					label="Change"
+					click="cpwChange()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor= "#3300ff"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:Button
+					id="cpwCancelButton"
+					x="698" y="243" width="125" height="34"
+					label="Cancel"
+					click="cpwCancel()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor= "#3300ff"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:TextArea
+					id="cpwStatus" 
+					x="260" y="285" width="563" height="194"
+					fontFamily="Verdana" fontSize="16"
+					fontWeight="bold"
+					editable="false" enabled="true"
+					wordWrap="true"
+					color="#F9FBFC"
+					/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{cpwStatus}" position="before">
+				<mx:Button
+					id="cpwOKButton"
+					x="698" y="243" width="125" height="34"
+					label="OK"
+					
+					click="cpwOK()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor="#3300ff"
+					visible="false"
+					/>
+			</mx:AddChild>
+		</mx:State>
+		
+	</mx:states>
+	<!-- *************************************************************************
+	Visible Logistics Login Screen
+	
+	This is the application's base state.
+	************************************************************************** -->
+	
+	<mx:Spacer height="10%" id="spacer1"/>
+	<mx:HBox width="100%" height="100%">
+		<mx:Spacer width="100%"/>
+		<mx:VBox width="100%" height="100%">	
+			<mx:Spacer height="50%"/>
+			<mx:Canvas x="10" y="10" width="849" height="600" id="canvas2">
+				
+				<mx:ApplicationControlBar
+					x="10" y="10" width="831" height="83"
+					>
+					<!-- mx:Image source="image/rlslogo.gif"
+					
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					/ -->
+					<mx:Label
+						id="title_main"
+						text="{corporate_name}"
+						width="100%" textAlign="center"
+						fontFamily="Arial" fontSize="30"
+						fontWeight="bold"
+						paddingTop="2" color="#FDFDFD"
+						/>
+				</mx:ApplicationControlBar>
+				
+				<!--  mx:Image x="37.5" y="0" source="image/MAVES Logo Trans.png"
+				
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				/ -->
+				<mx:Image id="img_company_logo" x="37.5" y="0" 
+						  source="{company_logo}"
+						  useHandCursor="true" buttonMode="true"
+						  mouseChildren="false"
+						  /> 
+				
+				<mx:Image id="img_users"
+						  x="27" y="103" width="61" height="44"
+						  source="image/icon_users_small.png"
+						  />
+				<mx:Image id="img_lock"
+						  
+						  x="27" y="199" width="61" height="44"
+						  source="image/password.png"
+						  />
+				
+				<mx:Text
+					x="77" y="123"
+					text="Operator ID"
+					color="#FAFCFC"
+					fontSize="16" fontWeight="bold"
+					/>
+				<mx:TextInput
+					id="username"
+					x="27" y="155" width="199" height="36"
+					fontSize="22" fontWeight="bold" color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection= "right"
+					shadowDistance= "10"
+					focusIn="userNameClick()"
+					focusOut="userNamefocusout()"
+					cornerRadius="4" borderStyle="solid"
+					
+					/>
+				
+				<mx:Text
+					x="77" y="215"
+					text="Password"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+					/>
+				<mx:Text
+					x="27" y="422"
+					text="Connection Mode"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+					/>
+				<mx:TextInput
+					id="password"
+					x="27" y="247" width="199" height="36"
+					displayAsPassword="true"
+					enter="doLogin('rl')"
+					fontSize="22" fontWeight="bold" color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection="right"
+					shadowDistance="10"
+					focusIn="passwordClick()"
+					focusOut="passwordfocusout()"
+					cornerRadius="4" 
+					borderStyle="solid"
+					/>
+				
+							
+				
+				<mx:TextArea
+					id="text1"
+					x="260" y="419" width="579" height="60"
+					text="{loginStatus}"
+					fontWeight="bold" fontSize="23" color="#670F0F"
+					editable="false" enabled="true" wordWrap="true"
+					visible="false" 
+					
+					/>
+				
+				<mx:ProgressBar
+					id="pbar"
+					x="260" y="480" height="22" width="579"
+					indeterminate="true" minimum="0" maximum="100"
+					label=""
+					visible="false"
+					/>
+				
+				<mx:Button id="btn_login"
+						   x="27" y="345" width="199" height="34"
+						   label="Log In"
+						   mouseDown="doLogin('rl')"
+						   icon="@Embed(source='image/keys.png')"
+						   useHandCursor="true" buttonMode="true"
+						   mouseChildren="false"
+						   fontSize="16"
+						   textRollOverColor= "#3300ff"
+						   cornerRadius="4"/>
+				
+				<mx:VRule x="241" y="114" width="11" height="365"/>
+				
+				<mx:ApplicationControlBar
+					x="8" y="498" width="831" height="83"
+					>
+					
+					<!-- mx:Image x="37.5" y="0" source="image/MAVES Logo Trans.png"/ -->
+					<mx:Spacer width="100%"/>
+					<mx:HBox>
+						<mx:VBox>
+							<mx:Label
+								id="title_footer"
+								text="{'Copyright ' + copyright_year + ' Maves International Software Corp.'}"
+								width="350"
+								textAlign="right"
+								fontFamily="Arial" fontSize="13"
+								fontWeight="bold"
+								paddingTop="2" color="#ffffff"
+								/>
+							<mx:HBox width="100%">
+								<mx:Label
+									id="version_number"
+									text="VL14.010"
+									width="344"
+									textAlign="right"
+									fontFamily="Arial" fontSize="13"
+									fontWeight="bold"
+									paddingTop="2" color="#ffffff"
+									useHandCursor="true" buttonMode="true"
+									mouseChildren="false"
+									/>	
+								
+							</mx:HBox>
+							
+						</mx:VBox>
+						
+					</mx:HBox>
+					
+				</mx:ApplicationControlBar>
+				<!-- mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				/ -->
+				<!-- Temporary remove the 'click' event for Image to give way for RLS installation. -->	
+				<!-- mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+				click="{eZLearn_for_help()}"
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				/ -->
+				<mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+						  useHandCursor="true" buttonMode="true"
+						  mouseChildren="false" 
+						  click="{eZLearn_for_help()}"
+						  />
+				<mx:Image
+					id="img_eagle"
+					x="388" y="51"
+					source="@Embed(source='image/blue_eagle.png')"
+					click="{navigateToURL(new URLRequest('data/Display Grid OverView.pdf'), 'quote')}"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					/>
+				
+				<!-- mx:Image
+				id="image1"
+				x="285" y="119"
+				source="@Embed(source='image/santa1.jpg')"
+				click="{navigateToURL(new URLRequest('data/Display Grid OverView.pdf'), 'quote')}"
+				useHandCursor="true" buttonMode="true"
+				mouseChildren="false"
+				width="521" height="264"/ -->
+				
+				
+				<!--  mx:LinkButton    
+					id="linkbutton1"
+					x="149" y="291"
+					label="Change ..."
+					fontSize="12"
+					click="goToCPW( '' )"
+					/ -->         
+				
+				
+				<mx:LinkButton
+					id="linkbutton1"
+					x="149" y="291"
+					label="Change ..."
+					fontSize="12"
+					click="doLogin('cp')"
+					/>
+			
+				<mx:ComboBox id="cb_speedoptions"  x="27" y="454" editable="false" width="199"
+							 fontSize="14"   change="{loadSpeedStyles(cb_speedoptions.selectedItem.data);}">
+					<mx:dataProvider>
+						<mx:Array>
+							<mx:Object label="Standard" data="standard" />
+							<mx:Object label="Basic" data="basic" />
+						</mx:Array>
+					</mx:dataProvider>
+				</mx:ComboBox>
+				
+			</mx:Canvas>
+			<mx:Spacer height="100%"/>
+		</mx:VBox>
+		<mx:Spacer width="100%"/>
+	</mx:HBox>
+	
+</mx:Application>
+  

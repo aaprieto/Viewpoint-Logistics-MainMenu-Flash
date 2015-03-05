@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- mx:ApplicationControlBar xmlns:mx="http://www.adobe.com/2006/mxml"    width="100%"  height="29"  
+						  initialize="ch_init();" styleName="highresolutionJobMenuCustomHeadthis" 
+						  fillAlphas="[1.0, 1.0]" fillColors="[#000307, #275681]"
+						   -->
+
+<mx:ApplicationControlBar xmlns:mx="http://www.adobe.com/2006/mxml"   textAlign="center" width="100%" height="29" 
+		styleName="highresolutionJobMenuCustomHeadthis"   
+			themeColor="#FFFFFF"  fillAlphas="[1.0, 1.0]" fillColors="[#082347, #347BBD]"
+			initialize="ch_init();"
+			 color="#FFFFFF">
+ <mx:Style source="css/main.css"/> 
+ 	<mx:Script>
+        <![CDATA[
+        	import mx.controls.Alert;
+            [Bindable]
+            public var customacb_id:Number = 0;
+            [Bindable]
+            public var customacb_name:String = "";
+        	private function ch_init():void {
+        		//if ((flash.system.Capabilities.screenResolutionX < 1280) && (flash.system.Capabilities.screenResolutionY < 1024)){
+        		if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+        			this.height = 24;
+        			//this.setStyle("fontSize", 12);
+        			this.styleName="lowresolutionJobMenuCustomHeadthis";
+        			//jobmenu_text.setStyle("fontSize", 12);
+        			jobmenu_text.styleName="lowresolutionJobMenuCustomHeadthis";
+        		 	
+        		}
+        	} 
+        ]]>
+    </mx:Script>  
+	<!-- mx:Text id="jobmenu_text" text="{customacb_name}" 
+		styleName="highresolutionJobMenuCustomHeadthis" 
+		 width="100%" height="35" textAlign="center"  fontWeight="bold"  toolTip="{customacb_name}"  color="#FFFFFF"/ -->
+	
+	<mx:Label id="jobmenu_text" text="{customacb_name}" styleName="highresolutionJobMenuCustomHeadthis" 
+			  width="100%" height="35" textAlign="center"  fontWeight="bold"  toolTip="{customacb_name}"  color="#FFFFFF"/>
+	
+	
+	
+	<!--mx:Text  width="{img.width}"  textAlign="center" text="{item.name}" fontWeight="bold" fontSize="20"   height="61"/ -->
+</mx:ApplicationControlBar>

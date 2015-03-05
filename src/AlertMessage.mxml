@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="550" y="200"   width="496"  creationComplete="init(event);btn_ok.setFocus();btn_ok.drawFocus(true);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#B6B9BA" height="197"
+        backgroundImage=""
+        
+        xmlns:local="*"> 
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.collections.ArrayCollection; 
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+		 	import mx.events.ItemClickEvent;
+		 	
+		 	
+		 	[Bindable]
+		 	public var str_message:String;
+		 	
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+            }
+            private function init(evt:Event):void {
+            	 
+            }
+ 	]]>
+ </mx:Script>
+    <mx:VBox id="vb" width="100%"> 
+    <mx:HBox id="hb0" width="100%"  height="109">
+    <mx:Spacer width="100%" />
+    	<mx:TextArea text="{str_message}"  fontSize="20" fontWeight="bold" color="#050505" width="431" height="107" textAlign="center" wordWrap="true"/>
+    	<mx:Spacer width="100%" />
+    </mx:HBox>
+    	<mx:HBox id="hb3" width="100%" >
+    		<mx:Spacer width="100%" />
+    		<!-- mx:Button id="btn_autorefreshtimer" label="OFF" width="126"
+    			 icon="@Embed('image/button_icon_off.png')"/ -->
+    			 <mx:Button id="btn_ok" enterState="{titleWindow_close(event)}" click="{titleWindow_close(event)}" label="OK" width="126"/>
+    		<mx:Spacer width="100%" />
+    	</mx:HBox>
+    </mx:VBox>
+</mx:TitleWindow>

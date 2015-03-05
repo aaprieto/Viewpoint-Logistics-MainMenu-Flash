@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				
+				showCloseButton="false"
+				x="10" y="10" width="772" height="470" creationComplete="init(event);" 
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				backgroundImage=""
+				layout="horizontal"
+				
+				
+				xmlns:local="*">  
+	
+	
+	<mx:HTTPService 
+		id="delete_myshortcut" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerRenditionDelete(event)"
+		fault="FaultMyShortcutDelete(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_company_code}</company>
+				<sid>{loc_sessionid}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="retrieve_myshortcut" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMyShortcutRetrieve(event)"
+		fault="FaultMyShortcutRetrieve(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_company_code}</company>
+				<sid>{loc_sessionid}</sid>
+				<parameters>{loc_reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+	<mx:Script> 
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			import mx.events.DragEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.*;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy; 
+			[Bindable]
+			private var loc_reqParmsdelete:String = new String();
+			private var pop_deleteconfirm:DeleteConfirm;
+			[Bindable]
+			public var loc_user:String;
+			[Bindable]
+			public var loc_company_code:String;
+			[Bindable]
+			private var loc_reqParms:String = new String();
+			[Bindable]
+			public var loc_sessionid:String;
+			//[Bindable]
+			//public var MyFavoriteCollection:ArrayCollection = new ArrayCollection;
+			[Bindable]
+			public var MyShortcutCollection:ArrayCollection = new ArrayCollection;
+			
+			private function titleWindow_close(evt:Event):void {  
+				PopUpManager.removePopUp(this);
+			}
+			private function init(evt:Event):void {
+				   
+				
+				loc_reqParms = "REFRESH,RETRIEVE|MYSHORTCUTS|" +  loc_user + "|" + loc_company_code + "|";  
+			
+					
+				retrieve_myshortcut.send();
+			}
+			private function deleteMyShortcuts(evt:Event):void {
+				if (dg_myshortcuts.selectedItems.length == 0){
+					AlertMessageShow("Please select a row to delete.");
+					return;
+				}
+				
+				if (dg_myshortcuts.selectedItems.length > 1){
+					AlertMessageShow("Please select only one row to delete.");
+					return;
+				}
+				
+				pop_deleteconfirm = DeleteConfirm(
+					PopUpManager.createPopUp(this, DeleteConfirm, true));
+				pop_deleteconfirm.del_filtercode = dg_myshortcuts.selectedItem.shtcutcode;
+				pop_deleteconfirm["btn_ok"].addEventListener("click",  handleDeleteConfirm);
+				pop_deleteconfirm["inputcode"].addEventListener("enter", handleDeleteConfirm);
+				
+				
+			}
+			public function handleDeleteConfirm( event:Event ) : void
+			{
+				if (pop_deleteconfirm.inputcode.text == "YES"){
+					PopUpManager.removePopUp(pop_deleteconfirm);	
+					deleteMyShortcut(event);
+				}	
+				if (pop_deleteconfirm.inputcode.text != "YES"){
+					
+					pop_deleteconfirm.inputcode.setFocus();
+					pop_deleteconfirm.inputcode.drawFocus(true);
+					return;
+					
+				}
+			}	
+			private function deleteMyShortcut(evt:Event):void{
+				loc_reqParmsdelete = "REFRESH,DELETE|MYSHORTCUT|" +  loc_user + "|" + dg_myshortcuts.selectedItem.shtcutcode + "|" + loc_company_code + "|";
+				
+				delete_myshortcut.send();
+			}
+			private function FaultMyShortcutDelete(evt:FaultEvent):void
+			{
+				AlertMessageShow("Delete MyShortcut Error");
+			}
+			private function ResultHandlerRenditionDelete(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == "OK"){
+					
+					
+					init(evt);
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}	 
+				
+				
+			}
+			private function resultStatusRendition(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+			private function FaultMyShortcutRetrieve(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Retrieve MyFavorite Error");
+			}
+			private function ResultHandlerMyShortcutRetrieve(evt:ResultEvent):void{
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					MyShortcutCollection = new ArrayCollection();
+					
+					if (evt.result.ezware_response.refresh_data.myshortcuts.myshortcut == null)
+					{
+						MyShortcutCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data.myshortcuts.myshortcut is ArrayCollection)
+					{
+						MyShortcutCollection=evt.result.ezware_response.refresh_data.myshortcuts.myshortcut;
+					}
+					else if (evt.result.ezware_response.refresh_data.myshortcuts.myshortcut is ObjectProxy)
+					{
+						MyShortcutCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.myshortcuts.myshortcut)); 
+					}
+					MyShortcutCollection.refresh();
+					
+				} else	{
+					
+					var s_ret:String = resultStatusRendition(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}				
+				
+				
+				
+			}
+			
+			
+			private function selectAlldg1(event:Event):void {
+				var arr:Array = new Array();
+				for (var a:uint=dg_myshortcuts.dataProvider.length -1 ;a>0;a--){	
+					arr.push(a);
+				}
+				arr.push(0);     
+				arr = AscendingSortArray(arr);
+				dg_myshortcuts.selectedIndices = arr;
+			}
+			private function AscendingSortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+						
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 > fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+						
+						
+						
+					} 
+					
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+					swap = "no"; 
+					
+					
+				} 
+				return myArray; 
+			}    
+			private function SortArray(myArray:Array):Array
+			{ 
+				var tempValue:String; 
+				var done:String = "no"; 
+				var swap:String = "no"; 
+				var i:int; 
+				var fileTemp1:int; 
+				var fileTemp2:int; 
+				while (done == "no") { 
+					for (i = 0; i < (myArray.length - 1); i++) {
+						fileTemp1 = myArray[i]; 
+						fileTemp2 = myArray[i+1]; 
+						if (fileTemp1 < fileTemp2) { 
+							tempValue = myArray[i]; 
+							myArray[i] = myArray[i+1]; 
+							myArray[i+1] = tempValue; 
+							swap = "yes"; 
+						}
+					} 
+					if (swap == "no") { 
+						done = "yes"; 
+					} 
+					swap = "no"; 
+				} 
+				return myArray;         
+			}  
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%" height="100%">
+		<mx:HBox width="100%">    
+			<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+					   height="27"
+					   width="78"
+					   useHandCursor="true" buttonMode="true"   
+					   mouseChildren="false"
+					   click="{parentApplication.pre_nt_mousehovering(event,header_label.text,header_label.text,'BUTTON')}" 
+					                   
+					   />                            
+			<mx:Spacer width="50%"/> 
+			<mx:Label id="header_label" text="OneClicks" width="100%" textAlign="center"  fontSize="19" color="#364D6A" fontWeight="bold"
+					              
+					          
+					  rollOver="parentApplication.nt_mousehovering(event,event.currentTarget.text,event.currentTarget.text,'BUTTON')"
+					  rollOut="parentApplication.nt.stop()" 
+					                               
+					  />     
+			<mx:Spacer width="100%"/>
+			
+		</mx:HBox>
+		
+		<!-- mx:Label id="txt_current" text="CurrentRendition" width="100%" textAlign="center"  fontSize="19" color="#030303" fontWeight="bold"
+		rollOver="{parentApplication.mbdg_mousehovering(event,event.currentTarget.text,'Current Rendition','CURRENT RENDITION')}"
+		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+		/ -->
+		
+		
+		<local:ActionGridADGRendition  
+			id="dg_myshortcuts"  
+			width="100%"
+			height="100%"
+			rowHeight="22"
+			dataProvider="{MyShortcutCollection}"
+			dragEnabled="true"
+			dropEnabled="true" dragMoveEnabled="true"
+			verticalScrollPolicy="auto"
+			allowMultipleSelection="false" 
+			variableRowHeight="true"
+			headerStyleName="centerAlignDataGridCol"
+			horizontalGridLines="true"
+			verticalGridLines="true"
+			horizontalGridLineColor="black"
+			verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+			 
+			
+			sortableColumns="false" 
+			
+			>    
+			<local:columns>
+				<mx:AdvancedDataGridColumn id="myshort_code" dataField="shtcutcode" headerText="Code" width="150" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="myshort_type" dataField="type" headerText="Type" width="70" wordWrap="true"  editable="false" />
+				<mx:AdvancedDataGridColumn id="myshort_desc" dataField="shtcutdesc" headerText="Description" width="280"  editable="false" wordWrap="true" />
+				<!-- mx:AdvancedDataGridColumn id="myshort_actiongriddescription" dataField="mbddesc" headerText="ActionGrid"   editable="false" wordWrap="true" / -->
+				<mx:AdvancedDataGridColumn id="myshort_actiongriddescription" dataField="buttonlabel" headerText="ActionGrid"   editable="false" wordWrap="true" />
+				
+			</local:columns>
+		</local:ActionGridADGRendition>
+		
+		
+		
+		<mx:HBox horizontalGap="0" width="100%">
+			<!--
+			<mx:Button id="btn_rendition_switch" label="Apply" click="{}"
+			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+			rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_rendition_default" label="Default" click="{}"
+			rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+			rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			-->
+			<mx:Button id="btn_myshortcut_create" label="Create" fontSize="15"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_myshortcut_modify" label="Modify" fontSize="15"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Button id="btn_myshortcut_delete" label="Delete"   fontSize="15"  click="{deleteMyShortcuts(event)}" 
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{ parentApplication.mbdg_stopHoverTimer()}"/>
+			<mx:Spacer width="100%"/>
+			<mx:Button id="btn_myshortcut_close"  label="Close"  fontSize="15"
+					   rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+					   rollOut="{parentApplication.mbdg_stopHoverTimer()}"/>
+			
+		</mx:HBox>
+	</mx:VBox> 
+	
+	
+</mx:TitleWindow>

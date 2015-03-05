@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// 2007-08-20 liken Added Classic Job Menu
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:productsView="productsView.*"
+    xmlns:flexstore="samples.flexstore.*"
+    height="100%" 
+    paddingLeft="4" 
+    paddingRight="12" 
+    paddingTop="12" 
+    paddingBottom="8" 
+    verticalGap="0"
+    creationComplete="jobData.send();"
+    currentState="showingThumbnails">
+    
+    <mx:Metadata>
+       [Event(name="filter", type="samples.flexstore.ProductFilterEvent")] 
+       [Event("compare")]
+    </mx:Metadata>
+    
+    <mx:Script>
+        <![CDATA[
+        [Bindable]
+	    	private var dataGridProvider:ArrayCollection = new ArrayCollection();
+	    
+	    	private var job:String ;
+	    	
+	    	import mx.controls.Alert;
+	    	import mx.controls.Label;
+	    	import mx.controls.List;
+	    	import mx.collections.ArrayCollection;
+	    	import mx.core.DragSource;
+	    	import mx.controls.Tree;
+	    	import mx.controls.DataGrid;
+	    	import mx.controls.listClasses.ListBase;
+    		import mx.events.DragEvent;
+    		import mx.containers.Canvas;
+    		import mx.managers.DragManager;
+    		import mx.core.UIComponent;
+	    
+	    
+        private function expandTree():void{
+        	       for (var i:int = 0; i < jobTree1.dataProvider.length; i ++){
+                           jobTree1.expandChildrenOf(jobTree1.dataProvider[i], true)
+                        }
+            		    }
+       	private function collapseTree():void{
+                   for (var i:int = 0; i < jobTree1.dataProvider.length; i ++){
+                                jobTree1.expandChildrenOf(jobTree1.dataProvider[i], false)
+                        }
+        	        }
+        
+        
+        import mx.controls.sliderClasses.Slider;
+        import mx.controls.Alert; 
+        import samples.flexstore.ProductFilterEvent;
+        import mx.rpc.events.ResultEvent;
+			
+		[Bindable]
+		private var jobList:XMLList;
+		
+        public var _language:String;   
+        private var thumbBeingPressed:Boolean;
+        private var icon_calendar:String = "assets/icon_calendar1.png";   
+        /*
+        var today_date:Date = new Date();
+        var months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+        var d_date = ["00",
+        			  "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", 
+        			  "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+        			  "21", "22", "23", "24", "25", "26", "27", "28", "29", "30","31" ];
+        var date_str_img:String = "assets/icon_calendar"+
+        						((months[today_date.getMonth()])+""+d_date[today_date.getDate()]+".png");
+        */
+
+        
+        private function dispatchFilter():void
+        {
+            var event:ProductFilterEvent = 
+                new ProductFilterEvent(filter, thumbBeingPressed);
+            dispatchEvent(event);
+            currentState = "showingThumbnails";
+        }
+        
+        private function sliderValue(values:Array, index:int):Number
+        {
+            return values[index];
+        }
+        
+        private function productRemoved():void
+        {
+            if (currentState == "showingComparison")
+            {
+                if (productList.items.length == 0)
+                {
+                    dispatchFilter();
+                }
+                else
+                {
+                    attemptCompare();
+                }
+            }
+        }
+        
+        private function attemptCompare():void
+        {
+            if (productList.items.length > 0)
+            {
+                dispatchEvent(new Event("compare"));
+                currentState = "showingComparison";
+            }
+            else
+            {
+                Alert.show("There are no items to compare.", "Compare");
+            }
+        }
+        
+        private function jobsXMLHandler(event:ResultEvent):void
+			{
+				jobList = event.result..System;
+			}
+		
+		private function onTreeDragComplete(event:DragEvent):void {
+	            event.preventDefault();
+	        }	    
+	    private function onDragEnter( event:DragEvent ) : void
+	    	{			
+	    		if( event.dragInitiator is Tree ) {
+    				var ds:DragSource = event.dragSource;
+			    	if( !ds.hasFormat("treeItems") ) return; 	// no useful data
+		    		var items:Array = ds.dataForFormat("treeItems") as Array;
+		    		for(var i:Number=0; i < items.length; i++) {
+		    			var item:XML = XML(items[i]);
+		    			if( item.@type != "restaurant" ) return; // not what we want
+		    		}
+		    	} 
+			    // If the Tree control passes or the dragInitiator is not a tree, accept the drop.
+                DragManager.acceptDragDrop(UIComponent(event.currentTarget)); 
+		    }		
+	    	/**
+	    	 * Handles the dragOver event on the DataGrid control.
+	    	 * If the dragInitiator is the Tree control, only copy is allowed. Otherwise, a move
+	    	 * or link can take place from the List control.
+	    	 */
+	    	private function onDragOver( event:DragEvent ) : void
+	    	{
+	    		if( event.dragInitiator is Tree ) {
+	                DragManager.showFeedback(DragManager.COPY);
+		        } else {
+		  		  if (event.ctrlKey)
+                    DragManager.showFeedback(DragManager.COPY);
+                    else if (event.shiftKey)
+                        DragManager.showFeedback(DragManager.LINK);
+                    else {
+                        DragManager.showFeedback(DragManager.MOVE);
+                    }
+		        }
+		    }		
+		    /**
+		     * Handles the dragExit event on the drop target and just hides the 
+		     * the drop feedback.
+		     */
+		    private function onDragExit( event:DragEvent ) : void
+		    {
+                var dropTarget:ListBase=ListBase(event.currentTarget);   
+            dropTarget.hideDropFeedback(event);
+		    }
+		    /**
+		     * Handles the dragDrop event on the DataGrid control when the 
+		     * drag proxy is released. 
+		     */
+		    private function onGridDragDrop( event:DragEvent ) : void
+		    {
+		    	var ds:DragSource = event.dragSource;
+		    	var dropTarget:DataGrid = DataGrid(event.currentTarget);
+		    	var arr:Array;
+			    if( ds.hasFormat("items") ) {
+				    arr = ds.dataForFormat("items") as Array;
+			    } else if( ds.hasFormat("treeItems") ) {
+				    arr = ds.dataForFormat("treeItems") as Array;
+			    }
+			    for(var i:Number=0; i < arr.length; i++) {
+				    var node:XML = XML(arr[i]);
+					var item:Object = new Object();
+				    item.label = node.@label;
+				    item.type  = node.@type;
+				    dataGridProvider.addItem(item);
+			    }
+                onDragExit(event); 
+		    }
+		    
+		    private function runJob (event:Event): void {
+		    	run_job.url="wc_product_filter.php?job="+jobTree1.selectedItem.@id;
+		    	run_job.send();
+		    }
+		    
+		    private function findJob (event:Event): void {
+		    	find_job.url="wc_product_filter.php?job="+command.text;
+		    	find_job.send();
+		    }
+		    
+        ]]>
+    </mx:Script>
+    <mx:HTTPService id="run_job"/>
+    <mx:HTTPService id="find_job"/>
+    
+    <flexstore:ProductFilter id="filter">
+
+    </flexstore:ProductFilter>
+
+    <mx:CurrencyFormatter currencySymbol="$" id="cf"/>    
+    
+    <mx:Label text="Find/Command" styleName="sectionHeader"/>
+    
+    <mx:HBox width="100%">
+        <mx:TextInput styleName="glass" width="100%" id="command" restrict="^a-z" />
+        <mx:Button styleName="glass" label="Go" 
+        	click="Function(findJob(event))" />
+        	
+    </mx:HBox>
+<!-- click="Alert.show('This feature is not implemented in this sample', 'Find')"/> -->
+ <mx:Spacer height="6"/> 
+
+ <mx:HRule width="100%"/> 
+
+<!--
+    <mx:Spacer height="8"/>
+
+    <mx:Label text="Classic Job Menu" styleName="sectionHeader"/>
+
+    <mx:Spacer height="4"/>
+-->
+    <mx:HTTPService 
+		id="jobData"
+		url="data/jobs.xml"
+	 	showBusyCursor="true"
+	 	result="jobsXMLHandler(event)"
+	 	resultFormat="e4x"/>
+	 	
+	<mx:Accordion id="accordion" width="100%" height="100%">
+    	<!-- Define each panel using a VBox container. -->
+        <!--
+        <mx:VBox label="A1 American Logistics">
+        <mx:HBox width="100%" horizontalAlign="left">
+                <mx:Button  
+                	icon="@Embed('icon_blue_folder_open.png')"
+                 	toolTip="Expand All Folders" height="30"
+                 	label="Expand All Folders"
+                 	buttonMode="true"
+					click="expandTree()"/>
+                <mx:Button 
+                	icon="@Embed('icon_blue_folder_close.png')"
+                	buttonMode="true"  height="30"
+                 	label="Collapse All Folders"
+				   	toolTip="Collapse All Folders"
+					click="collapseTree()"/> 
+		</mx:HBox> 
+		<mx:Tree id="jobTree1" dataProvider="{jobList}" labelField="@label" 
+			fontSize="12" fontFamily="Arial" borderColor="white"
+			folderOpenIcon="@Embed(source='icon_blue_folder_open.png')"
+			folderClosedIcon="@Embed(source='icon_blue_folder_close.png')"
+			defaultLeafIcon="@Embed(source='icon_doc.png')"
+			click="navigateToURL(new URLRequest(jobTree1.selectedItem.@id),'_blank');"
+			width="350" height="500"/>
+		</mx:VBox>
+
+		<mx:VBox label="A2 ABC demo">
+		<mx:Tree id="jobTree2" dataProvider="{jobList}" labelField="@label" 
+			fontSize="12" fontFamily="Arial" borderColor="white"
+			folderOpenIcon="@Embed(source='icon_blue_folder_open.png')"
+			folderClosedIcon="@Embed(source='icon_blue_folder_close.png')"
+			defaultLeafIcon="@Embed(source='icon_doc.png')"
+			width="350" height="500"/>
+		</mx:VBox>
+
+       	<mx:VBox label="A3 Distribution Company">
+		<mx:Tree id="jobTree3" dataProvider="{jobList}" labelField="@label" 
+			fontSize="12" fontFamily="Arial" borderColor="white"
+			folderOpenIcon="@Embed(source='icon_blue_folder_open.png')"
+			folderClosedIcon="@Embed(source='icon_blue_folder_close.png')"
+			defaultLeafIcon="@Embed(source='icon_doc.png')"
+			width="350" height="500"/>
+		</mx:VBox>
+       -->
+ 		<mx:VBox label="G1 GNK Warehouse" 
+ 			 height="100%" width="100%"
+ 			>
+	 		<mx:HBox width="100%" horizontalAlign="left">
+	                <mx:Button  
+	                    width="33.3333%"
+	                	icon="@Embed('icon_expand.png')"
+	                 	toolTip="Expand All Folders" height="30"
+	                 	label="Expand All Folders"
+	                 	buttonMode="true"
+						click="expandTree()"/>
+	                <mx:Button 
+	                	width="33.3333%"
+	                	icon="@Embed('icon_collapse.png')"
+	                	buttonMode="true"  height="30"
+	                 	label="Collapse All Folders"
+					   	toolTip="Collapse All Folders"
+						click="collapseTree()"/>
+					<mx:Button 
+	                	width="33.3333%"
+	                	icon="@Embed('icon_help.png')"
+	                	buttonMode="true"  height="30"
+	                 	label="Help"
+					   	toolTip="Help"
+						click=""/>  
+			</mx:HBox> 
+			<mx:Tree id="jobTree1"  dataProvider="{jobList}" labelField="@label" 
+				fontSize="12" fontFamily="Arial" borderColor="white"
+				folderOpenIcon="@Embed(source='icon_open.png')"
+				folderClosedIcon="@Embed(source='icon_close.png')"
+				defaultLeafIcon="@Embed(source='icon_doc.png')"
+			    doubleClickEnabled="true"
+			    doubleClick="Function(runJob(event))"
+			 	dropEnabled="false"
+				dragEnabled="true"
+				dragComplete="onTreeDragComplete(event)"
+				dragMoveEnabled="false"
+				width="100%" height="100%"/>
+    
+         </mx:VBox>
+        </mx:Accordion>
+
+
+    <productsView:ProductList id="productList" height="{productList.maxItems * ProductListItem.HEIGHT + 2}" 
+    	width="100%"
+        newItemStartX="300" newItemStartY="-100" maxItems="4" 
+        removeProduct="productRemoved()"/>
+	
+    <mx:Spacer height="8" id="spacer1"/>
+    
+    <mx:states>
+       <mx:State name="showingThumbnails">
+
+                   
+          <mx:RemoveChild target="{productList}"/>
+          <mx:AddChild relativeTo="{spacer1}" position="before">
+             
+          </mx:AddChild>
+         
+       </mx:State>
+       
+    </mx:states>
+
+</mx:VBox>

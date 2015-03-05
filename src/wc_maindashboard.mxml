@@ -1,0 +1,1709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- *************************************************************************
+	Application Environment
+
+	Responsibility Dashboard main application.
+
+	Copyright 2009,2010 Maves International Software
+	ALL RIGHTS RESERVED          
+==============================================================================
+$Id: wc_maindashboard.mxml,v 1.26.2.4 2012/11/28 20:19:20 aprarn Exp $
+************************************************************************** -->
+           
+<mx:Application
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	layout="absolute"
+	pageTitle="MAVES ViewPoint Logistics"                
+	creationComplete="init()"
+	backgroundImage="image/Blue3.png"
+	xmlns="*">          
+                
+<!-- *************************************************************************
+	Style  
+************************************************************************** -->
+     
+	<mx:Style source="css/main.css"/>
+
+
+<!-- *************************************************************************
+	ActionScript
+************************************************************************** -->
+
+<mx:Script source="as/Handler/MainDashboardHandler.as"/>
+<mx:Script source="as/Handler/ResultMainDashboardHandler.as"/>
+<mx:Script source="as/Handler/FaultMainDashboardHandler.as"/>
+<mx:Script source="as/ManagerBean/Common.as"/>
+<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+<mx:Script source="as/Handler/ResolutionHandlerSystem.as"/>
+<mx:Script source="as/Handler/SystemThumbnailHandler.as"/>	 
+<mx:Script source="as/Handler/StraightTriggerHandler.as"/>	 
+<mx:Script source="as/Handler/ResultStraightOneJob.as"/>	 
+<mx:Script source="as/Handler/OnetoOneRelationship.as"/>
+<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+
+	       
+
+<!-- *************************************************************************
+	HTTPService Definitions
+************************************************************************** -->
+
+	<mx:HTTPService
+		id="getshortcutpianokeys"
+		url="ae_tlch_xmlreq.php"    
+		method="POST"
+		contentType="application/xml"  
+		result="getshortcutpianokeysHandler(event)"
+		fault="getshortcutpianokeysFaultHandler(event)"
+		> 
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob> 
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="getjob"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="getjobHandler(event)"
+		fault="getjobFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService 
+		id="getsubsystem" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="getsubsystemHandler(event)"
+		fault="getsubsystemFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+		
+	
+	
+	<mx:HTTPService 
+		id="treeviewoperations" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="treeviewOperationsHandler(event)"
+		fault="treeivewOperationsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms_treeview}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="treeviewadministration" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="treeviewAdministrationHandler(event)"
+		fault="treeivewOperationsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms_treeview}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService 
+		id="myfavoritestree" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="treeviewMyFavoritesHandler(event)"
+		fault="treeivewMyFavoritesFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms_treeview}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	
+	
+	
+	<mx:HTTPService
+		id="EZLinkSystem"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		method="POST"
+		result="ezlinkHandlerSystem(event)"
+		fault="EZLinkFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{'REFRESH,RETRIEVE|EZLINK_SYSTEMS|' + ChainCombo.selectedItem.id + '|'}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+
+	<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="sysjobrun(event)"
+	>
+		<mx:request>
+			<ezware_request>
+			<style><backgroundColour>{g_fillcolor}</backgroundColour></style>
+				<source>job_exec</source>
+				<chain>{ChainCombo.selectedItem.id}</chain>
+				<connection>{cb_speedoptions.selectedItem.data}</connection>
+				<action>runJob</action>
+				 <job_exec>{ht_jobcode}</job_exec>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters></parameters>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="httpLogin"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="loginResultHandler(event)"
+		fault="hsFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>login</action>
+				<password>{base64pw}</password>
+				<user>{base64un}</user>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<!-- mx:HTTPService
+		id="httpCPW"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="cpwResultHandler(event)"  
+		fault="cpwFaultHandler(event)"
+	/ -->
+	<mx:HTTPService
+		id="httpCPW"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="loginResultHandler(event)"  
+		fault="cpwFaultHandler(event)"
+		/>
+	<mx:HTTPService
+		id="httpLogout"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="logoutResultHandler(event)"
+		fault="hsFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>logout</action>
+				<sid>{g_sid}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="httpAYT"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="aytResultHandler(event)"
+		fault="hsFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>ayt</action>
+				<sid>{g_sid}</sid>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="httpRunJob"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="runJobResultHandler(event)"
+		fault="hsFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="chainCode"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		result="chainCodeResultHandler(event)"
+		method="POST"
+		fault="chainCodeFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="companyCode"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		result="companyCodeResultHandler(event)"
+		method="POST"
+		fault="companyCodeFaultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>Z0</company>
+				<sid>{g_sid}</sid>
+				<parameters>REFRESH,AEPROFILE</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="KPIMenuResultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{my_pass_url}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="profileHandler"
+		result="profileResultHandler(event)"
+		fault="faultprofileResultHandler(event)"/>
+	<mx:HTTPService
+		id="httpGlobalVariable"
+		result="globalvariableResultHandler(event)"
+		fault="faultglobalvariableResultHandler(event)"
+	/>
+	<mx:HTTPService
+		id="httpGlobalVariableSo"
+		/>
+	<mx:HTTPService
+		id="httpAccessVariable"
+		/>
+	<mx:HTTPService
+		id="httpChainGlobalVariable"
+		result="globalvariableChainResultHandler(event)"
+		fault="faultglobalvariableChainResultHandler(event)"
+	/>
+	<mx:HTTPService id="HoverHelpDomain" 
+		url="data/ConfigFile.xml"  
+		result="{hoverhelpdomainHandler(event)}" 
+		fault="{faulthoverhelpdomainHandler(event)}"/>
+		
+	<mx:HTTPService
+		id="runNetView" 
+		url="ae_tlch_xmlreq.php" 
+		result="runNetViewHandler(event)" 
+		method="POST"
+		contentType="application/xml"
+> 
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|NETVIEWURL</parameters> 
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>	
+		
+		
+		
+		
+
+<!-- *************************************************************************
+	HTTPService Definitions for One Job per User
+************************************************************************** -->
+	
+	
+	
+		
+	<mx:HTTPService
+		id="straightsystemcompanyCode"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		result="straightsystemCompanyCodeResult(event)"
+		method="POST"
+		fault="straightsystemCompanyCodeFault(event)"
+	>
+			<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>Z0</company>
+				<sid>{g_sid}</sid>
+				<parameters>REFRESH,AEPROFILE</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService
+		id="straightchainCode"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		result="straightchainCodeResultHandler(event)"
+		method="POST"
+		fault="straightchainCodeFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="straighthttpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="straightKPIMenuResultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{my_pass_url}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+<!--***************************  Sub System **************************-->
+
+<mx:HTTPService 
+		id="straightsubsystemchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="straightsubsystemchainCodeResultHandler(event)" 
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="straightss_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="straightSubSystemKPIMenuResultHandler(event)"
+		
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<!-- ************************************** End Sub System *********************** -->
+	
+	
+	
+	<!-- ***************************************  Job Menu ******************************-->
+	
+	<mx:HTTPService 
+		id="straightjobchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="straightjobchainCodeResultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="straightjm_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="straightJobFunctionMenuResultHandler(event)"
+		
+>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	 <mx:HTTPService
+		id="straightnavigateJobProgram_job"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="straightJobRun(event)"
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<source>menubutton</source>
+				<chain>{chainjobmenucode}</chain>
+				<system_cd>{systemcode}</system_cd>
+				<subsys_cd>{subsystemcode}</subsys_cd>
+				<group_cd>{groupcode}</group_cd>
+				<job_cd>{jobmenucode}</job_cd>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<mx:HTTPService
+		id="loc_straightnavigateJobProgram_job_ArnoldTest"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		
+		
+		> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{jobmenucode}</systemAndJob>
+				<source>menubutton</source>
+				<chain>{ChainCombo.selectedItem.id}</chain>
+				<system_cd>{systemcode}</system_cd>
+				<subsys_cd>{subsystemcode}</subsys_cd>
+				<group_cd>{groupcode}</group_cd>
+				<job_cd>{jobmenucode}</job_cd>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="navigateJobProgram_ArnoldTest2"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="sysjobrun(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<source>job_exec</source>
+				<chain>{ChainCombo.selectedItem.id}</chain>
+				<connection>{cb_speedoptions.selectedItem.data}</connection>
+				<action>runJob</action>
+				<job_exec>{ht_jobcode}</job_exec>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters></parameters>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<!-- *************************************** End Job Menu ****************************** -->
+	
+	<mx:HTTPService
+		id="updateMyFavoritesSequence"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="updateMyFavoriteSequenceResultHandler(event)"
+		fault="updateMyFavoriteSequenceFaultHandler(event)"   
+		>
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>	
+	
+	<mx:HTTPService
+		id="updateMyShortcutsSequence"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="updateMyShortcutSequenceResultHandler(event)"
+		fault="updateMyShortcutSequenceFaultHandler(event)"   
+		>
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>	
+	
+	
+	<mx:HTTPService 
+		id="getmyshortcuts"  
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="getmyshortcutHandler(event)"
+		fault="getmyshortcutsFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService  
+		id="retrieve_myshortcut_accordion" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMyShortcut_Main_RetrieveAccordion(event)"
+		fault="getmyshortcuts_mainFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService 
+		id="retrieve_myshortcut_main" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="ResultHandlerMyShortcut_Main_Retrieve(event)"
+		fault="getmyshortcuts_mainFaultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+	<!-- ********************************  -->
+	<!--  ***Update for Tab Settings parameter*** -->
+	
+	<mx:HTTPService
+		id="updatetabsettings"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{g_changed_m_code}</company>
+				<sid>{g_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<!-- ************************************* Arboretum Login ******************************* -->
+	
+	<mx:HTTPService id="ArboretumLogin" 
+				result="ALListHandler(event)"   
+				fault="ALfaultHandler(event)" />
+	<!-- ************************************* End of Arboretum Login ******************************* -->
+	
+
+<!-- **************************************************************************
+		 END HTTPService Definitions for One Job per User
+************************************************************************** -->		
+<!-- *************************************************************************
+	Begin States
+************************************************************************** -->
+
+	<mx:states>
+
+<!-- *************************************************************************
+	Systems Menu state.
+************************************************************************** -->
+
+		<mx:State name="main_dashhome">
+			<mx:RemoveChild target="{spacer1}"/>
+			<mx:RemoveChild target="{canvas2}"/>
+			<mx:AddChild position="lastChild">
+				<mx:VBox
+					width="100%" height="100%"
+					   paddingLeft="0"  
+					paddingRight="0"
+					
+				>
+					<mx:ApplicationControlBar
+						id="second"
+						width="100%"
+						styleName="storeControlBar"
+						
+					 height="44">
+					
+						
+						
+						
+						
+						<mx:Button
+							label="e-Z Learn {hoverstatus}"   
+							id="ezlearn"
+							icon="@Embed(source='image/scholar_cap.png')"
+							toolTip="e-Z Learn"
+							textAlign="left"
+							
+							click="{pre_pre_nt_mousehovering(event)}"
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							styleName="highResolutionSystemMenu"
+							width="252"
+							
+							fontFamily="Arial"/>
+						
+	
+						<!-- mx:Button
+							label="e-Z Learn {hoverstatus}"   
+							id="ezlearn"
+							icon="@Embed(source='image/scholar_cap.png')"
+							toolTip="e-Z Learn"
+							textAlign="left"
+							
+							click="{hoverHelpSwitch()}"
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							styleName="highResolutionSystemMenu"
+							width="100%"
+							rollOver="nt_mousehovering(event,event.currentTarget.label,event.currentTarget.label,'BUTTON')"
+							rollOut="nt.stop()"
+						 fontFamily="Arial"/ -->
+					
+
+						<mx:TextInput
+							id="jobcode"
+							width="100"
+							color="#000606"
+							enter="{g_fillcolor = (ChainCombo.getStyle('fillColors')).toString(), jobCodeHandler();}"
+							fontWeight="bold"
+							maxChars="6"
+							editable="true"
+							enabled="true"
+							themeColor="#C9E6F8"
+							backgroundColor="#85e7ff"
+							
+							height="25"
+							toolTip="Enter Job Code"
+							restrict="A-Z 0-9"
+							styleName="highResolutionSystemMenu"
+							rollOver="nt_mousehovering(event,'Job Selector','Job Selector','JOB_SELECTOR')"
+							rollOut="nt.stop()" 
+							cornerRadius="4" 
+							borderStyle="inset"
+						 fontSize="14" fontFamily="Arial"/>
+						
+						<mx:Button id="btn_browse_jobs" icon="@Embed('image/icon_lookup.png')"   
+								   width="33" click="{openJobCodesMenu(event)}"/>
+					
+						<mx:Spacer width="100%"/>
+						
+						
+						<mx:ComboBox
+							id="company_code"
+							width="100%"
+							dataProvider="{tdcompany}"
+							labelField="company_desc"
+							
+							change="{pre_change_companycode()}"
+							
+							
+							
+							height="28"
+							styleName="highResolutionSystemMenu"
+							fontWeight="bold"
+							rollOver="nt_mousehovering(event,'Company Selector','Company Selector','COMPANY_SELECTOR')"
+							rollOut="nt.stop()" 
+							
+							fontFamily="Arial"/>
+						
+						<!-- mx:ComboBox
+							id="company_code"
+							width="100%"
+							dataProvider="{tdcompany}"
+							labelField="company_desc"
+							
+							change="{g_tabset = '0', changecode(), jobcode.text = '', jobcode.setFocus()}"
+							
+							
+							
+							height="28"
+							styleName="highResolutionSystemMenu"
+							fontWeight="bold"
+							rollOver="nt_mousehovering(event,'Company Selector','Company Selector','COMPANY_SELECTOR')"
+							rollOut="nt.stop()" 
+							
+						 fontFamily="Arial"/ -->
+						<mx:Spacer width="100%"/>
+				
+						
+						
+						
+						<mx:ComboBox
+						id="ChainCombo"
+						
+						height="28"
+						dataProvider="{FormatChainGroup}"
+						change="{getSelectedChild(event), jobcode.text = '', jobcode.setFocus()}"
+						labelField="description"
+						useHandCursor="true"
+						width="100%"
+						fontWeight="bold"
+						styleName =  "highResolutionSystemMenujobButton{ChainCombo.selectedItem.id}"
+						rollOver="nt_mousehovering(event,'Menu Chain','Menu Chain','MENU_CHAIN')"
+						rollOut="nt.stop()"
+						fontSize="20" fontFamily="Arial"
+						visible="false"
+						/>
+						
+						
+						<mx:Button
+							id="logoff"
+							icon="@Embed('image/logoff.png')"
+							toolTip="LOGOFF/EXIT"
+							textAlign="left"
+							fontSize="10"
+							click='alertListener()'
+							
+							height="28"
+							useHandCursor="true"
+							buttonMode="true"
+							mouseChildren="false"
+							width="43"
+							rollOver="nt_mousehovering(event,'Exit Button','Exit Button','EXIT_BUTTON')"
+							rollOut="nt.stop()"
+						
+							
+							
+							
+						/>
+					</mx:ApplicationControlBar>
+					<!-- mx:Spacer width="100%" height="10"/ -->
+					
+					
+					<mx:HDividedBox id="hddivbox" width="100%"
+									height="100%">
+						
+				
+						
+						<!--
+						rollOver="nt_mousehovering(event,'Navigation Panel','Navigation Panel','BUTTON')"
+						rollOut="nt.stop()" 
+						
+						
+						-->
+							
+							
+							
+							
+							<mx:VBox id="box" width="375"  height="100%" 
+									  
+									
+									  
+									 
+									 mouseOver="nt_mousehovering(event,'Navigation Pane','Navigation Pane','BUTTON')"
+									 mouseOut="nt.stop()" 
+									 
+									 verticalGap="0">
+						
+								 
+								   
+								<mx:Accordion id="accordion_treeview" height="100%"
+												  headerStyleName="accHeader" headerHeight="40"
+												  resizeToContent="false"  fontSize="20"
+												  width="100%"  
+												  change="{changeAccordionheader(event)}"
+												 
+												  
+												  >	
+									   
+									<mx:Form id="operations" label="Operations" height="100%" width="100%" 
+											 icon="@Embed(source='image/operations_ico.png')"
+												
+											  fontFamily="Arial" fontSize="20" fontWeight="bold">
+										<mx:HBox  width="100%">
+											<mx:Button label="Expand All" width="100%" fontSize="17" fontWeight="normal"
+													   click="ExpandAllOperations(event)" 
+													   
+													   />
+											<mx:Button label="Collapse All" width="100%" fontSize="17" fontWeight="normal"
+													   click="tree_collapseChildrenOfOperations(event)" 
+													   
+													   />
+										</mx:HBox>
+												<mx:Canvas id="child1" width="100%" height="100%"
+														   label="Operations"
+														   
+														   >
+													
+													
+													<mx:Tree id="XMLtreeoperator" width="100%" height="100%" 
+															 labelField="@name" dataProvider="{treeviewoperations_xml.node}"
+															 depthColors="[#FFFFFF, #EEEEEE, #DDDDDD, #CCCCCC, #BBBBBB, #AAAAAA]"  
+															 itemClick="itemClickHandler(event, 'oper')"
+														 
+															    color="#070742"  
+															  fontSize="16" fontWeight="normal">    
+														
+													</mx:Tree>  
+													    
+												</mx:Canvas>
+										
+									</mx:Form>
+									
+									<mx:Form id="administration" label="Administration" height="100%" width="100%"
+											 icon="@Embed(source='image/administration_ico.png')"
+											
+
+											  fontFamily="Arial">
+										<mx:HBox  width="100%">
+											<mx:Button label="Expand All" width="100%" fontSize="17" fontWeight="normal"
+													   click="ExpandAllAdministration(event)" 
+													   
+													   />
+											<mx:Button label="Collapse All" width="100%" fontSize="17" fontWeight="normal"
+													   click="tree_collapseChildrenOfAdministration(event)" 
+													   
+													   />
+										</mx:HBox>
+										<mx:Canvas id="child2" width="100%" height="100%"
+												   label="Administration"
+												   
+												   >
+											
+											
+											<mx:Tree id="XMLtreeadministrator" width="100%" height="100%"
+													 labelField="@name" dataProvider="{treeviewadministration_xml.node}"
+													 depthColors="[#FFFFFF, #EEEEEE, #DDDDDD, #CCCCCC, #BBBBBB, #AAAAAA]" 
+													 itemClick="itemClickHandler(event, 'admin')" 
+													 color="#070742"  
+													 fontSize="16" fontWeight="normal"
+													 >    
+												
+												
+												
+												 
+											</mx:Tree>
+											
+										</mx:Canvas>
+									</mx:Form>
+									    
+									<mx:Form id="myfavourite" label="MyFavorites"  icon="@Embed(source='image/myfavourite_ico.png')" 
+											 height="100%" width="100%" fontFamily="Arial">
+										
+											
+										
+										<!-- Form contents goes here. -->
+										
+										<mx:HBox  width="100%">
+											<mx:Button label="Expand All" width="100%" fontSize="17" fontWeight="normal"
+													   click="ExpandAllMyFavorites(event)" 
+													   
+													   />
+											<mx:Button label="Collapse All" width="100%" fontSize="17" fontWeight="normal"
+													   click="tree_collapseChildrenOfMyFavorites(event)" 
+													   
+													   />
+										</mx:HBox>
+										
+										<mx:Canvas id="childfavorites" width="100%" height="100%"
+												   label="My Favorites"
+												      
+												   >
+											
+											
+											<mx:Tree id="XMLmyfavorites" width="100%" height="100%" 
+													 labelField="@name" dataProvider="{treeviewmyfavorites_xml.node}"
+													 depthColors="[#FFFFFF, #EEEEEE, #DDDDDD, #CCCCCC, #BBBBBB, #AAAAAA]"  
+													 itemClick="MyFavoritesClickhandler(event)"
+													 
+													 color="#070742"  
+													 fontSize="16" fontWeight="normal">    
+												
+											</mx:Tree>  
+											
+										</mx:Canvas>
+										<mx:Button label="Create / Modify" width="100%" fontSize="17" fontWeight="normal"
+												   click="clickMyFavorites(event)" 
+												   
+												   />
+										
+										
+									</mx:Form>
+									<mx:Form id="myviews" label="OneClicks"  icon="@Embed(source='image/myshortcuts_ico.png')" 
+											 height="100%" width="100%" fontFamily="Arial">
+										
+										
+										
+										<!-- Form contents goes here. -->
+										<!--
+										<mx:HBox  width="100%">
+											<mx:Button label="Expand All" width="100%" fontSize="17" fontWeight="normal"
+													   click="ExpandAllMyFavorites(event)" 
+													   
+													   />
+											<mx:Button label="Collapse All" width="100%" fontSize="17" fontWeight="normal"
+													   click="tree_collapseChildrenOfMyFavorites(event)" 
+													   
+													   />
+										</mx:HBox>
+										-->
+										
+										<mx:Canvas id="childmyshortcuts" width="100%" height="100%"
+												   label="My Views"
+												   
+												   > 
+											
+											
+											<!-- mx:VBox width="100%" height="100%" -->
+												
+											
+											<mx:AdvancedDataGrid  width="100%" height="100%" id="adg_shortcuts" 
+																 sortableColumns="false"
+																 designViewDataType="flat"
+																 dataProvider="{MyShortcutCollectionMain}"
+																 itemClick="MyShortcutClickhandler(event)"
+																 >
+												<mx:columns>
+													<mx:AdvancedDataGridColumn headerText="Code" dataField="shtcutcode"/>
+													<mx:AdvancedDataGridColumn headerText="Type" dataField="type" width="100"/>
+												</mx:columns>
+											</mx:AdvancedDataGrid>
+											
+											<!-- mx:List dataProvider="{MyShortcutCollectionMain}" 
+													 width="100%" height="100%" fontSize="17" fontWeight="normal"
+													 labelFunction="myLabelFunc"/>
+												
+											</mx:VBox -->
+												
+										</mx:Canvas>
+										<mx:Button label="Create / Modify" width="100%" fontSize="17" fontWeight="normal"
+												   click="clickMyShortcuts(event)" 
+												   
+												   />  
+									</mx:Form>	
+								<!--  Remove the MyDashboard for now for presentation purposes		
+										
+									
+									<mx:Form id="mydashboard" label="MyDashboard"  icon="@Embed(source='image/mydashboard_ico.png')" 
+											 height="100%" width="100%" fontFamily="Arial">
+										
+										
+										
+										<mx:Canvas id="childmydashboard" width="100%" height="100%"
+												   label="My Views"
+												   
+												   >
+											
+											
+										</mx:Canvas>
+										<mx:Button label="Create / Modify" width="100%" fontSize="17" fontWeight="normal"
+												   click="clickMyShortcuts(event)" 
+												   
+												   />
+										
+										
+									</mx:Form>
+									
+								-->	
+									
+									<mx:Form id="mysettings" label="Settings"  icon="@Embed(source='image/settings_ico.png')" 
+											 height="100%" width="100%" fontFamily="Arial">
+										
+										<mx:VBox height="100%" width="100%">
+											
+											<mx:Button
+												label="Job Codes {jobCodes_status} "   
+												id="showJobCodes_preferences"
+												toolTip="Job Codes"
+												
+												
+												click="{changeJobCodeStatus()}"
+												
+												height="28"
+												useHandCursor="true"
+												buttonMode="true"
+												mouseChildren="false"
+												fontSize="17" fontWeight="normal"
+												width="100%"
+												
+												fontFamily="Arial"/>
+												<mx:HBox  width="100%">
+														<mx:Label text="Tab Default:" fontSize="17" fontWeight="normal"/>
+													
+												
+														<mx:ComboBox 
+															id="settingstab"
+															selectedIndex="{g_permanenttabset}"
+															width="100%"
+															useHandCursor="true"
+															change="changeEvtTabSetting(event)"
+															height="28"
+															fontSize="17" fontWeight="normal">
+															
+														<!-- 	 Remove the MyDashboard for now for presentation purposes	
+															<mx:ArrayCollection>
+																<mx:Object label="Operations" data="0"/>
+																<mx:Object label="Administration" data="1"/>
+																<mx:Object label="MyFavorites" data="2"/>
+																<mx:Object label="MyShortcuts" data="3"/>
+																<mx:Object label="MyDashboard" data="4"/>
+																<mx:Object label="Settings" data="5"/>
+															</mx:ArrayCollection>
+															-->
+															<mx:ArrayCollection>
+																<mx:Object label="Operations" data="0"/>
+																<mx:Object label="Administration" data="1"/>
+																<mx:Object label="MyFavorites" data="2"/>
+																<mx:Object label="MyShortcuts" data="3"/>
+																<mx:Object label="Settings" data="4"/>
+															</mx:ArrayCollection>
+													     </mx:ComboBox>
+													
+												</mx:HBox>
+										</mx:VBox>
+										
+										<!-- Form contents goes here. -->
+									</mx:Form>
+								</mx:Accordion>
+							
+							</mx:VBox>
+					
+					<mx:VBox 	width="50%"   
+								height="100%" verticalGap="0">
+						     
+						
+							<mx:HBox id="breadcrumbs" width="100%" horizontalGap="2">
+								<mx:Label text="-" width="1" visible="false" />
+								<mx:Button id="btn_breadcrumb" label="Home" useHandCursor="true"
+										   icon="@Embed(source='image/arrow_up_blue.png')"
+										  buttonMode="true"   
+										  mouseChildren="false" fontSize="16" color="#000000" fontFamily="Arial" fontWeight="bold"
+										  click="{drillback(event)}" 
+										   width="198" height="40"
+										   visible="false"
+										   />
+								
+								<mx:Spacer width="35%"/>
+								<mx:Text  id="system_text" width="100%" 
+										  styleName="highResolutionSystemMenu"  textAlign="center" 
+										  text="Systems" fontWeight="bold" height="40" color="#FCFBFB"
+										  mouseOver="nt_mousehovering(event,system_text.text,system_text.text,'BUTTON')"
+										  mouseOut="nt.stop()" 
+										  />
+								<mx:Spacer width="100%"/>   
+								
+								
+							</mx:HBox>
+				
+							<mx:ViewStack
+								id="storeViews"
+								width="100%"   
+								height="100%"
+								creationPolicy="all" 
+								
+							>
+								<KPIMenu 
+									id="kpi"
+									
+									width="100%" height="100%"
+									
+									/>
+								<SubSystemKPIMenu
+									id="kpi2"
+									width="100%" height="100%" 
+									pass_companycode = "{my_c_code}"
+									pass_usercode = "{username.text}"
+									pass_url="{my_pass_url}"
+									pass_arr_kpimenu = "{arr_kpimenusubsystem}"
+									
+									/>
+								
+								
+								<mx:HBox id="jobcanvas" width="100%" height="100%" > 
+									<mx:VBox id="columnone" height="100%" width="100%">
+									</mx:VBox>
+									<mx:VBox id="columntwo"  height="100%" width="100%">
+									</mx:VBox>
+									<mx:VBox id="columnthree" height="100%" width="100%">
+									</mx:VBox>
+								</mx:HBox>
+								
+								<mx:HBox id="settings" width="100%" height="100%" > 
+									
+								</mx:HBox>
+								
+								
+								
+								
+							</mx:ViewStack>
+						
+					</mx:VBox>	
+						<!-- KPIMenu
+						id="kpi"
+						label="Transport Dispatch"
+						width="100%" height="100%"
+						pass_companycode = "{my_c_code}"
+						pass_usercode = "{username.text}"
+						pass_url="{my_pass_url}"
+						pass_arr_kpimenu = "{arr_kpimenu}"
+						pass_menu = "{pu_menu}"
+						icon="@Embed('image/icon_bar1.png')"
+						
+						/ -->
+						
+						
+					
+					</mx:HDividedBox>
+					
+					
+				</mx:VBox>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="changePassword">
+			<mx:RemoveChild target="{linkbutton1}"/>
+			<!-- mx:RemoveChild target="{button1}"/ -->
+			<mx:RemoveChild target="{img_eagle}"/>  
+			<mx:RemoveChild target="{text1}"/>
+			<mx:RemoveChild target="{pbar}"/>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Image id="img_changepassword_1"
+					x="260" y="123" width="61" height="44"
+					source="image/password.png"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Text
+					x="310" y="143"
+					text="New Password"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:TextInput
+					id="newPassword"
+					x="260" y="175" width="272" height="36"
+					displayAsPassword="true"
+					fontSize="22" fontWeight="bold"
+					color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection="right"
+					shadowDistance="10"
+					cornerRadius="4" 
+					borderStyle="solid"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Image id="img_changepassword_2"
+					x="551" y="123" width="61" height="44"
+					source="image/password.png"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{password}" position="after">
+				<mx:Text
+					x="601" y="143"
+					text="Re-Enter New Password"
+					color="#F9FBFC"
+					fontSize="16" fontWeight="bold"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{newPassword}" position="after">
+				<mx:TextInput
+					id="newPasswordAgain"
+					x="551" y="175" width="272" height="36"
+					displayAsPassword="true"
+					fontSize="22" fontWeight="bold"
+					color="#421008"
+					dropShadowEnabled="true"
+					shadowDirection="right"
+					shadowDistance="10"
+					enter="cpwChange()"
+					cornerRadius="4" 
+					borderStyle="solid"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:Button
+					id="cpwChangeButton"
+					x="551" y="243" width="125" height="34"
+					label="Change"
+					click="cpwChange()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor= "#3300ff"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:Button
+					id="cpwCancelButton"
+					x="698" y="243" width="125" height="34"
+					label="Cancel"
+					click="cpwCancel()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor= "#3300ff"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas2}" position="lastChild">
+				<mx:TextArea
+					id="cpwStatus"
+					x="260" y="285" width="563" height="194"
+					fontFamily="Verdana" fontSize="16"
+					fontWeight="bold"
+					editable="false" enabled="true"
+					wordWrap="true"
+					color="#F9FBFC"
+				/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{cpwStatus}" position="before">
+				<mx:Button
+					id="cpwOKButton"
+					x="698" y="243" width="125" height="34"
+					label="OK"
+					click="cpwOK()"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"
+					fontSize="16"
+					textRollOverColor="#3300ff"
+					visible="false"
+				/>
+			</mx:AddChild>
+		</mx:State>
+
+<!-- *************************************************************************
+	End States
+************************************************************************** -->
+
+	</mx:states>
+
+<!-- *************************************************************************
+	ViewPoint Logistics Login Screen
+
+This is the application's base state.
+************************************************************************** -->
+
+	<mx:Spacer height="10%" id="spacer1"/>
+	<mx:HBox width="100%" height="100%">
+		<mx:Spacer width="100%"/>
+	<mx:VBox width="100%" height="100%">	
+		<mx:Spacer height="50%"/>
+	<!-- mx:Canvas x="10" y="10" width="849" height="600" id="canvas2" -->
+	<mx:Canvas x="10" y="10" width="849" height="600" id="canvas2">	
+  
+		<mx:ApplicationControlBar
+			x="10" y="10" width="831" height="83"
+		>
+			<mx:Label
+				id="title_main"
+				text="ViewPoint Logistics"
+				width="100%" textAlign="center"
+				fontFamily="Arial" fontSize="30"
+				fontWeight="bold"
+				paddingTop="2" color="#FDFDFD"
+			/>
+		</mx:ApplicationControlBar>
+
+		
+		<mx:Image id="img_company_logo" x="37.5" y="0" 
+			source="{company_logo}"
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"
+			/> 
+		
+		
+
+		<mx:Image id="img_users"
+			x="27" y="103" width="61" height="44"
+			source="image/icon_users_small.png"
+		/>
+		<mx:Image id="img_lock"
+				  
+			x="27" y="199" width="61" height="44"
+			source="image/password.png"
+		/>
+
+		<mx:Text
+			x="77" y="123"
+			text="Operator ID"
+			color="#FAFCFC"
+			fontSize="16" fontWeight="bold"
+		/>
+		<mx:TextInput
+			id="username"
+			x="27" y="155" width="199" height="36"
+			fontSize="22" fontWeight="bold" color="#421008"
+			dropShadowEnabled="true"
+			shadowDirection= "right"
+			shadowDistance= "10"
+			focusIn="userNameClick()"
+			focusOut="userNamefocusout()"
+			cornerRadius="4" borderStyle="solid"
+
+			/>
+
+		<mx:Text
+			x="77" y="215"
+			text="Password"
+			color="#F9FBFC"
+			fontSize="16" fontWeight="bold"
+		/>
+		<mx:Text
+			x="27" y="422"
+			text="Connection Mode"
+			color="#F9FBFC"
+			fontSize="16" fontWeight="bold"
+		/>
+		<mx:TextInput
+			id="password"
+			x="27" y="247" width="199" height="36"
+			displayAsPassword="true"
+			enter="doLogin('rl')"
+			fontSize="22" fontWeight="bold" color="#421008"
+			dropShadowEnabled="true"
+			shadowDirection="right"
+			shadowDistance="10"
+			focusIn="passwordClick()"
+			focusOut="passwordfocusout()"
+			cornerRadius="4" 
+			borderStyle="solid"
+			/>
+		<mx:TextArea
+			id="text1"
+			x="260" y="419" width="579" height="60"
+			text="{loginStatus}"
+			fontWeight="bold" fontSize="23" color="#670F0F"
+			editable="false" enabled="true" wordWrap="true"
+			visible="false" 
+			
+		/>
+
+		<mx:ProgressBar
+			id="pbar"
+			x="260" y="480" height="22" width="579"
+			indeterminate="true" minimum="0" maximum="100"
+			label=""
+			visible="false"
+		/>
+
+		<mx:Button id="btn_login"
+			x="27" y="345" width="199" height="34"
+			label="Log In"
+			click="doLogin('rl')"
+			icon="@Embed(source='image/keys.png')"
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"
+			fontSize="16"
+			textRollOverColor= "#3300ff"
+		 cornerRadius="4"/>
+      
+		<mx:VRule x="241" y="114" width="11" height="365"/>
+
+		<mx:ApplicationControlBar
+			x="8" y="498" width="831" height="83"
+		>
+		
+			<!-- mx:Image x="37.5" y="0" source="image/MAVES Logo Trans.png"/ -->
+			<mx:Spacer width="100%"/>
+		
+			<mx:HBox>
+			<mx:VBox>
+				
+			<mx:Label
+				id="title_footer"
+				text="{'Copyright ' + copyright_year + ' Maves International Software Corp.'}"
+				width="350"
+				textAlign="right"
+				fontFamily="Arial" fontSize="13"
+				fontWeight="bold"
+				paddingTop="2" color="#ffffff"
+			/>  
+				
+			<mx:HBox width="100%">
+			<mx:Label
+					id="version_number"
+					text="VL14.010"
+					width="344"
+					textAlign="right"
+					fontFamily="Arial" fontSize="13"
+					fontWeight="bold"
+					paddingTop="2" color="#ffffff"
+					useHandCursor="true" buttonMode="true"
+					mouseChildren="false"   
+			/>   	      
+				
+			</mx:HBox>
+
+			</mx:VBox>
+				
+			</mx:HBox>
+			
+		</mx:ApplicationControlBar>
+		<!-- mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"
+			/ -->
+		<!-- Temporary remove the 'click' event for Image to give way for RLS installation. -->	
+		<!-- mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+			click="{eZLearn_for_help()}"
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"
+			/ -->
+		<mx:Image x="27" y="510" source="image/scholar_cap_main.png" 
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false" 
+			click="{eZLearn_for_help()}"
+			/>
+			
+		
+		<mx:Image
+			id="img_eagle"   
+			x="388" y="51"
+			source="@Embed(source='image/blue_eagle.png')"
+			click="{navigateToURL(new URLRequest('data/Display Grid OverView.pdf'), 'quote')}"
+			useHandCursor="true" buttonMode="true"
+			mouseChildren="false"
+		/>
+		
+		
+		<!--mx:LinkButton
+			id="linkbutton1"
+			x="149" y="291"
+			label="Change ..."
+			fontSize="12"
+			click="goToCPW( '' )"
+		/ -->
+		
+		
+		<mx:LinkButton
+			id="linkbutton1"
+			x="149" y="291"    
+			label="Change ..."
+			fontSize="12"
+			click="doLogin('cp')" 
+			          
+			/>        
+		
+		<mx:ComboBox id="cb_speedoptions"  x="27" y="454" editable="false" width="199"
+					  fontSize="14" change="{loadSpeedStyles(cb_speedoptions.selectedItem.data);}">
+			<mx:dataProvider>
+				<mx:Array>
+					<mx:Object label="Standard" data="standard" />
+					<mx:Object label="Basic" data="basic" />
+				</mx:Array>
+			</mx:dataProvider>
+		</mx:ComboBox>
+		
+	</mx:Canvas>
+		<mx:Spacer height="100%"/>
+		</mx:VBox>
+		<mx:Spacer width="100%"/>
+	</mx:HBox>
+
+</mx:Application>

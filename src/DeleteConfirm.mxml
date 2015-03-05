@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="526" height="212"  verticalScrollPolicy="off"
+	    layout="vertical"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="500" y="100"
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        borderColor="#DAD8D8"
+        backgroundColor="#FAFBFC"
+        creationComplete="init()"
+       backgroundImage=""
+         backgroundAlpha="1.0" styleName="glass" xmlns:local="*"
+         
+         >
+     
+      <mx:Script>
+      	<![CDATA[
+      		import mx.controls.Alert;
+      		import mx.managers.PopUpManager;
+      		[Bindable]
+      		public var del_filtercode:String;
+      		
+      		private function init():void {  
+      			
+      			inputcode.setFocus();
+      			inputcode.drawFocus(true);
+      			
+          	}
+      		private function titleWindow_close(evt:Event):void {
+                 PopUpManager.removePopUp(this);
+           	}
+        
+      	]]>
+      </mx:Script>
+      <mx:Style source="css/main.css"/>
+      			<mx:HBox width="100%">
+	      		
+      			<mx:Label text="Confirm Delete" width="100%" fontSize="14" fontWeight="bold" textAlign="center"/>
+	      		</mx:HBox>
+	      		
+	      		<mx:HBox width="100%">
+	      			      		<mx:Label text="{'Are you sure you want to delete ' + del_filtercode + '?' } " width="100%" fontSize="14" fontWeight="bold" textAlign="center"/>
+	      		</mx:HBox>
+	      		<mx:HBox width="100%" id="hbox2">
+	      						<mx:Spacer width="100%"/>
+	      			      		<mx:TextInput  restrict="A-Z" width="114" id="inputcode" text=""  maxChars="3" fontSize="14" fontWeight="bold" textAlign="center" backgroundColor="#66FFFF"/>
+	      						<mx:Spacer width="100%"/>
+	      		</mx:HBox>
+	      		<mx:HBox width="100%" height="29" id="hbox3">
+	      			      		<mx:Text text="Please type 'YES' to confirm deletion." width="100%" height="32" id="label2" fontWeight="bold" fontSize="14" color="#FB3D03" textAlign="center"/>
+	      		</mx:HBox>
+	      		<mx:HBox width="100%">
+	      			      		<mx:Spacer width="100%"/>
+	      			      		<local:HighViewButton doc_id="1071" label="OK" id="btn_ok" />
+	      			      		<local:HighViewButton label="Cancel" doc_id="1072" id="btn_cancel" click="{titleWindow_close(event)}"/>
+	      						<mx:Spacer width="100%"/>
+	      		</mx:HBox>
+</mx:TitleWindow>
+
+

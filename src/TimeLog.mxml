@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+This component is primarily static and is only meant to show what other
+pages of the store could look like.
+
+Note that this page was put together in the Design view so you'll see more
+hard coded locations and sizes.
+
+We did not have sizing issues here as much so you'll see more hardcoded
+"y" values rather than "top."
+
+The width and height are hard-coded in the root tag to help the Design view.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" alpha="1.0" xmlns:local="*"
+    width="990" height="550" creationComplete="init()">
+
+	<mx:Script>
+
+        <![CDATA[
+        	import mx.core.EdgeMetrics;
+        	import mx.charts.chartClasses.StackedSeries;
+            import mx.binding.utils.ChangeWatcher;
+        	import mx.validators.Validator;
+            import mx.events.ValidationResultEvent;
+            import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+            import mx.containers.TitleWindow;
+            import flash.net.Responder;
+	   		/* toolbar functions */
+	  		import flash.display.StageDisplayState;
+			import mx.events.CloseEvent;
+			/* PHP Output XML functions */
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			/* Time Selector Functions */
+            import mx.formatters.DateFormatter;
+            /* Work Task Datagrid Filter Functions */
+        	import mx.events.IndexChangedEvent;
+			import mx.utils.ObjectUtil;
+			/* DataGrid Colour Function */
+			import mx.controls.dataGridClasses.DataGridColumn;
+
+
+		[Bindable]
+		public var today_date:Date = new Date();
+
+		/* display_date is Date in display format i.e. Thu Nov 1 2007
+		   today is date is YYYYMMDD format i.e. 2007111 for 2007 Nov 1 or 20070120 for 2007 Jan 20 */
+		[Bindable]
+		public var today:String = today_date.getFullYear().toString() + (today_date.getMonth()+1).toString() + today_date.getDate();
+		[Bindable]
+		public var display_date:String = today_date.toLocaleDateString();
+
+		/* display_time is Time in noraml display format with ":" and "AM/PM"
+		   curtime is Time in 24 Hour Format i.e. 945 means 9:45 AM or 1315 means 1:15 PM */
+ 		[Bindable]
+   		public var display_time:String = today_date.toLocaleTimeString();
+		[Bindable]
+		public var curtime:String = today_date.hours.toString()+today_date.minutes.toString();
+
+		[Bindable]
+        public var timelogArray:ArrayCollection;
+
+		private function init():void
+			{
+
+				today_date = new Date();
+				today = date_yyyymmdd.format(today_date);
+				curtime = today_date.hours.toString()+today_date.minutes.toString();
+				display_date = today_date.toLocaleDateString();
+				display_time = today_date.toLocaleTimeString();
+
+				pvx_timelog_grid();
+
+			}
+
+		private function pvx_timelog_grid():void
+			{
+				var http_passin_act:String = "timelog_grid" ;
+				var http_param_cnt:String = "4";
+				var http_param_sep:String = ",";
+				var http_passin_param:String = "" ;
+
+				http_passin_param  = http_param_cnt + http_param_sep +
+									 http_passin_act + http_param_sep +
+									 today + http_param_sep +
+									 curtime + http_param_sep ;
+
+				timelog_grid.url="timelog_logic.php?http_passin_param="+http_passin_param;
+				timelog_grid.send();
+			}
+
+			/* Set DataGrid	rowColor
+		 	This function is called from timelogGrid when the background of a row
+		 	needs to be colored; the function returns a single color. The function is given the
+		 	item from the data for the row in question, the row's index number, the data's index
+		 	number, and the color that would normally be used for the row, such as one of the
+		 	DataGrid's alternating-row-colors' +  */
+
+		private function rowColors( item:Object, rowIndex:Number, dataIndex:Number, oldColor:uint ) : uint
+			{
+			// If the value of tempid = GAP, orange is returned.
+			// Otherwise the default color is returned.
+			if( item != null && item.wt_tempid == "GAP" ) return 0xFF8800;
+			else return oldColor;
+			}
+
+
+       ]]>
+    </mx:Script>
+
+	<mx:DateFormatter id="date_yyyymmdd" formatString="YYYYMMDD" />
+
+	<mx:HTTPService id="timelog_grid" url="timelog_logic.php" result="timelogArray = timelog_grid.lastResult.root.timelog" />
+
+	<mx:Style source="css/main.css" />
+
+<mx:VBox height="100%" width="100%">
+    <mx:Panel id="panel2" title="Time Log"
+            height="90%" width="100%"
+            paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">
+
+	<mx:VBox width="100%">
+		<mx:HBox width="100%">
+			<mx:HBox width="90%" >
+				<mx:Label text="{display_date} {display_time}"  styleName="sectionHeader"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Button label="REFRESH" id="refresh" icon="@Embed('image/icon_refresh.png')"
+	        	fontFamily="Arial" textAlign="left" fontSize="12" width="12%" toolTip="Refresh"  labelPlacement="right"
+	        	click="init()"/>
+			</mx:HBox>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Label id="ts_completed_task" text="Completed Tasks {timelog_grid.lastResult.root.wt_total_time}" color="green" width="50%"
+				styleName="sectionHeader"/>
+			<mx:Label id="ts_gap_task" text="Gap Analysis {timelog_grid.lastResult.root.wt_gap_time}" color="red" width="50%"
+				styleName="sectionHeader"/>
+		</mx:HBox>
+	</mx:VBox>
+
+	<local:ColoredBackgroundDataGrid id="timelogGrid" dataProvider="{timelogArray}" width="100%" height="90%" rowHeight="30"
+		rowColorFunction="rowColors" >
+		<local:columns>
+				<mx:DataGridColumn dataField="wt_start" headerText="Task Started" minWidth="130"/>
+				<mx:DataGridColumn dataField="wt_complet" headerText="Task Completed" minWidth="130"/>
+				<mx:DataGridColumn dataField="wt_duration" headerText="Duration" />
+				<mx:DataGridColumn dataField="wt_acurtim" headerText="Actual Time"/>
+				<mx:DataGridColumn dataField="wt_client" headerText="Client"/>
+				<mx:DataGridColumn dataField="wt_tempid" headerText="Task Template"/>
+				<mx:DataGridColumn dataField="wt_activcd" headerText="Activity Code"/>
+				<mx:DataGridColumn dataField="wt_explain" headerText="Comment" wordWrap="true" minWidth="250"/>
+  		</local:columns>
+	</local:ColoredBackgroundDataGrid>
+	</mx:Panel>
+</mx:VBox>
+</mx:Canvas>

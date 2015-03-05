@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+This component is primarily static and is only meant to show what other
+pages of the store could look like.
+
+Note that this page was put together in the Design view so you'll see more
+hard coded locations and sizes.
+
+We did not have sizing issues here as much so you'll see more hardcoded
+"y" values rather than "top."
+
+The width and height are hard-coded in the root tag to help the Design view.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" alpha="1.0"
+    width="990" height="550" creationComplete="init()">
+
+	<mx:Script>
+
+        <![CDATA[
+        	import mx.core.EdgeMetrics;
+        	import mx.charts.chartClasses.StackedSeries;
+            import mx.binding.utils.ChangeWatcher;
+        	import mx.validators.Validator;
+            import mx.events.ValidationResultEvent;
+            import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+            import mx.containers.TitleWindow;
+            import flash.net.Responder;
+	   		/* toolbar functions */
+	  		import flash.display.StageDisplayState;
+			import mx.events.CloseEvent;
+			/* PHP Output XML functions */
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			/* Time Selector Functions */
+            import mx.formatters.DateFormatter;
+            /* Work Task Datagrid Filter Functions */
+        	import mx.events.IndexChangedEvent;
+			import mx.utils.ObjectUtil;
+
+		[Bindable]
+		public var today_date:Date = new Date();
+
+		/* display_date is Date in display format i.e. Thu Nov 1 2007
+		   today is date is YYYYMMDD format i.e. 2007111 for 2007 Nov 1 or 20070120 for 2007 Jan 20 */
+		[Bindable]
+		public var today:String = today_date.getFullYear().toString() + (today_date.getMonth()+1).toString() + today_date.getDate();
+		[Bindable]
+		public var display_date:String = today_date.toLocaleDateString();
+
+		/* display_time is Time in noraml display format with ":" and "AM/PM"
+		   curtime is Time in 24 Hour Format i.e. 945 means 9:45 AM or 1315 means 1:15 PM */
+ 		[Bindable]
+   		public var display_time:String = today_date.toLocaleTimeString();
+		[Bindable]
+		public var curtime:String = today_date.hours.toString()+today_date.minutes.toString();
+
+		[Bindable]
+        public var alertArray:ArrayCollection;
+
+		private function init():void
+			{
+
+				today_date = new Date();
+				today = date_yyyymmdd.format(today_date);
+				curtime = today_date.hours.toString()+today_date.minutes.toString();
+				display_date = today_date.toLocaleDateString();
+				display_time = today_date.toLocaleTimeString();
+
+				pvx_alert_grid();
+
+			}
+
+		private function pvx_alert_grid():void
+			{
+				var http_passin_act:String = "alert_grid" ;
+				var http_param_cnt:String = "4";
+				var http_param_sep:String = ",";
+				var http_passin_param:String = "" ;
+
+				http_passin_param  = http_param_cnt + http_param_sep +
+									 http_passin_act + http_param_sep +
+									 today + http_param_sep +
+									 curtime + http_param_sep ;
+
+				alert_grid.url="wkalert_logic.php?http_passin_param="+http_passin_param;
+				alert_grid.send();
+			}
+
+		private function alert_viewinfo():void
+		{
+			var alert_link:String = ""
+
+			if (alertGrid.selectedItem.wt_action != null) {
+				alert_link = alertGrid.selectedItem.wt_action;
+				navigateToURL(new URLRequest(alert_link),'_blank');
+			}
+		}
+
+       ]]>
+
+    </mx:Script>
+
+	<mx:DateFormatter id="date_yyyymmdd" formatString="YYYYMMDD" />
+
+	<mx:HTTPService id="alert_grid" url="wkalert_logic.php" result="alertArray = alert_grid.lastResult.root.alert" />
+<!--		url="data/alert.xml"/> -->
+
+	<mx:Style source="css/main.css" />
+
+<mx:VBox height="100%" width="100%">
+    <mx:Panel id="panel2" title="Alerts"
+            height="90%" width="100%"
+            paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">
+	<mx:HBox width="100%">
+	<mx:HBox width="80%">
+	<mx:Label text="{display_date} {display_time}"  styleName="sectionHeader"/>
+	</mx:HBox>
+	<mx:HBox>
+	<mx:Button label="Take Action" id="viewinfo" icon="@Embed('image/icon_info.png')"
+	        	fontFamily="Arial" textAlign="left" fontSize="12" width="10%" toolTip="Select an alert and view more information and/or take action."
+	        	labelPlacement="right" click="alert_viewinfo()"/>
+	<mx:Button label="Refresh" id="refresh" icon="@Embed('image/icon_refresh.png')"
+	        	fontFamily="Arial" textAlign="left" fontSize="12" width="10%" toolTip="Refresh"  labelPlacement="right"
+	        	click="init()"/>
+	</mx:HBox>
+	</mx:HBox>
+	<mx:DataGrid id="alertGrid" dataProvider="{alertArray}" width="100%" height="100%" rowHeight="30">
+		<mx:columns>
+			<mx:DataGridColumn dataField="img" headerText="" width="30" itemRenderer="alertImageRenderer"/>
+			<mx:DataGridColumn dataField="wt_latstmp" headerText="Task Due" minWidth="130"/>
+			<mx:DataGridColumn dataField="wt_explain" headerText="Task Explanation" wordWrap="true" minWidth="250"/>
+			<mx:DataGridColumn dataField="wt_assuser" headerText="Assigned User" />
+			<mx:DataGridColumn dataField="wt_client" headerText="Client"/>
+			<mx:DataGridColumn dataField="wt_doc_ref" headerText="Reference"/>
+      		<mx:DataGridColumn dataField="wt_overdue_dur" headerText="Over Due by"/>
+  		</mx:columns>
+	</mx:DataGrid>
+	</mx:Panel>
+
+<!--    <mx:Panel id="panel3" title="Alert Information"
+            height="15%" width="100%"
+            paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">
+    <mx:HBox>
+    <mx:Label id="wt_assuser_lab"  text="Assigned to: {alertGrid.selectedItem.wt_assuser}" styleName="sectionHeader" />
+    </mx:HBox>
+	</mx:Panel>
+ -->
+</mx:VBox>
+</mx:Canvas>

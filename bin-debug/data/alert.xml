@@ -1,0 +1,51 @@
+<root>
+<alert>
+<img>../video/alert_001.swf</img>
+<level>1</level>
+<name>Pick Line Location - No Stock</name>
+<description>There is not enough stock in location PL810012</description>
+<action>Replenishment is required</action>
+</alert>
+<alert>
+<img>../video/alert_001.swf</img>
+<level>1</level>
+<name>EDI Dies</name>
+<description>Background Task encountered an unexpected error</description>
+<action>Send Form 943 to client WALMART</action>
+</alert>
+<alert>
+<img>../video/alert_004.swf</img>
+<level>1</level>
+<name>No Stock</name>
+<description>There is not enough stock in location AS10012</description>
+<action>Replenishment is required</action>
+</alert>
+<alert>
+<img>../video/alert_004.swf</img>
+<level>1</level>
+<name>No Stock</name>
+<description>There is not enough stock in location AS10012</description>
+<action>Replenishment is required</action>
+</alert>
+<alert>
+<img>../video/alert_003.swf</img>
+<level>1</level>
+<name>Background Task</name>
+<description>Background task is stopped unexpectedly</description>
+<action>Please check CC.41</action>
+</alert>
+<alert>
+<img>../video/alert_002.swf</img>
+<level>1</level>
+<name>OE20 Background Task Dies</name>
+<description>Background Task encountered an unexpected error</description>
+<action>Client - ABC112 - Order # 560023</action>
+</alert>
+<alert>
+<img>../video/alert_005.swf</img>
+<level>1</level>
+<name>Warning - DS20 has not run for 2 months</name>
+<description>Last time DS20 was run on June 30, 2007</description>
+<action>Please setup Background DS20 task</action>
+</alert>
+</root>

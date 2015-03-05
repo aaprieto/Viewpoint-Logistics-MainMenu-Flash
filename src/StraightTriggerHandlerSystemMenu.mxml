@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+	<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+ <mx:Script>
+ 	<![CDATA[
+ 		import mx.rpc.events.FaultEvent;
+ 		import mx.rpc.events.ResultEvent;
+ 		import mx.controls.Alert;
+ 		
+ 		public var st_sid:String;
+ 		[Bindable] public var arnold_sid:String = new String;
+ 		public function init():void{
+ 	/*
+		var loc_xml:String = "<ezware_request><action>refreshData</action><company>Z0</company>" + 
+		"<sid>" + st_sid + "</sid><parameters>REFRESH,AEPROFILE</parameters>" + 
+		"<systemAndJob></systemAndJob><version>123454</version></ezware_request>"
+		var x_xml:XML = XML(loc_xml);
+		//Alert.show(st_sid);
+			
+		//arnold_sid = "Arnold";
+			straightsystemcompanyCode.request = x_xml.toString();
+	//		st_sid = "Arnold";
+	
+		*/
+			//Alert.show(st_sid);
+			straightsystemcompanyCode.send();  
+ 		}
+ 		
+ 		private function straightsystemCompanyCodeResult(event:ResultEvent):void {
+ 			//Alert.show(event.result.ezware_response.refresh_data.ae_profile.default_company);
+ 			//Alert.show(event.message.body.toString());
+			
+			if ( event.result.ezware_response.status == 'OK' ) {
+				AlertMessageShow(event.message.body);
+			}else {
+				
+				var s_ret:String = resultStatus(event.result.ezware_response.status, event.result.ezware_response.reason);  
+				AlertMessageShow(s_ret);
+				return;
+				
+			} 
+			
+ 		}
+ 		private function straightsystemCompanyCodeFault(event:FaultEvent):void {
+ 			//Alert.show(event.result.ezware_response.refresh_data.ae_profile.default_company);
+ 			AlertMessageShow("Fault Event: " + event.message.body.toString());
+ 		}
+ 	]]>
+ </mx:Script>
+
+	<mx:HTTPService
+		id="straightsystemcompanyCode"
+		url="ae_tlch_xmlreq.php"
+		contentType="application/xml"
+		result="straightsystemCompanyCodeResult(event)"
+		method="POST"
+		fault="straightsystemCompanyCodeFault(event)"
+	>
+			<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>Z0</company>
+				<sid>{st_sid}</sid>
+				<parameters>REFRESH,AEPROFILE</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+
+
+</mx:Application>

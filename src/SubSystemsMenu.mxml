@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- *************************************************************************
+	Application Environment
+
+	Responsibility Dashboard Sub System application.
+
+	Copyright 2009 Maves International Software 
+	ALL RIGHTS RESERVED
+==============================================================================
+$Id: SubSystemsMenu.mxml,v 1.9 2012/06/15 17:43:49 aprarn Exp $
+************************************************************************** -->
+
+<mx:Application 
+		xmlns:mx="http://www.adobe.com/2006/mxml"
+		layout="absolute"
+		pageTitle="Sub System Menu"
+		
+		creationComplete="ssminit()"
+	 	xmlns="*"
+	 	>
+ 
+ 
+<!-- *************************************************************************
+	ActionScript
+************************************************************************** -->
+	<mx:Style>
+        Alert {
+            	modalTransparency: 0;
+				modalTransparencyBlur: 0;
+				modalTransparencyColor: #DDDDDD;
+				modalTransparencyDuration: 0;
+        }
+    </mx:Style>
+<mx:Script source="as/Handler/SubSystemHandler.as"/>	
+<mx:Script source="as/Handler/ResultSubSystemHandler.as"/>	
+<mx:Script source="as/Handler/FaultSubSystemHandler.as"/>	
+<mx:Script source="as/ManagerBean/Common.as"/>
+<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/> 
+<mx:Script source="as/Handler/ResolutionHandlerSubSystem.as"/>	 
+<mx:Script source="as/Handler/SystemThumbnailHandler.as"/>
+<mx:Script source="as/Handler/ResultStraightOneJobSubSystem.as"/>	
+	<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+	
+<mx:Style source="css/main.css"/> 
+
+		
+<!-- *************************************************************************
+	...
+************************************************************************** -->
+
+		<mx:HTTPService 
+		id="EZLinkSubSystem" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="ezlinkHandlerSubSystem(event)" 
+		fault="EZLinkFaultHandler(event)"
+		
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{comp_code}</company>
+				<sid>{sid }</sid>
+				<parameters>{'REFRESH,RETRIEVE|EZLINK_SUBSYSTEMS|' + SubSystemChainCombo.selectedItem.id + '|' + ((Application.application.parameters.sys).substr(2,((Application.application.parameters.sys).length))).toString()+ '|'}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<!--  Version 1
+	
+ 	<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		
+	> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(SubSystemChainCombo.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<jobCategory>{SubSystemChainCombo.selectedItem.id}</jobCategory> 
+				<action>runJob</action>
+				<company>{ht_company}</company>
+				<sid>{Application.application.parameters.sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{ht_jobcode}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+		-->
+	<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="subsysjobrun(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<connection>{s_connection}</connection>
+			<style><backgroundColour>{s_filler}</backgroundColour></style>
+				<source>job_exec</source>
+				<chain>{SubSystemChainCombo.selectedItem.id}</chain>
+				<action>runJob</action>
+				 <job_exec>{ht_jobcode}</job_exec>
+				<company>{comp_code}</company>
+				
+				<sid>{sid}</sid>
+				<parameters></parameters>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService
+		id="httpSystemCodeGlobalVariable"
+		result="globalvariableSystemCodeResultHandler(event)"
+		fault="faultglobalvariableSystemCodeResultHandler(event)"
+	/>	
+
+	<mx:HTTPService
+		id="httpChainGlobalVariable"
+		result="SubSystemglobalvariableChainResultHandler(event)"
+		fault="SubSystemfaultglobalvariableChainResultHandler(event)"
+	/>	
+ 	
+
+	<mx:HTTPService
+		id="ss_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="SubSystemKPIMenuResultHandler(event)"
+		fault="SubSystemFaultKPIMenuResultHandler(event)"
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{comp_code}</company>
+				<sid>{sid}</sid>
+				<parameters>{my_pass_url}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+
+<mx:HTTPService
+		id="runNetView" 
+		url="ae_tlch_xmlreq.php" 
+		result="runNetViewHandler(event)" 
+		method="POST"
+		contentType="application/xml"
+> 
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{comp_code}</company>
+				<sid>{sid}</sid>
+				<parameters>REFRESH,RETRIEVE|NETVIEWURL</parameters> 
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>	
+
+<mx:HTTPService 
+		id="subsystemchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="subsystemchainCodeResultHandler(event)"
+		fault="subsystemfaultglobalvariableResultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{comp_code}</company>
+				<sid>{sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+<!-- *************************************************************************
+	HTTPService Definitions for One Job per User
+************************************************************************** -->
+	<mx:HTTPService 
+		id="straightsubsystemchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="straightsubsystemchainCodeResultHandler(event)" 
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{comp_code}</company>
+				<sid>{sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+<!-- *************************************************************************
+	End of HTTPService Definitions for One Job per User
+************************************************************************** -->
+	
+	<mx:VBox width="100%" height="100%">
+		
+
+					    <mx:ApplicationControlBar id="second" width="100%" styleName="storeControlBar">
+							
+							
+							<mx:Button label="e-Z Learn {subhoverstatus}" id="ezlearn" 
+									   icon="@Embed('image/scholar_cap.png')"   
+									   toolTip="E-Z Learn" textAlign="left" styleName="highResolutionSystemMenu"
+									   height="28"
+									   useHandCursor="true" buttonMode="true" 
+									   mouseChildren="false"
+									   click="{pre_nt_mousehovering(event,(Application.application.parameters.sys).substr(2,((Application.application.parameters.sys).length)) + ' - Sub System Menu',(Application.application.parameters.sys).substr(2,((Application.application.parameters.sys).length)) + ' - Sub System Menu','BUTTON')}"
+									   width="252"
+									   fontFamily="Arial"/>	
+				        <!-- mx:Button label="e-Z Learn {subhoverstatus}" id="ezlearn" 
+				        	icon="@Embed('image/scholar_cap.png')"   
+				    	   	toolTip="E-Z Learn" textAlign="left" styleName="highResolutionSystemMenu"
+				    	   click="{hoverHelpSwitch()}" height="28"
+				    	   useHandCursor="true" buttonMode="true" 
+				    	   mouseChildren="false"
+				    	   rollOver="nt_mousehovering(event,event.currentTarget.label,event.currentTarget.label,'BUTTON')"
+						   rollOut="nt.stop()"
+						   width="90%"
+				    	    fontFamily="Arial"/ -->
+
+				        <!-- mx:Button label="e-Z Learn {subhoverstatus}" id="ezlearn" icon="@Embed('image/scholar_cap.png')"   
+				    	   	toolTip="E-Z Learn" textAlign="left" styleName="highResolutionSystemMenu"
+				    	   	click="{EZLinkSubSystem.send()}"  height="53" useHandCursor="true" buttonMode="true" mouseChildren="false"/ -->
+       			    <!--
+       			        <mx:Spacer width="10"/>
+				    <mx:HBox  paddingLeft="5" fontSize="14">
+				    	<mx:Label id="title_lbl" text="{Application.application.parameters.n}"
+				    		fontFamily="Arial" fontSize="20" 
+		  				paddingTop="2" color="#ffffff" fontWeight="bold"/>
+				    </mx:HBox> 
+				    -->
+							
+							
+							
+							<mx:TextInput id="jobcode" width="100"  height="25"
+										  color="#000606" 
+										  enter="{s_filler = (SubSystemChainCombo.getStyle('fillColors')).toString(), jobCodeHandler();}" 
+										  restrict="A-Z 0-9" fontWeight="bold" 
+										  maxChars="6" editable="true" 
+										  enabled="true" themeColor="#C9E6F8" 
+										  backgroundColor="#85e7ff" styleName="highResolutionSystemMenu" 
+										  toolTip="Enter Action Command" 
+										  rollOver="nt_mousehovering(event,'Job Selector','Job Selector','JOB_SELECTOR')"
+										  rollOut="nt.stop()"
+										  cornerRadius="4" 
+										  borderStyle="inset"
+										   fontFamily="Arial" fontSize="14"/>
+							
+							
+							
+				    <mx:Spacer width="100%"/> 
+				    <!-- mx:VBox verticalGap="0" -->
+				    <!-- mx:HBox>
+				    <mx:Label id="ez"   text="{Application.application.parameters.n + '   Visible Logistics   ' + Application.application.parameters.cd}" 
+				    	fontFamily="Arial" styleName="highResolutionSystemMenu" textAlign="center" paddingTop="2" color="#ffffff" fontWeight="bold"/> 
+		  			</mx:HBox -->
+		  			<!-- mx:HBox --> 
+		  			<mx:Label id="sm" text="{comp_code + ' ' +(Application.application.parameters.sys).substr(2,((Application.application.parameters.sys).length)) + ' - Sub System Menu'}" 
+		  				fontFamily="Arial" styleName="highResolutionSystemMenu" textAlign="center" paddingTop="2" color="#ffffff" fontWeight="bold" />
+		  			<!-- /mx:HBox -->
+		  			<!-- /mx:VBox -->
+				    
+				    <!--
+				    <mx:Label id="lbl_company" text="{Application.application.parameters.cd}" fontFamily="Arial" fontSize="20" 
+		  				paddingTop="2" color="#ffffff" fontWeight="bold"/>
+				    	<mx:Spacer width="100%"/>
+				    -->	
+				    	
+							
+						
+							
+				    	<mx:Spacer width="100%"/>
+				    	<mx:ComboBox id="SubSystemChainCombo" 
+				    		dataProvider="{FormatChainGroup}" 
+				    		change="{getSubMenu(), jobcode.text = '', jobcode.setFocus()}" 
+				    		labelField="description"  
+							height="28" 
+				    		useHandCursor="true" 
+				    		width="100%" 
+				    		fontWeight="bold" 
+				    		styleName="{'jobButton' + SubSystemChainCombo.selectedItem.id}"
+				    		rollOver="nt_mousehovering(event,'Menu Chain','Menu Chain','MENU_CHAIN')"
+							rollOut="nt.stop()"
+				    		 fontFamily="Arial"> 
+      					</mx:ComboBox>
+				    	<mx:Button id="Close" icon="@Embed('image/logoff.png')"
+				    	   	toolTip="Close" textAlign="left" fontSize="10"
+							height="28" useHandCursor="true" 
+				    	    buttonMode="true" mouseChildren="false" 
+				    	    click="{closeApp()}" width="43"
+				    	    rollOver="nt_mousehovering(event,'Exit Button','Exit Button','EXIT_BUTTON')"
+							rollOut="nt.stop()"
+				    	    />
+				    </mx:ApplicationControlBar>
+	 				<mx:ViewStack id="storeViews" width="100%" 
+				        height="100%"
+				    	creationPolicy="all">
+				            	<SubSystemKPIMenu id="kpi" 
+				            	width="100%" height="100%"
+				            	pass_companycode = "{comp_code}"
+				            	pass_usercode = "{usercode}"
+				            	pass_url="{my_pass_url}" 
+				            	pass_arr_kpimenu = "{arr_kpimenu}"
+				            	icon="@Embed('image/icon_bar1.png')"/>	
+				        	
+				    </mx:ViewStack>
+
+	
+	</mx:VBox>
+</mx:Application>
+ 

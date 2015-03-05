@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="213" height="212"
+    borderStyle="solid"
+    borderColor="#FFFFFF"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    click="clickHandler(event)"
+    mouseOver="mouseOverHandler(event)"
+    mouseOut="mouseOutHandler(event)"
+    creationComplete="cc_init()"
+    initialize="init()"
+    doubleClickEnabled="false"
+    >
+	 
+<mx:Script source="as/Handler/StraightTriggerHandlerJobMenu.as"/>	
+	<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/> 	 
+	
+<mx:HTTPService id="getSessionID" url="rd_getsid.php"  result="resultGetSID(event)"/>
+<mx:HTTPService id="getProgramSessionID" url="rd_getsid.php"  result="ProgramresultGetSID(event)"/>
+<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+> 
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService
+		id="httpChainGlobalVariable"
+	/>	
+	
+		
+<!-- *************************************************************************
+	HTTPService Definitions for One Job per User
+************************************************************************** -->
+	<mx:HTTPService 
+		id="loc_straightjobchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="loc_straightjobchainCodeResultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{Application.application.comp_code}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="loc_straightjm_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="loc_straightJobFunctionMenuResultHandler(event)"
+		
+>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{Application.application.comp_code}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService
+		id="loc_straightnavigateJobProgram_job"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+	
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<company>{Application.application.comp_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{local_reqSJ}</systemAndJob>
+				<source>menubutton</source>
+				<chain>{local_chainjobmenucode}</chain>
+				<system_cd>{local_systemcode}</system_cd>
+				<subsys_cd>{local_subsystemcode}</subsys_cd>
+				<group_cd>{local_groupcode}</group_cd>
+				<job_cd>{local_jobmenucode}</job_cd>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+<!-- *************************************************************************
+	END HTTPService Definitions for One Job per User
+************************************************************************** -->
+	
+	<mx:Script source="as/Handler/ResolutionHandlerSubSystemDetail.as"/>	
+    <mx:Script>
+        <![CDATA[
+        	import flash.events.TimerEvent;
+        	import flash.utils.Timer;
+        	
+        	import mx.controls.Alert;
+        	import mx.core.*;
+        	import mx.events.*;
+        	import mx.managers.PopUpManager;
+        	import mx.rpc.events.ResultEvent;
+ 
+        	[Bindable]
+        	public var item:Object;
+ 			[Bindable]
+        	public var my_c_code:String;
+        	[Bindable]
+        	public var reqSJ:String;
+        	[Bindable] 
+        	public var ir_sid:String;
+        	private var resflag:String = "high";
+        	[Bindable] private var reqParms:String = new String;
+            private const TIMER_INTERVAL:int = 2000;
+            private var baseTimer:int;
+        	private const TIMER_INTERVAL_FOR_HOVER_MBDG:int = 1;
+			public var thmbnl_nt:Timer;
+			public var pophoverinterface:MainMouseHoverMenu;
+			
+   		private var nt:Timer;   
+   		 private function nt_update(evt:TimerEvent):void {
+          	nt.stop();
+          	this.enabled = true;
+          	thmbnl_nt.stop();
+          	PopUpManager.removePopUp(pophoverinterface);
+          }
+        private function init():void {
+        	
+        	thmbnl_nt = new Timer(TIMER_INTERVAL);
+            		
+            thmbnl_nt.addEventListener(TimerEvent.TIMER, thmbnl_updateHoverTimer); 
+        	
+				// Check for resolution
+			//if ((flash.system.Capabilities.screenResolutionX < 1280) && (flash.system.Capabilities.screenResolutionY < 1024)){
+			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					//  Main Canvas
+					resflag = "low";
+					this.width = 150;
+					this.height = 175; 
+			}else {
+					this.width = 213;
+					this.height = 212;
+			}
+			 // getProgramSessionID.send();
+		}
+        private function cc_init():void {
+			
+			
+				//if ((flash.system.Capabilities.screenResolutionX < 1280) && (flash.system.Capabilities.screenResolutionY < 1024)){
+				/*
+				if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					// Header Icon Text.
+					subsystem_text.setStyle("fontSize", 10);
+					subsystem_text.height = 30;
+					img.source = "image/small/" + item.image;
+				}
+				*/
+			if (item.image.length < 1){
+				img.source = "";
+			}
+				if (resflag == "low"){	
+					detectScreenResolutionforSubSystemDetail();
+				}
+		}
+        
+        private function mouseOverHandler(event:MouseEvent):void
+		{
+			//Alert.show("Here I am");
+			
+           setStyle("borderColor", "#CCCCCC");
+           setStyle("dropShadowEnabled", "true");
+           setStyle("dropShadowColor", "#000000");
+           setStyle("shadowDistance", 6);
+			
+            	thmbnl_mousehovering();
+        }
+
+        private function mouseOutHandler(event:MouseEvent):void
+		{
+            setStyle("borderColor", "#FFFFFF");
+            setStyle("dropShadowEnabled", "false");
+            thmbnl_nt.stop();
+        }
+
+		public function passChainGlobalVariable():void{
+			if (item.job_program == "SUBSYSTEMS"){
+				httpChainGlobalVariable.url = "rd_settings.php?sid=" + Application.application.parameters.sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id + "&subsys=" + item.code.toString();	
+			}
+			   if (item.job_program == "SYSTEMS"){
+				httpChainGlobalVariable.url = "rd_settings.php?sid=" + Application.application.parameters.sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id;	
+			}
+			  if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS")){
+			  	httpChainGlobalVariable.url = "rd_settings.php?sid=" + Application.application.parameters.sid + "&subsys=" + item.code.toString();
+			}
+				httpChainGlobalVariable.send();
+		}
+		
+		public function clickHandler(event:MouseEvent):void
+        {
+			
+			
+			
+			thmbnl_nt.stop();
+			
+			this.enabled = false;  
+			nt = new Timer(TIMER_INTERVAL); 
+			nt.addEventListener(TimerEvent.TIMER, nt_update); 
+			nt.start();     
+			
+			//Application.application.mytest(item.syscode);
+			
+			
+			
+			if ((item.job_id).length == 1){
+				Application.application.trigger_event = 'chicklets';
+				Application.application.RetrieveJobMenu(item.syscode, item.code);
+				/*
+				//  getProgramSessionID.send();
+				if (item.job_program == "SYSTEMS"){
+				passChainGlobalVariable();
+				navigateToURL(new URLRequest('subsystemsmenu.php?sys=' + item.code.toString()),'_blank');
+				}
+				// Alert.show(item.name); // Locations
+				
+				// SOmething temporary until everything is fixed. 
+				//      	  if ((Application.application.parameters.u != 'maves')||(item.name != 'Locations')){
+				if (item.job_program == "SUBSYSTEMS"){
+				//Alert.show(Application.application.parameters.c);
+				passChainGlobalVariable();
+				CheckJobMenuChain(); 
+				//navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code.toString()  + '&subname=' + (item.name).toString()),'_blank');
+				}       
+				//			  } else {
+				//				  if (item.job_program == "SUBSYSTEMS"){
+				//					 // Alert.show(item.ezlearnlink);
+				//					  var urlpass:String = item.ezlearnlink;
+				//					  //var urlpass:String =  " ../../e-Z_Learn2/Web%20Pages/Locations%20Menu.htm"
+				//					  //var urlpass:String = "../helpdocs/VLHelp/eZLearn_CSH.htm";
+				//					  var jscommand:String = "window.open('" + urlpass + "','win','top=100,left=0,height=775,width=900,toolbar=no,scrollbars=yes');"; 
+				//					  //Alert.show(jscommand);
+				//					  var url:URLRequest = new URLRequest("javascript:" + jscommand + " void(0);"); 
+				//					  //	url.contentType = "text/xhtml; charset=UTF-8";
+				//					  navigateToURL(url, "_self");
+				//				  }				
+				//			  } 
+				
+				
+				
+				if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS")){
+				
+				passChainGlobalVariable();
+				navigateToURL(new URLRequest(item.job_program),'_blank');
+				}
+				*/
+			}
+			if ((item.job_id).length > 1){ 
+				getSessionID.send();
+			}
+			
+			
+			
+      /*
+        	thmbnl_nt.stop();
+        	
+        	this.enabled = false;  
+        	nt = new Timer(TIMER_INTERVAL);
+        	nt.addEventListener(TimerEvent.TIMER, nt_update); 
+        	nt.start();     
+        	
+        	if ((item.job_id).length == 1){
+				   
+        	 //  getProgramSessionID.send();
+        	   if (item.job_program == "SYSTEMS"){
+        	   	 passChainGlobalVariable();
+        	     navigateToURL(new URLRequest('subsystemsmenu.php?sys=' + item.code.toString()),'_blank');
+        	   }
+			  // Alert.show(item.name); // Locations
+			  
+			  // SOmething temporary until everything is fixed. 
+  //      	  if ((Application.application.parameters.u != 'maves')||(item.name != 'Locations')){
+			   if (item.job_program == "SUBSYSTEMS"){
+        	   	//Alert.show(Application.application.parameters.c);
+        		 passChainGlobalVariable();
+        		 CheckJobMenuChain(); 
+        	     //navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code.toString()  + '&subname=' + (item.name).toString()),'_blank');
+        	   }       
+//			  } else {
+//				  if (item.job_program == "SUBSYSTEMS"){
+//					 // Alert.show(item.ezlearnlink);
+//					  var urlpass:String = item.ezlearnlink;
+//					  //var urlpass:String =  " ../../e-Z_Learn2/Web%20Pages/Locations%20Menu.htm"
+//					  //var urlpass:String = "../helpdocs/VLHelp/eZLearn_CSH.htm";
+//					  var jscommand:String = "window.open('" + urlpass + "','win','top=100,left=0,height=775,width=900,toolbar=no,scrollbars=yes');"; 
+//					  //Alert.show(jscommand);
+//					  var url:URLRequest = new URLRequest("javascript:" + jscommand + " void(0);"); 
+//					  //	url.contentType = "text/xhtml; charset=UTF-8";
+//					  navigateToURL(url, "_self");
+//				  }				
+//			  } 
+
+			  
+			  
+			  if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS")){
+        	   
+        	   		passChainGlobalVariable();
+        	   		navigateToURL(new URLRequest(item.job_program),'_blank');
+        	   }
+			   
+        	}
+        	if ((item.job_id).length > 1){ 
+        		getSessionID.send();
+        	}
+			
+			*/
+			
+        }
+        
+        public function resultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	if (ret_sid.substr(0,2) == 'OK'){
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        		my_c_code = Application.application.company_code.selectedItem.company;
+        		if  ((item.job_id).length > 4){
+        			reqSJ = (item.job_id).substr(2,(item.job_id).length);
+        		} else {
+        		reqSJ = item.job_id;
+        		}
+        		navigateJobProgram.send();
+        	}
+        }
+        public function ProgramresultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	if (ret_sid.substr(0,2) == 'OK'){
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        	}
+        }
+        
+        
+        private function thmbnl_mousehovering():void{	
+			//Alert.show("chek 1");
+			
+			// 	Alert.show(Application.application.hoverstatus);
+				/*
+				if (Application.application.subhoverstatus == "ON"){
+		        	baseTimer = getTimer();
+                	thmbnl_nt.start(); 
+        		} 
+				*/
+				if (Application.application.hoverstatus == "ON"){
+					baseTimer = getTimer();
+					thmbnl_nt.start(); 
+				}
+
+				
+
+
+        }
+         private function thmbnl_updateHoverTimer(evt:TimerEvent):void {
+			 
+			 
+			//Alert.show(item.name + ":" + item.code + ":" + Application.application.company_code.selectedItem.company);
+			   
+         		thmbnl_nt.stop();    
+             	pophoverinterface = MainMouseHoverMenu(
+                PopUpManager.createPopUp(this, MainMouseHoverMenu,true));
+                pophoverinterface.helpfortitleheader = item.name;
+                pophoverinterface.helpfortitle = item.name;
+                pophoverinterface.object_type = "SUBSYSTEM";
+				pophoverinterface.item_code = item.code;
+				pophoverinterface.loc_sid = ir_sid;
+               // pophoverinterface.loc_ccode = Application.application.comp_code; 
+				pophoverinterface.loc_ccode = Application.application.company_code.selectedItem.company;
+         }
+
+	]]>
+    </mx:Script>
+    <mx:CurrencyFormatter id="cf"/>
+    <mx:VBox id="vb" width="100%" height="100%"
+        paddingLeft="6" paddingTop="4" paddingRight="8" paddingBottom="4"
+        verticalGap="0">
+		<!-- mx:Text  id="subsystem_text" width="{img.width}"  textAlign="center" text="{item.name}" fontWeight="bold" styleName="highResolutionSystemMenu"   height="61"/ -->
+		<mx:Text  id="subsystem_text" width="100%"  textAlign="center" text="{item.name}" fontWeight="bold" styleName="highResolutionSystemMenu"   height="61"/>
+			<mx:Image id="img"  source="{'image/' + item.image}" />
+		
+	
+    </mx:VBox>
+</mx:Canvas>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" click="{click_event_list(event)}"  
+		label="{custombtn_name}" textAlign="left"  width="100%" height="27" 
+		toolTip="{custombtn_jobid}" 
+		fontSize="15"
+		doubleClickEnabled="false"
+		initialize="cb_init()"
+		rollOver="setNewStyles()"
+		rollOut="returnStyles()"
+		 
+>
+<mx:Style source="css/main.css"/> 
+<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+<mx:Script source="as/ManagerBean/ResultStatus.as"/>	
+ 	<mx:Script>
+        <![CDATA[ 
+        
+        import flash.events.Event;
+		import mx.controls.Alert;
+		import mx.collections.ArrayCollection;
+		import mx.rpc.events.ResultEvent;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+		
+		
+            [Bindable]
+            public var custombtn_code:String = "";
+         
+            [Bindable]
+            public var custombtn_name:String = "";
+			[Bindable]
+            public var custombtn_image:String = "";
+			[Bindable]
+            public var custombtn_jobprogram:String = new String;
+			[Bindable]
+			public var custombtn_viewcode:String = new String;
+			[Bindable]
+			public var custombtn_usercode:String = new String;
+			[Bindable]
+			public var custombtn_company:String = new String;
+            public var custombtn_company_description:String = new String;
+            [Bindable]
+            public var custombtn_jobid:String = new String;// job_code
+            [Bindable]
+            public var custombtn_chain:String = new String;  // chain
+            [Bindable]
+            public var group_code:String = "";   // group_cd
+            [Bindable]
+            public var system_code:String = "";   // sys_cd
+            [Bindable]
+            public var subsystem_code:String = "";   // subsys_cd
+			[Bindable]
+			public var connection:String = "";   // connection  
+            
+            [Bindable]
+        public var ir_sid:String;
+        [Bindable]
+        public var my_c_code:String;
+         [Bindable]
+        public var reqSJ:String;
+        [Bindable]
+        private var original_style:String;
+        
+        private const TIMER_INTERVAL:int = 3000;
+   		private var nt:Timer;    
+        private function cb_init():void {
+        		//if ((flash.system.Capabilities.screenResolutionX < 1280) && (flash.system.Capabilities.screenResolutionY < 1024)){
+        		if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+        			this.height = 19;
+        			this.setStyle("fontSize", 12);
+        			//this.styleName="lowresolutionJobMenuCustomButtonthis"  
+        			
+        			
+        		}
+        		
+        		original_style = this.styleName.toString();
+        	}    
+        public function returnStyles():void {
+        
+        	this.styleName = original_style;
+        	this.setStyle("cornerRadius", 4);
+        		
+     	}	
+        public function setNewStyles():void {
+        	this.styleName = "jobButton101";
+        	this.setStyle("cornerRadius", 12);
+       }	
+       	public function click_event_list(event:Event):void
+        {
+        	
+        	this.enabled = false;
+        	nt = new Timer(TIMER_INTERVAL);
+        	nt.addEventListener(TimerEvent.TIMER, nt_update); 
+        	nt.start(); 
+			//Alert.show((custombtn_jobid).length.toString());
+        	if ((custombtn_jobid).length == 1){
+      			//Alert.show(custombtn_jobprogram);
+				//navigateToURL(new URLRequest(custombtn_jobprogram+ '&c='+ custombtn_company + '&cd='+ custombtn_company_description),'_blank');
+				if (custombtn_jobprogram.substr(0,1) == 'e'){
+					var sub_custombtn_jobprogram = custombtn_jobprogram.substr(1,custombtn_jobprogram.length );
+					//navigateToURL(new URLRequest(sub_custombtn_jobprogram),'_blank');
+					
+					var jscommand:String = "window.open('" + sub_custombtn_jobprogram + "','win','top=100,left=0,height=905,width=1200,toolbar=no,scrollbars=yes');";
+					var url:URLRequest = new URLRequest("javascript:" + jscommand + " void(0);");   
+					
+					navigateToURL(url, "_self");
+					
+					
+				} else { 
+					
+					navigateToURL(new URLRequest(custombtn_jobprogram+ '&c='+ custombtn_company + '&cd='+ custombtn_company_description),'_blank');
+					
+				}
+			}
+        	if ((custombtn_jobid).length > 1){
+				
+				
+				bol_flag = false;
+				////custombtn_jobprogram
+				///////////////////////////////////////////
+				 
+				var bol_flag:Boolean = false;
+				if (custombtn_jobid.length > 3){
+					var temp:String = new String;
+					temp = custombtn_jobid.substr(custombtn_jobid.length -4);
+					
+					if (temp == "[AG]" || temp == "[CR]" || temp == "[CH]" ){
+						
+						
+						
+						// -5 includes the space between jobid and type.
+						var prog:String =  "*_" + custombtn_jobid.substr(0, custombtn_jobid.length -5) + '@' + custombtn_company + '@' + custombtn_usercode;
+						bol_flag = true;
+						navigateToURL(new URLRequest("../mainboard/mainboard.php?mb=" + prog + '&c='+ custombtn_company + '&cd='+ custombtn_company_description + '&scc=' + custombtn_viewcode)  ,'_blank');
+						
+						
+						
+						  
+					} 
+				}
+				
+				
+				//////////////////////////////////////
+				
+				
+				
+				if (bol_flag == false){
+				
+   						getSessionID.send();
+				}
+				
+        	}     
+        }
+        
+          private function nt_update(evt:TimerEvent):void {
+          	nt.stop();
+          	this.enabled = true;
+          }
+          public function resultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	
+        	if (ret_sid.substr(0,2) == 'OK'){
+        	
+        	
+        	// Version 2////////////////////////////////////////////////
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        		reqSJ = custombtn_jobid;
+        	////////////////////////////////////////////////////////////	
+        		
+        	//  Version 1 ///////////////////////////////////////////	
+        	//	my_c_code = custombtn_company;
+        	//	if  ((custombtn_jobid).length > 4){
+			//	var int_ret_sid:int = ret_sid.length;
+        	//	ir_sid = ret_sid.substr(3,int_ret_sid);
+        	//		my_c_code = (custombtn_jobid).substr(0,2);
+        	//		reqSJ = (custombtn_jobid).substr(2,(custombtn_jobid).length);
+        	//	} else {
+        	//	reqSJ = custombtn_jobid;
+        	//	}
+        	///////////////////////////////////////////////////////////
+        		
+        		// Change the syscode and subsyscode values to the chain value.
+        	
+        		system_code = custombtn_chain + system_code.substr(2,system_code.length);
+				
+        		subsystem_code = custombtn_chain + subsystem_code.substr(2,subsystem_code.length);
+        		
+        		navigateJobProgram_job.send();
+        	}
+        }
+        
+        	private function JobRun(event:ResultEvent):void {
+        		
+        		if ( event.result.status != 'OK' ) {
+					var s_ret:String = resultStatus(event.result.status, event.result.reason);  
+					AlertMessageShow(s_ret);
+					return;
+        		
+        		}
+        	}
+		 
+        ]]>
+    </mx:Script> 
+    
+    <mx:HTTPService id="getSessionID" url="rd_getsid.php"  result="resultGetSID(event)"/>
+    <!-- 
+    <mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="JobRun(event)"
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<jobCategory>{custombtn_chain}</jobCategory> 
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	
+	</mx:HTTPService>
+	-->
+
+        <mx:HTTPService
+		id="navigateJobProgram_job"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"  
+		result="JobRun(event)"
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<connection>{connection}</connection>
+				<company>{custombtn_company}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<source>menubutton</source>
+				<chain>{custombtn_chain}</chain>
+				<system_cd>{system_code}</system_cd>
+				<subsys_cd>{subsystem_code}</subsys_cd>
+				<group_cd>{group_code}</group_cd>
+				<job_cd>{custombtn_code}</job_cd>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<!-- mx:Text text="{customacb_name}"  width="100%" height="35" textAlign="center"  fontWeight="bold" fontSize="11" toolTip="{customacb_name}"  color="#F7F9FA"/ -->
+	<!--mx:Text  width="{img.width}"  textAlign="center" text="{item.name}" fontWeight="bold" fontSize="20"   height="61"/ -->
+</mx:Button>

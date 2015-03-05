@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<!--
+	Visible Logistics
+
+	Page to assist with diagnosis of VL data retrieval issues.
+
+	Copyright 2011 Maves International Software
+	ALL RIGHTS RESERVED
+==============================================================================
+$Id: ae_tlch_xmltest.html,v 1.2 2011/01/31 19:48:12 clamat Exp $
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>VL CH refreshData Test/Debug</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="js/prototype.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	function sendRequest() {
+		$("response").textContent = "Sending ...";
+		var req =	<ezware_request>
+					<action>refreshData</action>
+					<company></company>
+					<debug></debug>
+					<parameters></parameters>
+					<version>1</version>
+				</ezware_request>;
+
+		if ( $F("debug") == "on" )
+			req.debug = "true";
+
+		req.company	= $F("company");
+		req.parameters	= $F("params");
+
+		var ae_lvreqparms =	{
+					contentType: "application/xml",
+					onFailure: reqFailed,
+					onSuccess: reqSucceeded,
+					postBody: req.toString()
+					};
+		var ae_lvreq = new Ajax.Request	(
+						"ae_tlch_xmlreq.php",
+						ae_lvreqparms
+						);
+	}
+
+	function reqFailed( r ) {
+		$("response").textContent =
+			"The request failed with HTTP status: " +
+			r.status + " " + r.statusText;
+	}
+
+	function reqSucceeded( r ) {
+		var d = r.responseXML.documentElement;
+		var s = new XMLSerializer();
+		$("response").textContent = XML(s.serializeToString(d)).toXMLString();
+	}
+	</script>
+</head>
+<body style="font-size: large;">
+	<center><h1>VL CH refreshData Test/Debug</h1></center>
+	<hr />
+	<p>
+	This page can be used to send a Visible Logistics refreshData
+	request to the Communications Hub (CH) and display the data
+	returned in response to that request.
+	</p>
+	<p><strong>
+	For this page to work, you must be logged in to VL.
+	</strong></p>
+	<hr />
+	<form action="javascript:sendRequest(); void(0);">
+		<p>
+		<label>
+			<input id="debug" type="checkbox" checked="true">
+			Route request to foreground (WindX) worker,
+			instead of background task?
+		</label>
+		</p>
+		<p>
+		<label>
+		Company Code?
+		<input id="company" size="2" maxlength="2" type="text">
+		</label>
+		</p>
+		<p>
+		<textarea id="params" rows="5" cols="140" wrap="soft">Enter or paste request parameters here.</textarea>
+		</p>
+		<input id="sendRequest" value="Send Request" type="submit">
+	</form>
+	<hr />
+	<pre id="response">The response will appear here.</pre>
+</body>
+</html>

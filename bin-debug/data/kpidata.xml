@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<catalog>
+	<product productId="0">
+        <name>e-Z Learn</name>
+        <image>image/EZLblackboard.png</image>
+		<job_id>*</job_id>
+		<job_program>../e-Z_Learn2/Web Pages/e-Z Ware.htm</job_program>
+    </product>
+   <product productId="1">
+        <name>TMS WiP HighView</name>
+        <image>image/truck.png</image>
+		<job_id>*</job_id>
+		<job_program>../mainboard/mainboard.php?mb=TMS WIP HIGHVIEW</job_program>
+    </product>
+   <product productId="2">
+        <name>WMS WiP HighView</name>
+        <image>image/icon_shipment.png</image>
+		<job_id>*</job_id>
+		<job_program>../mainboard/mainboard.php?mb=WMS WIP HIGHVIEW</job_program>
+    </product>
+   <product productId="3">
+        <name>Profiles HighView</name>
+        <image>image/icon_users.png</image>
+		<job_id>*</job_id>
+		<job_program>../mainboard/mainboard.php?mb=PROFILES HIGHVIEW</job_program>
+    </product>
+  <product productId="4">
+        <name>FMS</name>
+        <image>image/icon_graph_col.png</image>
+		<job_id>*</job_id>
+		<job_program>../ardrilldown/wc_ardrilldown.php</job_program>
+    </product>
+   <product productId="5">
+        <name>TMS History HighView</name>
+        <image>image/icon_ad_hoc.png</image>
+		<job_id>*</job_id>
+		<job_program>../mainboard/mainboard.php?mb=TMS HISTORY HIGHVIEW</job_program>
+    </product>
+   <product productId="6">
+        <name>WMS History HighView</name>
+        <image>image/icon_ad_hoc.png</image>
+		<job_id>*</job_id>
+		<job_program>../mainboard/mainboard.php?mb=WMS HISTORY HIGHVIEW</job_program>
+    </product>
+   <product productId="7">
+        <name>Classic Menus</name>
+        <image>image/classicmenus.png</image>
+		<job_id>MC00</job_id>
+		<job_program></job_program>
+    </product>
+</catalog>

@@ -1,0 +1,29 @@
+/** Growler Notice Custom Styling **/
+div.Growler-notice {
+	color: 				#000;
+	display: 			none;
+	filter: 			alpha(opacity=85);
+	font-family: 			Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 			12px;
+	margin-bottom: 			5px;
+	margin-left: 			auto;
+	margin-right: 			auto;
+	margin-top: 			5px;
+	opacity: 			0.85;
+	padding: 			10px;
+	text-align: 			left;
+	-moz-border-radius: 		5px;
+	-webkit-border-radius:		5px;
+}
+
+div.Growler-notice-head {
+	font-size:			10px;
+	font-weight: 			bold;
+}
+
+div.Growler-notice-exit {
+	cursor:				pointer;
+	float: 				right;
+	font-size: 			12px;
+	font-weight: 			bold;
+}

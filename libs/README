@@ -1,0 +1,3 @@
+Placeholder to ensure the libs directory is always created, even
+if the CVS client normally prunes empty directories, because the
+Flex Builder 3 IDE complains if the libs directory isn't there.

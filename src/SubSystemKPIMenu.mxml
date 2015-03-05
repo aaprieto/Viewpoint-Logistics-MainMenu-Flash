@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+// A70901
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="990" height="550"
+paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" styleName="colorPanel"
+backgroundColor="#FFFFFF" initialize="setupCallbacks()" creationComplete="srv.send()"  backgroundImage="@Embed(source='image/Blue3.png')">
+-->
+
+
+<!-- mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"
+initialize="setupCallbacks()" creationComplete="srv.send()" verticalScrollPolicy="off" -->
+
+
+
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" width="100%" height="100%"
+		   
+		   initialize="init(pass_companycode,pass_usercode)"   verticalScrollPolicy="off"
+		   creationComplete="cc_init(pass_menu)"
+		   >
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.core.Application;
+			[Bindable]
+			public var pass_usercode:String;
+			[Bindable]
+			public var pass_companycode:String;
+			[Bindable]
+			public var pass_sid:String;
+			[Bindable]
+			public var pass_reqsj:String; 
+			[Bindable]
+			public var pass_arr_kpimenu:ArrayCollection;
+			[Bindable]
+			public var pass_menu:String;
+			
+			private var min:int = 0;
+			private var max:int = 1000;
+			private var _camera:Boolean;
+			private var _video:Boolean;
+			private var _triband:Boolean;
+			import mx.controls.Alert;
+			import flash.net.LocalConnection;
+			import flash.net.URLRequest;
+			
+			[Bindable]
+			public var pass_url:String;		 
+			
+			//public var pass_url:String = "data/kpidata.xml"; 
+			
+			//	private var thumbnail:Thumbnail = new Thumbnail;
+			//	private var subsystemthumbnail:SubSystemThumbnail = new SubSystemThumbnail;
+			private function cc_init(var1:String):void{
+				/*
+				Alert.show(var1 + "|" + pass_menu );
+				if (pass_menu == 'system'){
+				list.itemRenderer = new ClassFactory(Thumbnail);
+				} else if (pass_menu == 'subsystem'){
+				list.itemRenderer = new ClassFactory(SubSystemThumbnail);
+				}
+				*/
+				
+			}	
+			private function init(var1:String, var2:String):void{
+				
+				Alert.show("init:"  + var1 + "|" + pass_arr_kpimenu.length.toString());
+				//	Alert.show(pass_url);
+				//	Alert.show(pass_usercode);
+				//	Alert.show(pass_companycode);
+				
+				
+				//	Alert.show(wmd.company_code.selectedItem.company); 
+				//Alert.show(Application.application.parameters.c);
+				//Alert.show(Application.application.parameters.u);
+				
+				//	srv_test.url = "http://arnoldaprieto.com?u=" + pass_usercode + "&c=" + pass_companycode;
+				//	srv_test.send();
+				
+			}
+			
+			private function filterItem(item:Object):Boolean
+			{
+				//Alert.show(item.job_program);
+				return	(item.price >= min && item.price <= max) &&
+					(!_camera || item.camera) &&
+					(!_video || item.video) &&
+					(!_triband || item.triband);
+			}
+			
+			private function setupCallbacks():void
+			{
+				if (ExternalInterface.available)
+				{
+					ExternalInterface.addCallback("setMinimum", setMinimum);
+					ExternalInterface.addCallback("setMaximum", setMaximum);
+					ExternalInterface.addCallback("setCamera", setCamera);
+					ExternalInterface.addCallback("setVideo", setVideo);
+					ExternalInterface.addCallback("setTriband", setTriband);
+					ExternalInterface.addCallback("layoutTiles", layoutTiles);
+				}
+				
+			}
+			
+			public function setMinimum(minimum:int):void
+			{
+				min = minimum;
+				if (list != null)
+					list.filter(filterItem, false);
+			}
+			
+			public function setMaximum(maximum:int):void
+			{
+				max = maximum;
+				if (list != null)
+					list.filter(filterItem, false);
+			}
+			
+			public function setCamera(camera:Boolean):void
+			{
+				_camera = camera;
+				if (list != null)
+					list.filter(filterItem, true);
+			}
+			
+			public function setVideo(video:Boolean):void
+			{
+				_video = video;
+				if (list != null)
+					list.filter(filterItem, true);
+			}
+			
+			public function setTriband(triband:Boolean):void
+			{
+				_triband = triband;
+				if (list != null)
+					list.filter(filterItem, true);
+			}
+			
+			public function layoutTiles():void
+			{
+				if (list != null)
+					list.layoutTiles();
+			}
+			
+			//trace(flash.system.Capabilities.screenResolutionX);
+			//trace(flash.system.Capabilities.screenResolutionY);
+			//trace(flash.system.Capabilities.os);
+			var myVideoDisplaywidth:Number = flash.system.Capabilities.screenResolutionX;
+			var myVideoDisplayheight:Number = flash.system.Capabilities.screenResolutionY;
+			
+		]]>
+	</mx:Script>
+	
+	<!-- mx:HTTPService id="srv" url="data/kpidata.xml"  result="list.filter(filterItem, true)"/ -->
+	<!-- mx:HTTPService id="srv" url="{pass_url}"  / -->
+	
+	
+	
+	
+	
+	
+	
+	<!-- mx:HTTPService id="srv_test" / -->
+	<!-- AnimatedTileList id="list" dataProvider="{srv.lastResult.catalog.product}"
+	itemRenderer="Thumbnail" width="{myVideoDisplaywidth*0.92}" height="{myVideoDisplayheight*.92-100}"/ -->
+	
+	
+	<!-- AnimatedTileList id="list" dataProvider="{srv.lastResult.catalog.product}"
+	itemRenderer="Thumbnail" width="100%" height="100%" fontFamily="Arial" fontSize="16" 
+	paddingTop="2" color="#ffffff" fontWeight="bold">
+	
+	</AnimatedTileList -->
+	
+	
+	<!-- AnimatedTileList id="list" dataProvider="{pass_arr_kpimenu}" 
+	width="100%" height="100%" fontFamily="Arial" fontSize="16" 
+	color="#ffffff" fontWeight="bold"  >
+	
+	</AnimatedTileList -->
+	
+	<!-- AnimatedTileList id="list" dataProvider="{pass_arr_kpimenu}" 
+	itemRenderer="Thumbnail" width="100%" height="100%" fontFamily="Arial" fontSize="16" 
+	color="#ffffff" fontWeight="bold"  >
+	
+	</AnimatedTileList -->
+	<AnimatedTileList id="list" dataProvider="{pass_arr_kpimenu}"  
+					  itemRenderer="SubSystemThumbnail" width="100%" height="100%" fontFamily="Arial" fontSize="16" 
+					  color="#ffffff" fontWeight="bold"  >
+		
+	</AnimatedTileList>
+	
+	
+	<!-- AnimatedTileList id="list" dataProvider="{pass_arr_kpimenu}"
+	itemRenderer="SubSystemThumbnail" width="100%" height="100%" fontFamily="Arial" fontSize="16" 
+	color="#ffffff" fontWeight="bold"> 
+	
+	</AnimatedTileList -->
+	
+	
+	<!-- mx:Label x="47" y="26" text="{pass_url}"/ -->
+	
+</mx:Canvas>

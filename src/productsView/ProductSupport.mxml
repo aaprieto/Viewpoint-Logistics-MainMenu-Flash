@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+$Id: ProductSupport.mxml,v 1.2 2009/05/01 02:52:16 clamat Exp $
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 paddingLeft="4" paddingRight="8" paddingBottom="4"
+		 frameRate="24"
+		 horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+    <mx:Script>
+	<![CDATA[
+
+        private function toggle():void
+		{
+
+            if (vd.playing)
+			{
+                vd.stop();
+                list.visible = true;
+            }
+			else
+			{
+                list.visible = false;
+                vd.play();
+            }
+        }
+	]]>
+    </mx:Script>
+
+    <mx:Parallel id="hideList">
+        <mx:children>
+            <mx:Array>
+                <mx:Resize target="{list}" widthTo="0"/>
+                <mx:Resize target="{vd}" widthTo="400" heightTo="314"/>
+            </mx:Array>
+        </mx:children>
+    </mx:Parallel>
+
+    <mx:Parallel id="showList">
+        <mx:children>
+            <mx:Array>
+                <mx:Resize target="{list}" widthTo="400"/>
+                <mx:Resize target="{vd}" widthTo="400" heightTo="400"/>
+            </mx:Array>
+        </mx:children>
+    </mx:Parallel>
+
+    <mx:List id="list" width="0" height="100%" selectedIndex="0"
+			 hideEffect="hideList" showEffect="showList">
+        <mx:dataProvider>
+            <mx:Array>
+                <mx:Object label=""/>
+            </mx:Array>
+        </mx:dataProvider>
+    </mx:List>
+
+    <mx:Canvas width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+
+		<mx:VideoDisplay id="vd" width="400" height="400" source="assets/video/1-bulk1.flv"
+						 autoPlay="false" complete="list.visible=true"/>
+
+<!--
+		<mx:SWFLoader id="swfLoader" source="assets/video/1-bulk1.swf" width="500" height="400"
+				 autoLoad="true"
+
+				 horizontalCenter="40" verticalCenter="5"/>
+-->
+
+
+		<mx:Button label="{vd.playing ? 'Stop' : 'Play'}" click="toggle()" left="8" bottom="8" includeInLayout="false">
+		</mx:Button>
+
+	</mx:Canvas>
+</mx:HBox>

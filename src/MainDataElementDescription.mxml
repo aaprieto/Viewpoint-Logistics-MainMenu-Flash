@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="500" y="180" width="638" height="280" creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        
+        layout="horizontal"
+       >
+ <mx:Script> 
+ 	<![CDATA[
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.collections.ArrayCollection;
+			[Bindable]
+			public var headertitle:String;
+			[Bindable]
+			public var dataelement:String;
+
+ 		    private function titleWindow_close(evt:Event):void { 
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+          			
+          				
+           }
+ 	]]>
+ </mx:Script>
+  <mx:Style source="css/main.css"/>
+  <mx:VBox width="100%" height="100%">
+  	   <mx:Label id="dataelementlabel" text="{headertitle}" width="100%" textAlign="center"  fontSize="19" color="#FDFCFC" fontWeight="bold"/>
+  	   		<mx:TextArea id="dataelementdescription" width="100%" height="100%" 
+    	 				 editable="false" htmlText="{dataelement}" fontSize="16" borderColor="black"
+    					 fontWeight="bold" color="white" />
+  	  
+  </mx:VBox>
+  	
+		
+		
+</mx:TitleWindow>

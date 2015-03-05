@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="706" height="245"  verticalScrollPolicy="off"
+				layout="vertical"
+				title="Create OneClick"
+				showCloseButton="true"
+				close="titleWindow_close(event);" x="10" y="10"  
+				dropShadowEnabled="true"
+				borderAlpha="1.0"
+				borderColor="#DAD8D8"  
+				backgroundColor="#FAFBFC"
+				creationComplete="init()"
+				backgroundImage=""
+				backgroundAlpha="1.0" styleName="glass" xmlns:local="*" fontSize="15" textAlign="left">
+	
+	
+	<mx:HTTPService 
+		id="retrieve_assignedactiongrid" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		method="POST" 
+		contentType="application/xml"  
+		result="assignedactiongridResultHandler(event)"
+		fault="FaultMyShortcutRetrieveavailableactiongrids(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_company_code}</company>
+				<sid>{loc_session_id}</sid>
+				<parameters>{loc_reqParmsdelete}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			public var save_as:String;
+			[Bindable]
+			public var loc_session_id:String;
+			[Bindable]
+			public var loc_company_code:String;
+			[Bindable]
+			public var loc_user_code:String;
+			[Bindable]
+			public var loc_mod_type:String;
+			[Bindable] private var tdassignedactiongrid:ArrayCollection;
+			[Bindable]
+			private var loc_reqParmsdelete:String;
+			private var popallactiongrids:AllActiongrids;
+			private var popallviewcodes:AllViewCodes;
+			private function init():void{
+				
+				
+				
+				loc_reqParmsdelete = "REFRESH,RETRIEVE|DATAGRID_ALL|";
+				retrieve_assignedactiongrid.send();
+				
+			}
+			
+			
+			private function titleWindow_close(evt:Event):void {
+				PopUpManager.removePopUp(this);
+			}
+			private var _callbackFunction:Function;
+			
+			public function set callbackFunction( value:Function ):void {
+				_callbackFunction = value;
+			}
+			
+			protected function buttonClickedInpopup():void {
+				_callbackFunction(null);
+			}
+			
+			private function assignedactiongridResultHandler(evt:ResultEvent):void {
+				
+				
+				if (evt.result.ezware_response.status == "OK"){
+					
+					
+					if (evt.result.ezware_response.refresh_data.datagrids.mainboarddatagrid == null)
+					{
+						
+						tdassignedactiongrid=new ArrayCollection();
+					}
+					else if (evt.result.ezware_response.refresh_data.datagrids.mainboarddatagrid is ArrayCollection)
+					{
+						tdassignedactiongrid=evt.result.ezware_response.refresh_data.datagrids.mainboarddatagrid;
+					}
+					else if (evt.result.ezware_response.refresh_data.datagrids.mainboarddatagrid is ObjectProxy)	
+						
+					{
+						
+						tdassignedactiongrid = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.datagrids.mainboarddatagrid));
+					}
+					
+					tdassignedactiongrid.refresh();
+			
+				}else {
+					
+					var s_ret:String = resultStatus(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					var s_ret:String = resultStatus(evt.result.ezware_response.status, evt.result.ezware_response.reason);
+					AlertMessageShow(s_ret);
+					return;
+					
+				}
+			}
+			
+			private function FaultMyShortcutRetrieveavailableactiongrids(evt:FaultEvent):void
+			{
+				//var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Retrieve MyShortcut for Actiongrids Error");
+			}
+			
+			
+			private function LaunchAllActiongrids(event:Event):void{
+				
+				popallactiongrids = AllActiongrids(
+					PopUpManager.createPopUp(this, AllActiongrids, true)); 
+				
+				popallactiongrids.tp_user_code = loc_user_code;
+				popallactiongrids.tp_sessid = loc_session_id;
+				popallactiongrids.tp_company_code = loc_company_code;
+				
+				
+				
+				popallactiongrids["adg_tp"].addEventListener(MouseEvent.CLICK, GetChosenDataViews);
+				//poptr["adg_tp"].addEventListener(KeyboardEvent.KEY_DOWN, EnterDatagridViews_tp);
+				
+				
+				
+				
+			}
+			
+			
+			private function LaunchAllViewCodes(event:Event):void{
+				
+				if (ti_shortcutcode.text == ""){
+					AlertMessageShow("Please enter Assigned Action Grid");
+					return;
+				}
+				
+				popallviewcodes = AllViewCodes(
+					PopUpManager.createPopUp(this, AllViewCodes, true)); 
+				
+				popallviewcodes.vc_user_code = loc_user_code;
+				popallviewcodes.vc_sessid = loc_session_id;
+				popallviewcodes.vc_company_code = loc_company_code;
+				popallviewcodes.vc_grid_code = ti_shortcutcode.text;
+				
+				  
+				 
+				popallviewcodes["adg_tp"].addEventListener(MouseEvent.CLICK, GetChosenDataMyViews);
+			}
+			
+			
+			private function GetChosenDataViews(event:Event):void{
+				
+				ti_shortcutcode.text = popallactiongrids.adg_tp.selectedItem.mbdcode;
+				//ti_shortcutdescription.text = popallactiongrids.adg_tp.selectedItem.mbddescription;				
+				ti_shortcutdescription.text = popallactiongrids.adg_tp.selectedItem.buttonlabel
+				ti_viewcode.text = "";
+				ti_viewdescription.text = "";
+				
+				PopUpManager.removePopUp(popallactiongrids);
+				
+			}     
+			   
+			
+			private function GetChosenDataMyViews(event:Event):void{
+				
+				ti_viewcode.text = popallviewcodes.adg_tp.selectedItem.viewcode;
+				ti_viewdescription.text = popallviewcodes.adg_tp.selectedItem.viewdesc;				
+				
+			
+				
+				PopUpManager.removePopUp(popallviewcodes);
+				
+			}     
+			
+		]]>
+	</mx:Script>
+	<mx:Style source="css/main.css"/>
+	
+	<mx:HBox width="100%" id="hbox2">
+		<mx:Label text="OneClick Code" width="182" id="label1" fontWeight="bold" fontSize="14"/>
+		<mx:Spacer width="0"/>
+		<mx:TextInput  backgroundColor="#85E7FF"  width="232" id="inputcode" text=""  
+					   maxChars="13" fontSize="14" 
+					   fontWeight="bold"/>
+	</mx:HBox>
+	<mx:HBox width="100%" height="60" id="hbox3">
+		<mx:Label text="OneClick Description" id="label2" fontWeight="bold" fontSize="14" width="180"/>
+		<mx:Spacer width="0"/>
+		<mx:TextArea  backgroundColor="#85E7FF"  width="324" height="55" id="inputdescription" text="" fontSize="14" fontWeight="bold"/> 
+	</mx:HBox>
+	
+	
+	<mx:HBox width="100%" id="hbox3_1">
+		<mx:Label text="Assigned Action Grid" width="183" id="label3_1" fontWeight="bold" fontSize="14"/>
+		<!-- mx:ComboBox editable="false" width="257"></mx:ComboBox -->
+		
+		<mx:TextInput width="0" id="ti_shortcutcode" maxChars="20" 
+					  fontSize="14"  editable="false"
+					  fontWeight="bold" visible = "false"/>
+		
+		<mx:TextInput width="291" id="ti_shortcutdescription" maxChars="20" 
+					  fontSize="14" editable="false"
+					  fontWeight="bold"/> 
+		<mx:Button id="btn_browse_authfile" icon="@Embed('image/icon_lookup.png')"   
+				   width="33" click="{LaunchAllActiongrids(event)}"/>  
+		<!--
+		<mx:ComboBox
+			id="asigned_actiongrid"
+			width="100%"
+			dataProvider="{tdassignedactiongrid}"
+			labelField="mbddescription"
+			
+			useHandCursor="true"
+			
+			height="28"
+			styleName="highResolutionSystemMenu"
+			fontWeight="bold"
+			
+			
+			fontFamily="Arial"/>
+		-->
+		
+		
+	</mx:HBox>
+	
+	
+	<mx:HBox width="100%" id="hbox3_2">
+		<mx:Label text="Assigned View" width="183" id="label3_2" fontWeight="bold" fontSize="14"/>
+		<!-- mx:ComboBox editable="false" width="257"></mx:ComboBox -->
+		
+		<mx:Spacer width="0"/>
+		<mx:TextInput width="137" id="ti_viewcode" maxChars="20" 
+					  fontSize="14"  editable="false"
+					  fontWeight="bold" />
+		<mx:Button id="btn_browse_viewcodes" icon="@Embed('image/icon_lookup.png')"   
+				   width="33" click="{LaunchAllViewCodes(event)}"/>  
+		<mx:TextInput width="289" id="ti_viewdescription" maxChars="20" 
+					  fontSize="14" editable="false"
+					  fontWeight="bold"/> 
+		
+		  
+	</mx:HBox>
+	<mx:HBox width="100%"> 
+		<!-- mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.scholarcap_mousehovering(event,'',this.title,'BUTTON')}"
+				     
+				   / -->     
+		
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.pre_nt_mousehovering(event,this.title,this.title,'BUTTON')}" 
+				   
+				   />
+		
+		<mx:Spacer width="100%"/>
+		<local:HighViewButton doc_id="1046" label="Save" id="btn_save_current" fontSize="15"/>
+		<!--  local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" click="{titleWindow_close(event)}"/ -->
+		<local:HighViewButton label="Cancel" doc_id="1047" id="btn_cancel" fontSize="15"/> 
+	</mx:HBox>
+	
+</mx:TitleWindow>
+

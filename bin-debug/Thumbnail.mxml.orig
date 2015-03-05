@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+    borderStyle="solid"
+    borderColor="#FFFFFF"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    click="clickHandler(event)"
+    mouseOver="mouseOverHandler(event)"
+    mouseOut="mouseOutHandler(event)"
+ 	creationComplete="cc_init()"
+ 	initialize="init();"
+ 	doubleClickEnabled="false"
+>
+<mx:Script source="as/Handler/StraightTriggerHandlerSubSystem.as"/>	
+<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/>
+<mx:HTTPService id="getSessionID" url="rd_getsid.php"  result="resultGetSID(event)"/>
+<mx:HTTPService id="getProgramSessionID" url="rd_getsid.php"  result="ProgramresultGetSID(event)"/>
+<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="NavJobProg(event)"
+> 
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService
+		id="httpChainGlobalVariable"
+	/>	
+
+
+<mx:HTTPService
+		id="runNetView" 
+		url="ae_tlch_xmlreq.php" 
+		result="runNetViewHandler(event)" 
+		method="POST"
+		contentType="application/xml"
+> 
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>REFRESH,RETRIEVE|NETVIEWURL</parameters> 
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	
+<!-- *************************************************************************
+	HTTPService Definitions for One Job per User
+************************************************************************** -->
+	<mx:HTTPService 
+		id="loc_straightsubsystemchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="loc_straightsubsystemchainCodeResultHandler(event)" 
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{Application.application.company_code.selectedItem.company}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters>{reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="loc_straightss_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="loc_straightSubSystemKPIMenuResultHandler(event)"
+		
+	>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{Application.application.company_code.selectedItem.company}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	<mx:HTTPService
+		id="loc_httpChainGlobalVariable"
+		
+	/>
+	
+	
+	<mx:HTTPService 
+		id="loc_straightjobchainCode" 
+		url="ae_tlch_xmlreq.php" 
+		contentType="application/xml" 
+		method="POST" 
+		result="loc_straightjobchainCodeResultHandler(event)"
+		>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action> 
+				<company>{Application.application.company_code.selectedItem.company}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:HTTPService
+		id="loc_straightjm_httpp_kpi_srv"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		result="loc_straightJobFunctionMenuResultHandler(event)"
+		
+>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{Application.application.company_code.selectedItem.company}</company>
+				<sid>{ir_sid}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	 <mx:HTTPService
+		id="loc_straightnavigateJobProgram_job"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		result="str_res(event)"
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<style><backgroundColour>{(this.getStyle("fillColors")).toString()}</backgroundColour></style>
+				<action>runJob</action>
+				<company>{Application.application.company_code.selectedItem.company}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{local_reqSJ}</systemAndJob>
+				<source>menubutton</source>
+				<chain>{local_chainjobmenucode}</chain>
+				<system_cd>{local_systemcode}</system_cd>
+				<subsys_cd>{local_subsystemcode}</subsys_cd>
+				<group_cd>{local_groupcode}</group_cd>
+				<job_cd>{local_jobmenucode}</job_cd>
+				<version>2</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+<!-- *************************************************************************
+	END HTTPService Definitions for One Job per User
+************************************************************************** -->
+	
+	
+	<mx:Script source="as/ManagerBean/ResultStatus.as"/>
+	<!-- mx:Style source="css/main.css"/ --> 
+	<mx:Script source="as/Handler/ResolutionHandlerSystemDetail.as"/>	
+	<!-- mx:Script source="as/Handler/SystemThumbnailHandler.as"/ --> 
+    <mx:Script>
+        <![CDATA[
+        	import flash.events.TimerEvent;
+        	import flash.utils.Timer;
+        	
+        	import mx.controls.Alert;
+        	import mx.core.*;
+        	import mx.events.*;
+        	import mx.managers.PopUpManager;
+        	import mx.rpc.events.ResultEvent;
+		
+        	[Bindable]
+        	public var item:Object;
+ 			[Bindable]
+        	public var my_c_code:String;
+        	[Bindable]
+        	public var reqSJ:String;
+        	[Bindable] 
+        	public var ir_sid:String;
+        	[Bindable] 
+        	public var reqParms:String;
+        	public var pophoverinterface:MainMouseHoverMenu;
+        	private var resflag:String = "high";
+        	private const TIMER_INTERVAL:int = 1500;
+            private var baseTimer:int;
+        	private const TIMER_INTERVAL_FOR_HOVER_MBDG:int = 1;
+			public var thmbnl_nt:Timer;
+        	// private const TIMER_INTERVAL:int = 3000;
+   			private var nt:Timer;   
+         private function nt_update(evt:TimerEvent):void {
+          	nt.stop();
+          	this.enabled = true;
+          	thmbnl_nt.stop();
+          	PopUpManager.removePopUp(pophoverinterface);
+          }
+        private function init():void {
+		
+            		thmbnl_nt = new Timer(TIMER_INTERVAL);
+            		
+                	thmbnl_nt.addEventListener(TimerEvent.TIMER, thmbnl_updateHoverTimer); 
+                	
+                	//Alert.show(cb_speedoptions.selectedItem.data);
+			if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					//  Main Canvas
+					resflag = "low";
+					this.width = 198;
+					this.height = 220;
+					
+					
+			}else {
+					this.width = 310;
+					this.height = 320;
+			}
+			
+			
+			//getProgramSessionID.send();
+			
+			
+		}
+       
+        private function cc_init():void {
+			//Alert.show(item.image.length.toString());
+			if (item.image.length < 1){
+				img.source = "";
+			}
+    		if (resflag == "low"){	
+				detectScreenResolutionforSystemDetail();
+			}
+		}
+		private function rollOverHandler(event:MouseEvent):void
+		{
+			thmbnl_mousehovering();
+		}
+        private function rollOutHandler(event:MouseEvent):void
+        {
+        	thmbnl_nt.stop();
+        }
+        private function mouseOverHandler(event:MouseEvent):void
+		{
+            setStyle("borderColor", "#CCCCCC");
+            setStyle("dropShadowEnabled", "true");
+            setStyle("dropShadowColor", "#000000");
+            setStyle("shadowDistance", 6);
+           	thmbnl_mousehovering(); 
+        }
+
+        private function mouseOutHandler(event:MouseEvent):void
+		{
+            setStyle("borderColor", "#FFFFFF");
+            setStyle("dropShadowEnabled", "false");
+            thmbnl_nt.stop();
+        }
+		public function passChainGlobalVariable():void{
+			if (item.job_program == "SUBSYSTEMS"){
+				httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id;	 
+			}
+			   if (item.job_program == "SYSTEMS"){
+        		httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.ChainCombo.selectedItem.id;	 
+			}
+				httpChainGlobalVariable.send();
+		}
+		public function clickHandler(event:MouseEvent):void
+        {
+        
+			
+			//Application.application.mytest("yes yes yo!");
+			//Alert.show(item.job_program);
+			
+			
+			
+			
+			
+			this.enabled = false;
+			nt = new Timer(TIMER_INTERVAL);
+			nt.addEventListener(TimerEvent.TIMER, nt_update); 
+			nt.start(); 
+			/*
+			if (item.job_program == "SUBSYSTEMS"){
+			httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id;	 
+			}
+			if (item.job_program == "SYSTEMS"){
+			httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.ChainCombo.selectedItem.id;	 
+			}
+			
+			httpChainGlobalVariable.send();
+			*/
+			
+			if ((item.job_id).length == 1){
+
+				/*  SOX - 316684 *  (PIOCOL) Missing NETVIEW validation. */
+
+			  
+
+				if (item.job_program == "NETVIEW"){
+/*
+					runNetView.send();
+				} else {
+					Application.application.trigger_event = 'chicklets';
+					Application.application.RetrieveSubSystemMenu(item.code);
+				}  
+*/
+					runNetView.send(); 
+				} else{
+				 
+				Application.application.trigger_event = 'chicklets';
+				Application.application.RetrieveSubSystemMenu(item.code);
+				}
+
+				//Alert.show(item.job_program);  
+				/*
+				if (item.job_program == "SYSTEMS"){
+				
+				passChainGlobalVariable();
+				CheckSubSystemChain();
+				
+				
+				}   
+				if (item.job_program == "SUBSYSTEMS"){
+				passChainGlobalVariable();
+				navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code  + '&subname=' + item.name),'_blank');
+				} 
+				if (item.job_program == "NETVIEW"){
+				runNetView.send(); 
+				}
+				if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS") && (item.job_program != "NETVIEW") ){
+				navigateToURL(new URLRequest(item.job_program),'_blank');
+				}
+				*/
+				
+			} else if ((item.job_id).length > 1){
+				
+				getSessionID.send();
+			}
+			
+			
+			 
+			
+			
+			
+        	//Alert.show(item.job_program);
+        	/*
+        	this.enabled = false;
+        	nt = new Timer(TIMER_INTERVAL);
+        	nt.addEventListener(TimerEvent.TIMER, nt_update); 
+        	nt.start(); 
+        	
+        		if (item.job_program == "SUBSYSTEMS"){
+				httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id;	 
+			}
+			   if (item.job_program == "SYSTEMS"){
+        		httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.ChainCombo.selectedItem.id;	 
+			}
+				httpChainGlobalVariable.send();
+        	if ((item.job_id).length == 1){
+        	 	//Alert.show(item.job_program);  
+        	   if (item.job_program == "SYSTEMS"){
+        	   	
+        	   	 passChainGlobalVariable();
+      			CheckSubSystemChain();
+      			
+      			
+      		   }   
+        	   if (item.job_program == "SUBSYSTEMS"){
+        		 passChainGlobalVariable();
+        	     navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code  + '&subname=' + item.name),'_blank');
+        	   } 
+        	   if (item.job_program == "NETVIEW"){
+		        	 runNetView.send();
+        	   }
+        	    if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS") && (item.job_program != "NETVIEW") ){
+        	   		navigateToURL(new URLRequest(item.job_program),'_blank');
+        	   }
+        	}
+        	if ((item.job_id).length > 1){ 
+        		getSessionID.send();
+        	}
+        	
+        */
+        	
+        
+        	
+        }
+        
+        public function resultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	if (ret_sid.substr(0,2) == 'OK'){
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        		my_c_code = Application.application.company_code.selectedItem.company;
+        		if  ((item.job_id).length > 4){
+        			reqSJ = (item.job_id).substr(2,(item.job_id).length);
+        		} else {
+        		reqSJ = item.job_id;
+        		}
+        		navigateJobProgram.send();
+        	}
+        }
+		private function NavJobProg(event:ResultEvent):void{
+			if ( event.result.status != 'OK' ) {
+				var s_ret:String = resultStatus(event.result.status, event.result.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}
+		}
+        public function ProgramresultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	if (ret_sid.substr(0,2) == 'OK'){
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        	}
+        	
+        	/*
+       		if (item.job_program == "SUBSYSTEMS"){
+				httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.SubSystemChainCombo.selectedItem.id;	 
+			}
+			   if (item.job_program == "SYSTEMS"){
+        		httpChainGlobalVariable.url = "rd_settings.php?sid=" + ir_sid + "&ch=" + Application.application.ChainCombo.selectedItem.id;	 
+			}
+				httpChainGlobalVariable.send();
+        	if ((item.job_id).length == 1){
+        	 	//Alert.show(item.job_program);  
+        	   if (item.job_program == "SYSTEMS"){
+        	   	
+        	   	 passChainGlobalVariable();
+      			CheckSubSystemChain();
+      			
+      			
+      		   }
+        	   if (item.job_program == "SUBSYSTEMS"){
+        		 passChainGlobalVariable();
+        	     navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code  + '&subname=' + item.name),'_blank');
+        	   } 
+        	   if (item.job_program == "NETVIEW"){
+		        	 runNetView.send();
+        	   }
+        	    if ((item.job_program != "SYSTEMS") && (item.job_program != "SUBSYSTEMS") && (item.job_program != "NETVIEW") ){
+        	   		navigateToURL(new URLRequest(item.job_program),'_blank');
+        	   }
+        	}
+        	if ((item.job_id).length > 1){ 
+        		getSessionID.send();
+        	}
+        	
+        	*/
+        	
+        }
+        private function runNetViewHandler(event:ResultEvent):void {
+			if (event.result.ezware_response.status == 'OK'){
+				navigateToURL(new URLRequest('../../nv/' + event.result.ezware_response.refresh_data.netview_url),'_blank');
+			}
+			if (event.result.ezware_response.status == 'FAIL'){
+				Alert.okLabel = "OK";
+					Alert.show(event.result.ezware_response.reason);
+					return;
+			}
+			if (event.result.ezware_response.status == 'EXPIRED'){
+				Alert.okLabel = "OK";
+				Alert.show("Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.");
+				return;
+			}
+		}
+		
+		private function thmbnl_mousehovering():void{		
+				
+				if (Application.application.hoverstatus == "ON"){
+		        	baseTimer = getTimer();
+                	thmbnl_nt.start(); 
+        		}
+
+
+        }	
+          
+           
+         private function thmbnl_updateHoverTimer(evt:TimerEvent):void {
+         		thmbnl_nt.stop(); 
+         		
+             	pophoverinterface = MainMouseHoverMenu(
+                PopUpManager.createPopUp(this, MainMouseHoverMenu,true));
+                pophoverinterface.helpfortitleheader = item.name;
+                pophoverinterface.helpfortitle = item.name;
+                pophoverinterface.object_type = "SYSTEM";
+                pophoverinterface.loc_ccode = Application.application.company_code.selectedItem.company;
+		 		pophoverinterface.item_code = item.code;
+				pophoverinterface.loc_sid = ir_sid;
+         }
+		private function str_res(evt:ResultEvent):void{
+			if ( evt.result.status != 'OK' ) {
+				var s_ret:String = resultStatus(evt.result.status, evt.result.reason);  
+				AlertMessageShow(s_ret);
+				return;
+			}
+
+		}
+	]]>
+    </mx:Script>
+
+    <mx:CurrencyFormatter id="cf"/>
+   <mx:VBox id="vb" width="100%" height="100%"
+        verticalGap="0">
+		<!-- mx:Text  id="system_text" width="{img.width}" styleName="highResolutionSystemMenu"  textAlign="center" text="{item.name}" fontWeight="bold" height="61"/ -->
+	   <mx:Text  id="system_text" width="100%" styleName="highResolutionSystemMenu"  textAlign="center" text="{item.name}" fontWeight="bold" height="61"/>
+	    <mx:Image id="img"  source="{'image/' + item.image}" />
+	  
+    </mx:VBox>
+</mx:Canvas>
+

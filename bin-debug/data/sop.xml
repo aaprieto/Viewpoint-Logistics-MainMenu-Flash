@@ -1,0 +1,44 @@
+<root>
+<bbdetail>
+<date>2007/09/01</date>
+<job>A1OR51</job>
+<print_pdf>data/sop/AGRFIN.pdf</print_pdf>
+<description>AGRFIN SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/09/01</date>
+<job>A2IC07</job>
+<print_pdf>data/sop/ALTBAI.pdf</print_pdf>
+<description>ALTBAI SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/31</date>
+<job>A1IC06</job>
+<print_pdf>data/sop/MFMTRA.pdf</print_pdf>
+<description>MFMTRA SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/31</date>
+<job>A3OE12</job>
+<print_pdf>data/sop/MSDS.pdf</print_pdf>
+<description>MSDS SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/30</date>
+<job>A1IC03</job>
+<print_pdf>data/sop/NATPIZ.pdf</print_pdf>
+<description>NATPIZ SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/20</date>
+<job>A2OR14</job>
+<print_pdf>data/sop/TOMJAC.pdf</print_pdf>
+<description>TOMJAC SOP/MSDS</description>
+<action>Ready to Print</action>
+</bbdetail>
+</root>

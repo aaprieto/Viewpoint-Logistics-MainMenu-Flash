@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml"  textAlign="left"  width="100%" height="27" 
+		fontSize="15" click="{click_event_list(event)}"
+		
+		 
+ color="#000000">
+ <mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		
+> 
+
+		<mx:request>
+			<ezware_request> 
+				<jobCategory>{parentApplication.chainCode}</jobCategory> 
+				<action>runJob</action>
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{jobcode}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+
+	</mx:HTTPService>
+
+<!-- mx:Style source="css/main.css"/ --> 
+ 	<mx:Script>
+        <![CDATA[ 
+        import mx.managers.PopUpManager;
+        import flash.events.Event;
+		import mx.controls.Alert;
+		import mx.collections.ArrayCollection;
+		import mx.rpc.events.ResultEvent;
+		import mx.utils.ArrayUtil;
+		import mx.utils.ObjectProxy;
+
+			[Bindable]
+		    public var linktype:String = "";
+            [Bindable]
+		    public var dataelement:String = "";
+            [Bindable]
+		    public var jobcode:String = "";
+			[Bindable]
+			public var flexcode:String = "";
+            [Bindable]
+		    public var address:String = "";
+            [Bindable]
+            public var custombtn_code:String = "";
+            [Bindable]
+            public var custombtn_name:String = "";
+            public var custombtn_image:String = "";
+            [Bindable]
+            public var custombtn_jobid:String = "";
+            public var custombtn_jobprogram:String = new String;
+            public var custombtn_company:String = new String;
+            [Bindable]
+            public var custombtn_chain:String = new String;
+            [Bindable]
+        	public var ir_sid:String;
+        	[Bindable]
+        	public var my_c_code:String;
+         	[Bindable]
+        	public var reqSJ:String;
+            
+        private function cb_init():void {
+        		if ((flash.system.Capabilities.screenResolutionX < 1280) && (flash.system.Capabilities.screenResolutionY < 1024)){
+        			this.height = 15;
+        			this.setStyle("fontSize", 10);
+        			
+        			
+        		}
+        	}    
+       	public function click_event_list(event:Event):void
+        {
+        /*
+        	linktype (1) = call address
+        	linktype (2) = call dataelement
+        	linktype (3) = call jobcode
+        	
+        */
+			//Alert.show(parentApplication.app_mylog);  
+			httpRequestUrlmhb( parentApplication.app_mylog);  
+			if  (linktype == '0'){
+				
+				if (flexcode == "HVON"){  
+					parentApplication.setHoverHelpOn(event);
+				}
+				if (flexcode == "HVDC"){ 
+					//Alert.show(parentApplication.my_c_code_description);
+					
+					//parentApplication.pre_mbdg_mousehovering(event,'',parentApplication.my_c_code_description,'BUTTON');
+					//parentApplication.pre_nt_mousehovering(event,'','e-Z Learn Options','BUTTON');
+					//parentApplication.pre_nt_mousehovering(event,'MyLogistics','MyLogistics','BUTTON');   
+					
+					if  (parentApplication.app_mylog == 'ml'){
+						parentApplication.pre_nt_mousehovering(event,'MyLogistics','MyLogistics','BUTTON');
+					} else {
+						parentApplication.pre_nt_mousehovering(event,'Visible Logistics','Visible Logistics','BUTTON');
+					}	
+				}
+				//navigateToURL(new URLRequest(address),'_blank');
+			}
+			else if  (linktype == '1'){
+        			var urlpass:String = address;
+   					//var jscommand:String = "window.open('" + urlpass + "','win','top=100,left=0,height=775,width=900,toolbar=no,scrollbars=yes');"; 
+					var jscommand:String = "window.open('" + urlpass + "','win','top=100,left=0,height=905,width=1200,toolbar=no,scrollbars=yes');";
+					var url:URLRequest = new URLRequest("javascript:" + jscommand + " void(0);"); 
+					
+					navigateToURL(url, "_self");
+        		//navigateToURL(new URLRequest(address),'_blank');
+        	} else if  (linktype == '2'){
+        		launchDataElementDescription(event);
+        		 
+        	} else if (linktype == '3'){
+        		
+				navigateJobProgram.send()
+        		
+        	} else {
+        		Alert.show('Unknown Link Type.  Please check with you System Administrator');
+				
+        	}
+        }
+        
+        
+        
+         public var popdataelement:MainDataElementDescription;
+         private function launchDataElementDescription(event:Event):void {
+            	
+               	popdataelement = MainDataElementDescription(
+                PopUpManager.createPopUp(this, MainDataElementDescription, true));
+                popdataelement.headertitle = label;
+                popdataelement.dataelement = dataelement;
+   		}
+			private function httpRequestUrlmhb(str_app:String):void{
+				
+			
+				
+				/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+				if (str_app == 'ml'){
+					
+					
+					navigateJobProgram.url = 'ae_tlch_ml_req.php'; 
+					
+					
+					
+				} else {
+					
+					
+					navigateJobProgram.url = 'ae_tlch_xmlreq.php'; 
+				}
+				
+			}
+		 
+        ]]>
+    </mx:Script> 
+    
+</mx:Button>

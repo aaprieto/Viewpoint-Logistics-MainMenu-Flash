@@ -1,0 +1,45 @@
+<label>
+<home>Home</home>
+<respon>Responsibility</respon>
+<alerts>Alerts</alerts>
+<timesheet>Time Log</timesheet>
+<bbView>Bulletin Board</bbView>
+<jobmenu>Job Menu</jobmenu>
+<query>Ad-Hoc Query</query>
+
+<home_fre>À la maison</home_fre>
+<respon_fre>Responsabilité</respon_fre>
+<alerts_fre>Alertes</alerts_fre>
+<timesheet_fre>Notation de Temps</timesheet_fre>
+<bbView_fre>Tableau d'affichage</bbView_fre>
+<jobmenu_fre>Menu du travail</jobmenu_fre>
+<query_fre>Ad-hoc s'enquérir</query_fre>
+
+<home_spa>Casero</home_spa>
+<respon_spa>Responsabilidad</respon_spa>
+<alerts_spa>Alarmas</alerts_spa>
+<timesheet_spa>Registro de Tiempo</timesheet_spa>
+<bbView_spa>Tablón de anuncios</bbView_spa>
+<jobmenu_spa>Menú del trabajo</jobmenu_spa>
+<query_spa>Ad hoc investigar</query_spa>
+
+<home_chi_s>首页</home_chi_s>
+<respon_chi_s>责任</respon_chi_s>
+<alerts_chi_s>快讯</alerts_chi_s>
+<timesheet_chi_s>时间日志</timesheet_chi_s>
+<bbView_chi_s>布告栏</bbView_chi_s>
+<jobmenu_chi_s>工作单</jobmenu_chi_s>
+<query_chi_s>特设查询</query_chi_s>
+
+<home_chi_t>首頁</home_chi_t>
+<respon_chi_t>責任</respon_chi_t>
+<alerts_chi_t>快訊</alerts_chi_t>
+<timesheet_chi_t>時間日誌</timesheet_chi_t>
+<bbView_chi_t>佈告欄</bbView_chi_t>
+<jobmenu_chi_t>工作單</jobmenu_chi_t>
+<query_chi_t>特設查詢</query_chi_t>
+</label>
+
+
+
+

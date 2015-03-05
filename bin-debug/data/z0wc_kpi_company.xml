@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kpi_data>
+<company_info>
+<company>A1</company>
+<company_desc>A1 - Future Shop</company_desc>
+</company_info>
+<company_info>
+<company>A2</company>
+<company_desc>A2 - Future Shop</company_desc>
+</company_info>
+<company_info>
+<company>A3</company>
+<company_desc>A3 - Best Buy</company_desc>
+</company_info>
+<company_info>
+<company>D1</company>
+<company_desc>D1 - DELL</company_desc>
+</company_info>
+<company_info>
+<company>G1</company>
+<company_desc>G1 - Samsung</company_desc>
+</company_info>
+</kpi_data>

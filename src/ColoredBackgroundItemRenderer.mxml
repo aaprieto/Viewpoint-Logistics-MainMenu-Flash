@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml">
+
+	<!--
+		This item renderer simply extends Label and overrides the updateDisplayList function to
+		draw a gradient-filled rectangle. The colors in the gradient are determined from the
+		data.
+	-->
+	<mx:Script>
+	<![CDATA[
+
+		import flash.geom.Matrix;
+		import flash.display.GradientType;
+		import flash.display.Graphics;
+
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			super.updateDisplayList(unscaledWidth,unscaledHeight);
+
+			var m:Matrix = new Matrix();
+			m.createGradientBox(unscaledWidth,unscaledHeight);
+
+			var g:Graphics = graphics;
+			var colors:Array = (data.col3 < 2000 ? [0x0000CC,0x0000FF] : [0x00CC00,0x00FF00]);
+
+			g.clear();
+			g.beginGradientFill(GradientType.LINEAR, colors, [0.2,0.6], [0,255], m);
+
+			// the rectangle is drawn a little high and a little tall to compensate for the gap
+			// the DataGrid introduces between rows.
+			g.drawRect(0, -2, unscaledWidth, unscaledHeight+4 );
+			g.endFill();
+		}
+	]]>
+	</mx:Script>
+</mx:Label>

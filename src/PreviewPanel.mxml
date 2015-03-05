@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	 xmlns:ext="nl.wv.extenders.panel.*"
+	 width="100%" height="100%"
+   	 backgroundImage="@Embed('image/blue_image5.png')"
+	 creationComplete="initBackButton()" >
+
+
+	 <mx:Script>
+	 	<![CDATA[
+	 		import mx.controls.Button;
+
+	 		[Bindable]
+	 		private var backButton:Button;
+	 		private var reflect:ReflectionManager;
+
+	 		private function initBackButton():void {
+	 			backButton = new Button();
+	 			backButton.label 			= "Bring the panel back!";
+				backButton.x 				= 380;
+				backButton.y				= 250;
+				backButton.addEventListener(MouseEvent.CLICK, panelBack);
+				reflect = reflection;
+
+	 		}
+
+	 		public function panelBack(event:MouseEvent):void {
+				addChild(panel1);
+				reflection.target = panel1;
+				addChild(reflection)
+
+				removeChild(backButton);
+			}
+		trace(flash.system.Capabilities.screenResolutionX);
+		trace(flash.system.Capabilities.screenResolutionY);
+		trace(flash.system.Capabilities.os);
+		var myVideoDisplaywidth:Number = flash.system.Capabilities.screenResolutionX;
+		var myVideoDisplayheight:Number = flash.system.Capabilities.screenResolutionY;
+
+	 	]]>
+	 </mx:Script>
+
+	<mx:Button label="Web Cam" id="adhoc" icon="@Embed('image/web_cam.png')"
+				x="{myVideoDisplaywidth*.1}" y="5" width="130"
+            	toolTip="Web Cam Flex 3" textAlign="left" fontSize="12"
+            	click="navigateToURL(new URLRequest('../connections/wc_connections.php'),'_blank')"  height="35" />
+
+	<ext:ReflectionManager id="reflection"  target="{panel1}"
+        width="{this.panel1.width}"
+        height="{(this.panel1.height / 100) * 50}"
+        fadeFrom="0.35"
+        fadeTo="0"
+        blur="0"/>
+
+		<ext:SuperPanel id="panel1" backButton="{backButton}"
+			x="{myVideoDisplaywidth*.1}" y="50" width="{myVideoDisplaywidth*.8}" height="400"
+			showControls="false" enableResize="false"
+			layout="absolute" title="Preview Panel">
+
+			<mx:TabNavigator paddingTop="0" borderThickness="0" left="8"  width="97%" height="97%"
+				backgroundAlpha="0" >
+
+				<mx:Canvas label="Work/Issue Items" width="100%" height="100%" >
+					<mx:DataGrid x="0" y="0" width="100%" height="100%" paddingLeft="3">
+						<mx:dataProvider>
+		                	<mx:Array id="arr">
+		                		<mx:Object Artist="Added Tab Button - Ad-Hoc Query Data Model" Album="09/16/2007 04:35PM" Song="Installed" Genre="Ken Li"/>
+		                		<mx:Object Artist="RT - Action Display" Album="09/18/2007 06:48PM" Song="90% done" Genre="Ken Li/Scott"/>
+		                    	<mx:Object Artist="KPI - AR Drill Down" Album="09/14/2007 10:56PM" Song="80% done" Genre="Ken Li/Hannah" />
+		                		<mx:Object Artist="Add New Button for Full Screen" Album="09/07/2007 8:05PM" Song="Installed" Genre="Ken Li" />
+		                    	<mx:Object Artist="Accordion Classic Job Menu (Dashboard Menu)" Album="09/06/2007 10:46PM" Song="Installed" Genre="Ken Li/Scott To" />
+		                    	<mx:Object Artist="KPI - AR Drill Down" Album="09/06/2007 10:46PM" Song="25% done" Genre="Ken Li/Hannah"/>
+		                    	<mx:Object Artist="View Full Screen Display (F11)" Album="09/04/2007 10:56PM" Song="Fixed" Genre="Ken Li" />
+		                    	<mx:Object Artist="Exit Button too small" Album="09/04/2007 10:56PM" Song="Fixed" Genre="Ken Li"/>
+
+		                    	<mx:Object Artist="Classic Menu (WINDX)" Album="." Song="In Progress" Genre="." />
+		                    	<mx:Object Artist="Input Form CR06" Album="." Song="In Progress" Genre="."/>
+
+		                	</mx:Array>
+            			</mx:dataProvider>
+						<mx:columns>
+							<mx:DataGridColumn headerText="Item" dataField="Artist" width="300"/>
+							<mx:DataGridColumn headerText="Date Completed" dataField="Album" width="100"/>
+							<mx:DataGridColumn headerText="Status" dataField="Song" width="200"/>
+							<mx:DataGridColumn headerText="Fixed by" dataField="Genre" width="100"/>
+						</mx:columns>
+
+					</mx:DataGrid>
+				</mx:Canvas>
+
+
+				<mx:Canvas borderStyle="inset" label="Input Form Elements" width="100%" height="100%">
+				<mx:Form>
+
+				<mx:FormItem label="TextArea:" x="20" y="40"  >
+					<mx:TextArea height="84" width="150" selectable="true">
+					<mx:text><![CDATA[Maves E-Z Dashboard Release 1.01 Nov 2007]]></mx:text>
+					</mx:TextArea>
+				</mx:FormItem>
+				<mx:FormItem label="TextInput:"   x="20" y="10">
+					<mx:TextInput   width="150"/>
+				</mx:FormItem>
+				</mx:Form>
+				<mx:CheckBox label="Print BOL" x="269.05" y="112"/>
+				<mx:CheckBox label="Print Pick Slip" x="269" y="86"/>
+				<mx:RadioButton label="United State" groupName="radiogroup1" x="394.65" y="112"/>
+				<mx:RadioButton label="Canada" groupName="radiogroup1" x="394.65" y="86"/>
+				<mx:Button label="Submit" x="162" y="198"/>
+				<mx:Button x="242" y="198" label="Cancel"/>
+				<mx:PopUpButton x="269" y="17" label="PopUpButton"/>
+				<mx:ToggleButtonBar id="tBBar" selectedIndex="1"  x="71" y="152" >
+					<mx:dataProvider>
+						<mx:String>Update</mx:String>
+						<mx:String>Delete</mx:String>
+						<mx:String>Review</mx:String>
+						<mx:String>Exit</mx:String>
+					</mx:dataProvider>
+				</mx:ToggleButtonBar>
+				<mx:ComboBox x="269" y="47" textIndent="3">
+					<mx:dataProvider>
+						<mx:String>Toronto</mx:String>
+						<mx:String>Montreal</mx:String>
+						<mx:String>Ottawa</mx:String>
+						<mx:String>New York City</mx:String>
+					</mx:dataProvider>
+				</mx:ComboBox>
+				</mx:Canvas>
+				<mx:Canvas backgroundAlpha="0.1" label="Tree"   borderStyle="inset" >
+
+			<mx:Tree  backgroundAlpha="0" borderThickness="0" right="0" left="4" top="4" bottom="0"
+				showRoot="false" labelField="@label">
+					<mx:dataProvider>
+						<mx:XML xmlns="">
+							<nodes>
+								<node label="Lorem Ipsum">
+									<node label="Dolor sit amet"/>
+									<node label="Consectetuer adipiscing elit"/>
+								</node>
+								<node label="Quisque eget lorem">
+									<node label="Ac sapien rutrum vehicula"/>
+									<node label="Etiam euismod"/>
+									<node label="Vestibulum erat"/>
+								</node>
+								<node label="Aenean arcu">
+									<node label="Phasellus condimentum"/>
+									<node label="Augue ac orci"/>
+									<node label="Ut sapien felis"/>
+								</node>
+								<node label="Rhoncus non"/>
+								<node label="Gravida vestibulum"/>
+								<node label="Vehicula non massa"/>
+								<node label="Etiam eget lorem"/>
+								<node label="Congue massa aliquet semper"/>
+								<node label="Cras at arcu"/>
+								<node label="Sed magna porttitor nonummy"/>
+								<node label="Aliquam quis ipsum"/>
+								<node label="In blandit"/>
+								<node label="Venenatis justo"/>
+								<node label="Vestibulum varius"/>
+								<node label="Interdum libero"/>
+								<node label="Nullam lorem nisl"/>
+								<node label="Vulputate nec"/>
+							</nodes>
+						</mx:XML>
+					</mx:dataProvider>
+				</mx:Tree>
+			</mx:Canvas>
+
+
+				<mx:Canvas  borderStyle="inset" label="Accordion" width="100%" height="100%" >
+					<mx:Accordion textAlign="center" width="100%" top="0" bottom="0" backgroundAlpha="0" borderThickness="0" >
+
+			<mx:Canvas backgroundAlpha="0" textAlign="left"  label="Warehousing" width="100%" height="100%">
+				<mx:TextArea  styleName="nonEditText" left="0" right="0" top="1" bottom="1" >
+					<mx:text><![CDATA[Inbound Logistics & Putaway
+
+Appointment Scheduler
+Appointments can be scheduled and updated on-line, providing full visibility of this key process.
+
+ASN Capable
+Pre-receipts (ASN's) can be recorded and putaway sheets printed before the truck arrives, eliminating the need for handwritten tally sheets.
+
+Automatic Charging
+Once put away, the receipt is updated with lot and location information and charges for inbound handling and storage are automatically calculated.
+
+Receipt Confirmation
+Receipt confirmation can be automatically transmitted to the client within minutes of the transaction, by email, EDI or fax.
+
+Client Specific Data Feature
+Maves unique Client Specific Data (CSD) feature allows for the creation of user definable data fields allowing the capture of additional client data when required.
+Order Processing & Picking
+
+Stock Rotation Rules
+Stock rotation rules provide FIFO lot control based on any part of the lot, including the expiry or production date. Consignee based lot rules can be set-up to determine if there is sufficient shelf life remaining. The system also provides shelf life and expiry date reporting. Consignee based stock rotation rules also ensures customers who promise "fresh stock" are only shipped appropriately aged inventory.
+
+Order Selection Criteria
+Order selection criteria allow the user to manage the release of orders to the warehouse floor. A picking list may be printed as well as a bill of lading. Flexible sort rules allow the picking list to print in location sequence in order to reduce travel for the picker. Picking rules determine the best location to pick from e.g. pick cases from pickline, but full pallets from bulk stock.
+
+Order Status Controls
+Order status can be continually updated and monitored e.g. printed, modified, picked, checked, on hold, confirmed as shipped.
+Inventory Control
+
+Flexible Lot Definition
+A flexible lot definition allows lot codes which can be segmented into components. This allows the user to record several key pieces of data such as expiry and production dates, datecode, color, size, etc. Manufacturer's Julian datecodes can also be translated into readable dates, therefore speeding up the receiving process as well as minimizing keying errors. Lot components can be treated differently for reporting, billing and stock rotation purposes.
+
+Definable Inventory Holds
+Inventory holds are user definable, therefore allowing the user to work only with the holds they actually require. Holds can overlap, as well as be automatically applied when receiving, without operator intervention, as is common in frozen meat distribution. Stock can be shipped directly from hold.
+
+Serial Numbered Goods
+Serial numbered goods can be tracked both at shipping and receiving, or just at shipping. Flexible rules exist and will easily accommodate, for instance, the handling of paper rolls, steel coils, drums etc. This same capability allows facilities to easily cross-dock merchandise by tracking the unique package ID, while at the same time recording the cube characteristics.
+
+Conveyance ID
+Pallets (or any type of conveyance such as trailer, carton, etc.) may be identified and tracked by their unique identification code. This allows goods to be received, moved and picked (from/to) more easily and accurately. Flexible business rules also allow for conveyance billing based on homogeneous or heterogeneous client/product/lot mixes.
+
+Weights
+Fixed and variable weights can be recorded at either the lot or unit level, as well as being recorded during Receiving and Shipment as appropriate, for example unit Catch Weights for Shipments.
+
+Multi Sku
+Multiple units of measure may be set-up for the same item e.g. each, inner pack, case, pallet, tote, etc. Receipts and orders may be entered in any unit of measure.
+
+HAZMAT
+A Hazardous Materials module allows UN and NA codes with their Shipping Descriptions to be maintained for Products, to allow you to comply with requirements for USA and Canadian road transport Bills of Lading, and to prepare the US reporting to regulatory agency.
+
+FTZ - Operator Role
+When performing the 'Operator' role within a Foreign Trade Zone, the WMS allows or requires additional information to be tracked. Beginning with the receipt of inbound inventory (accompanied by a CF214 - Application for FTZ Admission) into the zone, information including the Zone Entry Number and Zone Status is recorded at the receipt line level. These essential elements of information continue to be tracked as activities are performed on the inventory while 'in zone' through to shipment of inventory (triggered by a CF7512 - Transportation Entry and Manifest of Goods) from the zone. Transaction level information (all goods received or shipped on a CF214 or CF7512) is also kept. This information is available to be queried or reported and is used to produce the Annual Report.
+
+Billing
+e-Z Ware has powerful billing features and provides the user with several options for invoice presentation.
+
+The system records transaction activity and automatically calculates billing charges for inbound handling and storage as well as renewal storage, in accordance with common third party warehousing practice.
+
+Accessorial charges can be added either during receiving, order shipment or independently at any time during the month and accumulated for later generation. Billing profiles are specific to each combination of client and product i.e. two clients may store the same product, but be billed in completely different ways.
+]]></mx:text>
+				</mx:TextArea>
+			</mx:Canvas>
+			<mx:Canvas label="Transportation" width="100%" height="100%">
+				<mx:TextArea  styleName="nonEditText" left="0" right="0" top="1" bottom="1" >
+					<mx:text><![CDATA[Ship Management
+The system includes a shipment transaction management module which allows the users to run both a brokerage operation as well as manage a fleet. The system is integrated with the warehousing system to minimize the need to re-enter data. Where applicable, changes made in one system automatically update the other.
+
+Dispatch System
+The dispatch system provides the user with high visibility of each delivery based on zone. Loads are built and manifests created for LTL purposes. Providing rate comparisons for groups of carriers assists carrier selection.
+
+Freight Charges
+Freight charges and carrier payables are automatically calculated for each shipment, based on the rate tables. Rate table set-up is flexible and accommodates multiple weight breaks, deficit rating, additional charges such as stop-offs, sortation etc. Consolidated rating by manifest is also available.
+
+Graphical Dispatch Board
+A visual display, which is tailored for each implementation, allows users to see exactly what they require on the screen e.g. containers in the yard, inbound trips, empty trailers, available power units etc.
+				]]></mx:text>
+				</mx:TextArea>
+			</mx:Canvas>
+			<mx:Canvas label="Web Access" width="100%" height="100%">
+				<mx:TextArea  styleName="nonEditText" left="0" right="0" top="1" bottom="1" >
+					<mx:text><![CDATA[e-Z Ware - NetView Web Access
+
+NetView is based on a guiding principle that data and information are valuable assets within an organization. These assets are pivotal in being able to make informed operational and strategic decisions. As a result, NetView has been designed to allow authorized users fast and efficient access to their data and information in a secure manner based upon easy-to-use navigation and user-friendly views.
+
+Overall, the implementation of NetView reduces Customer Service costs while achieving greater levels of Customer satisfaction and improved Customer relationships. These are benefits that will be realized immediately by this cost effective collaborative supply chain solution.
+					]]></mx:text>
+				</mx:TextArea>
+			</mx:Canvas>
+		</mx:Accordion>
+
+				</mx:Canvas>
+
+
+
+
+			</mx:TabNavigator>
+
+		</ext:SuperPanel>
+<!--
+<mx:Label text="Sept 19, 2007 - RT Action Display (90% done for Demo) Click Here to View"
+	click="navigateToURL(new URLRequest('../actiondisplay/wc_actiondisplay.php'),'_blank')"
+	color="#FFFFFF" fontWeight="bold" x="383" y="5"/>
+<mx:Label text="Sept 14, 2007 - AR Drill Down KPI (80% done) Click Here to View"
+	click="navigateToURL(new URLRequest('../ardrilldown/wc_ardrilldown.php'),'_blank')"
+	color="#66CCFF" fontWeight="bold" x="383" y="25"/>
+-->
+</mx:Canvas>

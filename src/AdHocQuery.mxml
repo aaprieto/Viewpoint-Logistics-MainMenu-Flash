@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- backgroundImage="@Embed('img_bg.jpg')" -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+	 xmlns:ext="nl.wv.extenders.panel.*"
+	 width="100%" height="100%"
+   	 backgroundImage="@Embed('image/blue_image5.png')"
+	 creationComplete="initBackButton()" >
+
+	 <mx:Script>
+	 	<![CDATA[
+	 		import mx.controls.Button;
+
+	 		[Bindable]
+	 		private var backButton:Button;
+	 		private var reflect:ReflectionManager;
+
+	 		private function initBackButton():void {
+	 			backButton = new Button();
+	 			backButton.label 			= "Bring the panel back!";
+				backButton.x 				= 380;
+				backButton.y				= 250;
+				backButton.addEventListener(MouseEvent.CLICK, panelBack);
+				reflect = reflection;
+
+	 		}
+
+	 		public function panelBack(event:MouseEvent):void {
+				addChild(panel1);
+				reflection.target = panel1;
+				addChild(reflection)
+
+				removeChild(backButton);
+			}
+		trace(flash.system.Capabilities.screenResolutionX);
+		trace(flash.system.Capabilities.screenResolutionY);
+		trace(flash.system.Capabilities.os);
+		var myVideoDisplaywidth:Number = flash.system.Capabilities.screenResolutionX;
+		var myVideoDisplayheight:Number = flash.system.Capabilities.screenResolutionY;
+
+
+	 	]]>
+	 </mx:Script>
+	<!-- <mx:Style source="blue_plastic.css"/> -->
+	<mx:Button label="Ad-Hoc Query" id="adhoc" icon="@Embed('image/icon_adhoc_sql.png')"
+				x="{myVideoDisplaywidth*.1}" y="5" width="150"
+            	toolTip="Ad-Hoc Query" textAlign="left" fontSize="12"
+            	click="navigateToURL(new URLRequest('../adhoc/wc_adhoc.php'),'_blank')"  height="35" />
+   <mx:Button label="Help" id="adhoc_doc" icon="@Embed('image/icon_help.png')"
+				x="{myVideoDisplaywidth*.1+155}" y="5"
+            	toolTip="Ad-Hoc Query Help Documentation" textAlign="left" fontSize="12"
+            	click="navigateToURL(new URLRequest('data/MAUI1.doc'),'_top')"  height="35" />
+
+	<ext:ReflectionManager id="reflection"  target="{panel1}"
+        width="{this.panel1.width}"
+        height="{(this.panel1.height / 100) * 60}"
+        fadeFrom="0.45"
+        fadeTo="0"
+        blur="0"/>
+
+		<ext:SuperPanel id="panel1" backButton="{backButton}"
+			x="{myVideoDisplaywidth*.1}" y="50" width="{myVideoDisplaywidth*.8}" height="450"
+			showControls="false" enableResize="false"
+			layout="absolute" title="Ad-HOC Query Data Model">
+
+				<mx:Canvas  width="99.5%" height="85" >
+					<mx:SWFLoader source="adhoc.swf"  horizontalAlign="left" verticalAlign="top"
+			 			width="100%" height="85"/>
+				</mx:Canvas>
+				<mx:Image source="@Embed('image/img_adhoc.png')" width="733" height="322" x="10" y="80"/>
+		</ext:SuperPanel>
+
+</mx:Canvas>

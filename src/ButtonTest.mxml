@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			private function clickbutton(event:Event){
+				Alert.show(event.currentTarget.id);  
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:Button x="9" y="6" id="a" label="Button" width="146" height="156" click="{clickbutton(event)}"/>
+	<s:Button x="163" y="44" id="b" label="Button" width="108" height="118" click="{clickbutton(event)}"/>
+	<s:Button x="279" y="72" id="c" label="Button" width="108" height="89" click="{clickbutton(event)}"/>
+	<s:Button x="395" y="101" id="d" label="Button" width="90" height="60" click="{clickbutton(event)}"/>
+	<s:Button x="10" y="182" id="e" label="Button" width="92" height="53" click="{clickbutton(event)}"/>
+	<s:Button x="120" y="192" id="f" label="Button" width="77" height="43" click="{clickbutton(event)}"/>
+	<s:Button x="223" y="206" id="g" label="Button" height="28" click="{clickbutton(event)}"/>
+	<s:Button x="317" y="210" id="h" label="Button" click="{clickbutton(event)}"/>
+	<s:Button x="412" y="210" id="i" label="Button" width="58" click="{clickbutton(event)}"/>
+
+	
+	
+	<mx:HBox x="10" y="243" horizontalGap="0">
+		<s:Button label="Button"  id="j" width="146" height="156" click="{clickbutton(event)}"/>
+		<s:Button label="Button"  id="k" width="108" height="118" click="{clickbutton(event)}"/>
+		<s:Button label="Button"  id="l" width="108" height="89" click="{clickbutton(event)}"/>
+		<s:Button  label="Button"  id="m" width="90" height="60" click="{clickbutton(event)}"/>
+		<s:Button  label="Button" id="n"  width="92" height="53" click="{clickbutton(event)}"/>
+		<s:Button  label="Button" id="o"  width="77" height="43" click="{clickbutton(event)}"/>
+		<s:Button  label="Button" id="p"  height="28" click="{clickbutton(event)}"/>
+		<s:Button  label="Button"  id="q" click="{clickbutton(event)}"/>
+		
+		<s:Button label="Button"  id="r"  width="35" click="{clickbutton(event)}"/>
+		<s:Button label="Button" width="53" id="s" click="{clickbutton(event)}"/>
+		<s:Button label="Button" width="34" id="t" click="{clickbutton(event)}"/>
+		<s:Button label="Button" width="26" id="u" click="{clickbutton(event)}"/>
+	</mx:HBox>
+	
+	
+
+</s:Application>

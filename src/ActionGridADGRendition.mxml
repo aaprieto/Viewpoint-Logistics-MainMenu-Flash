@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid xmlns:mx="http://www.adobe.com/2006/mxml" >
+    <mx:Script>
+        <![CDATA[
+        	import mx.collections.SortField;
+        	import mx.events.AdvancedDataGridEvent;
+        	import mx.core.Application;
+        	import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+        	import mx.controls.advancedDataGridClasses.AdvancedDataGridHeaderInfo;
+        	import mx.rpc.events.HeaderEvent;
+        	import mx.collections.ArrayCollection;
+        	import mx.core.IDataRenderer;
+        	import mx.controls.listClasses.IDropInListItemRenderer;
+            import mx.controls.listClasses.IListItemRenderer;
+            import mx.controls.Alert;
+            
+         [Bindable]
+		public var passObject:Object;
+         [Bindable]
+		public var xmlheaderdoccode:String;  
+            override protected function mouseOutHandler(event:MouseEvent):void 
+            {
+            	
+            			if (parentApplication.mousehoverpars == "YES"){
+            	
+            	         		var item:IListItemRenderer = super.mouseEventToItemRenderer(event);
+            	         		//  if (super.isHeaderItemRenderer(item))
+            	           
+            	  				if (item.data && (item.data is AdvancedDataGridColumn)){ 
+            	 					parentApplication.mouseout_alternate(); 
+            	  				}
+            	  		}		
+            	 super.mouseOutHandler(event);
+            } 
+            
+            
+            override protected function mouseOverHandler(event:MouseEvent):void 
+            {
+               var str_columnname:String = new String;
+                
+                
+                
+			   
+                if (parentApplication.mousehoverpars == "YES"){  
+                	
+            			var item:IListItemRenderer = super.mouseEventToItemRenderer(event);
+            			
+					
+            				if (item.data && (item.data is AdvancedDataGridColumn)){
+             							/*
+             							Alert.show('Rendition: ' + item.data.dataField.toString());
+             							for (var ctr:int=0;ctr<passObject.length;ctr++){
+         											if (passObject[ctr]["dataField"] ==  item.data.dataField){
+         												str_columnname = passObject[ctr]["columnName"];
+         					//							Alert.show(str_columnname);
+         												break;
+         											}
+         								}
+         								*/
+             						//parentApplication.hovercolumn(event,item.data.dataField.toString(),item.data.headerText.toString());
+             						
+             						parentApplication.hovercolumn(event,'',item.data.headerText.toString(),item.data.headerText.toString()); 
+             				}
+                }
+                
+    		super.mouseOverHandler(event);
+    
+            }
+            
+         
+            
+        ]]>
+    </mx:Script>
+</mx:AdvancedDataGrid>

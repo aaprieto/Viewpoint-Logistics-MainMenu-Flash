@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+				width="624" height="800" 
+				backgroundImage=""
+				creationComplete="init()"
+				initialize="i_init()"
+				showCloseButton="false"
+				
+				headerHeight="20"
+				borderAlpha="1.0"
+				borderColor="#cccccc"
+				xmlns:local="*" 
+				>
+	
+	<mx:HTTPService 
+		id="retrievemyfavoritesjob" 
+		url="ae_tlch_xmlreq.php" 
+		useProxy="false" 
+		result="ListHandler(event)"  
+		method="POST" 
+		fault="faultListHandler(event)"
+		contentType="application/xml"  
+		>
+		<mx:request> 
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_company_code}</company>
+				<sid>{loc_session_id}</sid>
+				<parameters>{reqParms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+	
+	<mx:Script source="as/ManagerBean/AlertMessageHandler.as"/> 
+	<mx:Script>
+		<![CDATA[
+			import com.utilities.Utils;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			[Bindable]
+			public var loc_user_code:String;
+			[Bindable]
+			public var loc_company_code:String;
+			[Bindable]
+			public var loc_session_id:String;
+			[Bindable]
+			private var reqParms:String = new String;
+			[Bindable]
+			private var MyFavoritesObjectCollection:ArrayCollection = new ArrayCollection;
+			
+			
+			
+			private var selectedName:String = "job_exec";
+			public var c_utils:Utils = new Utils();
+			private function i_init():void{  
+				if ((flash.system.Capabilities.screenResolutionX < 1680) && (flash.system.Capabilities.screenResolutionY < 1050)){
+					this.width = 1200;
+					this.height = 575;
+				}
+				
+			}
+	
+			
+			
+			private function init():void{
+				// Ask Christine to just retrieve all jobs without actiongrids and HighViews
+				reqParms = "REFRESH,RETRIEVE|OPRJOBS_ALL|" + loc_user_code + "|" + loc_company_code + "|jobs|";
+				retrievemyfavoritesjob.send();
+			}
+			
+			private function faultListHandler(evt:FaultEvent):void	
+			{
+				var faultMessage:String = "The origin of this fault is: " + evt.message;
+				AlertMessageShow("Error opening file for Retrieving MyFavorites");
+			}
+			
+			
+			private function ListHandler(evt:ResultEvent):void{
+				
+				
+				if (evt.result.ezware_response.status == 'OK' ) {
+					
+					MyFavoritesObjectCollection=new ArrayCollection();
+					var suf:String = "job";
+					var mainBoard:String = "oprjobs_all";
+					if (evt.result.ezware_response.refresh_data[mainBoard][suf] == null)
+					{
+						MyFavoritesObjectCollection=new ArrayCollection()
+					}
+					else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ArrayCollection)
+					{
+						MyFavoritesObjectCollection=evt.result.ezware_response.refresh_data[mainBoard][suf];
+					}
+					else if (evt.result.ezware_response.refresh_data[mainBoard][suf] is ObjectProxy)
+					{
+						MyFavoritesObjectCollection = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data[mainBoard][suf])); 
+					}
+					MyFavoritesObjectCollection.refresh();
+					
+				} else	{
+					
+					var s_ret:String = resultStatusMyFavoritesCM(evt.result.ezware_response.status, evt.result.ezware_response.reason);  
+					AlertMessageShow(s_ret);
+					return;
+				}			
+				
+				
+				
+				
+			}
+			private function resultStatusMyFavoritesCM(string_result:String, string_reason:String):String{
+				var retstr:String = new String;
+				if (string_result == "EXPIRED"){
+					retstr = "Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.";
+				} 
+				if (string_result == "FAIL"){
+					retstr = string_reason;
+				} 
+				return retstr;
+			}
+			private function search():void
+			{
+				
+				searchField.text = (searchField.text).toUpperCase(); 
+				if(searchField.text !='')
+				{
+					filter()
+				}
+				else
+				{
+					filterReset()
+				}
+			} 
+			public function filter():void {
+				
+				
+				MyFavoritesObjectCollection.filterFunction = filterJobCode;
+				MyFavoritesObjectCollection.refresh();
+				
+			}
+			private function filterJobCode(item:Object):Boolean
+			{
+				return item[selectedName].match(new RegExp(searchField.text, 'i'))
+			}
+			
+			public function filterReset():void {
+				
+				
+				MyFavoritesObjectCollection.filterFunction = null;
+				MyFavoritesObjectCollection.refresh();
+				
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	
+	<!-- mx:Script source="AlertMessageHandler.as"/ -->
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			private function titleWindow_close(evt:Event):void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	
+	
+	
+	
+	<mx:ApplicationControlBar dock="true" width="100%">
+		<!-- mx:Button label="e-Z Learn {parentApplication.mousehoverparslabel}"  id="btn_help" icon="@Embed('image/scholar_cap.png')"
+		fontFamily="Arial" textAlign="center"  height="28"
+		click="{launchEZLearnMenu(event)}" 
+		rollOver="{parentApplication.mbdg_mousehovering(event,'',event.currentTarget.label,'BUTTON')}"
+		rollOut="{ parentApplication.mbdg_stopHoverTimer()}"
+		width="252"
+		styleName="{'highResolutionLabel'}"    
+		
+		/ -->
+		
+		<mx:Button id="img_ezlearnswitch" icon="@Embed('image/scholar_cap_special.png')"            
+				   height="27"
+				   width="78"
+				   useHandCursor="true" buttonMode="true"   
+				   mouseChildren="false"
+				   click="{parentApplication.pre_nt_mousehovering(event,'Job Menu','Job Menu','BUTTON')}"
+				   /> 
+		<mx:Spacer width="100%"/>
+		<mx:Label id="lbl_titlerend" text="Job Menu" fontSize="15" fontWeight="bold" useHandCursor="true" buttonMode="true"
+				  />
+		<mx:Spacer width="100%"/>
+		<mx:Button id="btn_close_window" icon="@Embed('image/icon_logoff.png')"
+				   fontFamily="Arial" textAlign="center" fontSize="12"
+				   
+				   
+				   />		
+	</mx:ApplicationControlBar>
+	
+	<mx:HBox width="100%" height="100%">
+		
+		<mx:VBox width="100%" height="100%">
+			<mx:Label text="Available Jobs"  fontSize="15" fontWeight="bold"/>
+			
+			
+			<mx:HBox width="100%" >
+				<mx:Label text="Code Search: "  fontSize="15" fontWeight="bold"/>
+				<mx:TextInput id="searchField" toolTip="Filter Job Code"  change="search()" fontSize="15" fontWeight="bold"/>
+			</mx:HBox> 
+			
+			
+			<local:ActionGridADGRendition id="dataGrid1"
+										  width="100%"
+										  height="100%"
+										  rowHeight="22"
+										  dataProvider="{MyFavoritesObjectCollection}"
+										  dragEnabled="true"
+										  verticalScrollPolicy="on"
+										  allowMultipleSelection="false"
+										  variableRowHeight="true"
+										  headerStyleName="centerAlignDataGridCol"
+										  horizontalGridLines="true"
+										  verticalGridLines="true"
+										  horizontalGridLineColor="black"
+										  verticalGridLineColor="black" borderColor="#010101" borderThickness="1"
+										  sortableColumns="false"
+										 
+										  > 
+				<local:columns>
+					<mx:AdvancedDataGridColumn dataField="job_exec" 
+											   headerText="Menu Item"  width="25" />
+					<mx:AdvancedDataGridColumn dataField="description"
+											   headerText="Description" width="75"/>
+				</local:columns>
+			</local:ActionGridADGRendition>
+			
+			
+			
+			
+			<mx:Label text="{dataGrid1.dataProvider.length} item(s)"  fontSize="15" fontWeight="bold"/>
+			
+			
+		</mx:VBox>
+		<mx:VBox height="100%">
+			<mx:Spacer height="100%"/>	
+			<mx:Spacer width="20%"/>
+			<!-- mx:Button id="btn_transfer" label=">" height="41" fontSize="23" color="#3868A3"/ -->
+			<mx:Spacer height="100%"/>
+		</mx:VBox>
+	</mx:HBox>
+</mx:TitleWindow>

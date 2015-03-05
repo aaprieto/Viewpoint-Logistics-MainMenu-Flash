@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+This component is primarily static and is only meant to show what other
+pages of the store could look like.
+
+Note that this page was put together in the Design view so you'll see more
+hard coded locations and sizes.
+
+We did not have sizing issues here as much so you'll see more hardcoded
+"y" values rather than "top."
+
+The width and height are hard-coded in the root tag to help the Design view.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*" alpha="1.0"
+    width="990" height="550" creationComplete="init()">
+	
+	<mx:Script>
+
+        <![CDATA[
+        	import mx.core.EdgeMetrics;
+        	import mx.charts.chartClasses.StackedSeries;
+            import mx.binding.utils.ChangeWatcher;
+        	import mx.validators.Validator;
+            import mx.events.ValidationResultEvent;
+            import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+            import mx.containers.TitleWindow;
+            import flash.net.Responder;
+	   		/* toolbar functions */
+	  		import flash.display.StageDisplayState;
+			import mx.events.CloseEvent;
+			/* PHP Output XML functions */
+			import mx.collections.ArrayCollection;		
+			import mx.rpc.events.ResultEvent;
+			/* Time Selector Functions */
+            import mx.formatters.DateFormatter;
+            /* Work Task Datagrid Filter Functions */
+        	import mx.events.IndexChangedEvent;
+			import mx.utils.ObjectUtil;
+		
+		[Bindable]
+		var today_date:Date = new Date();
+		
+		[Bindable]
+		public var today:String = "" ;
+		[Bindable]
+		public var display_date:String = today_date.toLocaleDateString();
+
+		/* curtime is Time in noraml display format with ":" and "AM/PM"
+		   curtime1 is Time in 24 Hour Format i.e. 945 means 9:45 AM or 1315 means 1:15 PM 		
+		[Bindable]
+   		public var curtime = today_date.toLocaleTimeString();
+		[Bindable]
+		public var curtime1 = today_date.hours.toString()+today_date.minutes.toString();
+ 		*/
+ 		 		
+		[Bindable]
+        public var worktaskArray:ArrayCollection;
+ 		[Bindable]
+        public var worktaskArray2:ArrayCollection;
+		[Bindable]
+        public var wktemplateArray:ArrayCollection;
+		[Bindable]
+        public var wkact_profArray:ArrayCollection;
+		[Bindable]
+        public var clientArray:ArrayCollection;
+
+/*      [Bindable]
+        public var projects: Array = [ {label:"Please Select Project", data:"EZWARE"}, {label:"e-Z Ware", data:"EZWARE"}, {label:"JIT", data:"JIT"} ]; */
+
+		[Bindable]
+		public var ts_upd_param:String = "" ;
+		[Bindable]
+		public var ts_upd_date:String = today;
+		[Bindable]
+		public var ts_upd_tempid:String = "" ;
+		[Bindable]
+		public var ts_upd_actcode:String = "" ;
+		[Bindable]
+		public var ts_upd_client:String = "" ;
+		[Bindable]
+		public var ts_upd_start_time:String = "" ;
+		[Bindable]
+		public var ts_upd_comp_time:String = "" ;
+		[Bindable]
+		public var ts_upd_billable:String = "" ;
+		[Bindable]
+		public var ts_upd_desc:String = "" ;
+
+        [Bindable]
+        public var formIsValid:Boolean = false;
+		[Bindable]
+        public var formIsEmpty:Boolean = true;
+		
+	    [Bindable]
+        public var selectedItem:Object;
+
+        [Bindable]
+        public var aTime:Array = new Array ;
+
+        [Bindable]
+     	public var ts_stime_selectedItem:Object;
+
+        [Bindable]
+      	public var ts_ctime_selectedItem:Object;
+
+		private function init():void
+			{
+				
+				timeinit();
+
+				wktemplate_grid.send();
+				client_grid.send();						
+
+				wktemplateGrid.selectedIndex = 0; // Default index to first template to populate Activity Grid
+				wkact_prof_grid.url="wkact_prof_loop.php?sel_actprof=CSR";
+				wkact_prof_grid.send();
+
+				today = date_yyyymmdd.format(today_date);
+				ts_upd_date = today;
+				
+				/* 	pvx_refresh_grid();  */				
+				pvx_refresh_grid2();	
+													
+			}
+
+/*
+		private function pvx_refresh_grid():void
+		{
+				var ts_passin_act:String = "refresh_grid" ;
+				var ts_param_cnt:String = "3";
+				var ts_param_sep:String = ",";
+				var ts_passin_param:String = "" ;
+
+				ts_passin_param  =	ts_param_cnt + ts_param_sep +
+									ts_passin_act + ts_param_sep +
+									today + ts_param_sep ;
+						
+				worktask_grid.url="wtimesheet_logic.php?ts_passin_param="+ts_passin_param;
+				worktask_grid.send();
+		}
+
+ */		
+ 	
+ 		private function pvx_refresh_grid2():void
+		{
+				var ts_passin_act:String = "refresh_grid2" ;
+				var ts_param_cnt:String = "3";
+				var ts_param_sep:String = ",";
+				var ts_passin_param:String = "";
+
+				ts_passin_param  =	ts_param_cnt + ts_param_sep +
+									ts_passin_act + ts_param_sep +
+									today + ts_param_sep ;
+						
+ 				worktask_grid2.url="wtimesheet2_logic.php?ts_passin_param="+ts_passin_param;
+ 				worktask_grid2.send();			
+		}
+
+        private function timeinit():void
+	        {     	       	
+                //--- set interval and clock format values by the form
+                var iInterval:int = int(this.tiInterval.text);
+                var b12:Boolean = 1 ;
+
+                //--- build time array
+                this.aTime = getHourIntervalArray(iInterval,b12) ;
+                //--- set selected index of the combo box to the middle value (ie, noon)
+                this.ts_start_time.selectedIndex = Math.round(this.aTime.length / 2) ;
+                this.ts_comp_time.selectedIndex  = Math.round(this.aTime.length / 2)+1;
+            }
+
+            /**
+             * format time intervals into hour or hour subsets
+             *
+             * @param int iIncrement     - number of minutes per increment     - default: 15
+             * @param Boolean b12         - 12 hour format for time display     - default: true
+             *
+             * @return Array
+             */
+            public function getHourIntervalArray(iIncrement:int = 15,b12:Boolean = true):Array
+            {
+                var millisecondsPerMinute:int    = 1000 * 60 ;
+                var millisecondsPerHour:int        = 1000 * 60 * 60 ;
+
+                var df:DateFormatter = new DateFormatter ;
+                var df2:DateFormatter = new DateFormatter ;
+
+                //--- return array
+                var a:Array = new Array ;
+
+                //--- set increment minutes to a default of 30 min unless another whole number divisor of 60 has been passed
+                var iInc:int = iIncrement <= 0 || (60 % iIncrement != 0) ? 30 : iIncrement ;
+
+                var iIncCount:int = 60 / iInc ;
+                var sTime:String = '' ;
+                var sTime2:String = '';
+
+                var iMinutes:int = 0 ;
+                var iSeconds:int = 0 ;
+
+                var d:Date = new Date() ;
+
+                var nTimeInMilliseconds:Number = 0 ;
+                var oTime:Object = {} ;
+
+                //--- set function with local scope to build and add intervals to the return array
+                var addHourInterval:Function = function():void
+                {
+                    //--- create a formatted date object for each hour (dummy date entered, all we care about it the time portion)
+                    d = new Date(76, 12, 11, iHours, iMinutes, iSeconds, 0) ;
+
+                    //--- format each increment as a string
+                    sTime = df.format(d.toString()) ;
+                    sTime2 = df2.format(d.toString()) ;
+
+                    //--- set object attributes
+                    nTimeInMilliseconds = d.getHours() * millisecondsPerHour + d.getMinutes() * millisecondsPerMinute ;
+                    // oTime = {'label':sTime,"data":nTimeInMilliseconds} ;
+                    // Modify to set data with sTime2 required to be formatted without : and no space in order to passin for PHP
+                    oTime = {'label':sTime,"data":sTime2} ;
+
+                    //--- add each object to the return array
+                    a.push(oTime) ;
+
+                    //--- reset minutes for outer loop
+                    iMinutes = 0 ;
+                }
+
+                //--- iterate 24 hours
+                for(var iHours:int = 0;iHours<24;iHours++)
+                {
+                    //--- set 12/24 hour clock formatting differences
+                    if(b12)
+                    {
+                        //--- we want to set the date formatter to return 12 o'clock hours as '12:xx' rather than '0:xx',
+                        //--- so we set 1the formatter to use a 1 based clock rather than default 0 based
+                        df.formatString = iHours == 0 || iHours == 12 ? "L:NN A" : "K:NN A" ;
+                        df2.formatString = iHours == 0 || iHours == 12 ? "LNNA" : "KNNA" ;
+                        //--- for 12 hour format, set seconds to the previous hour, formatter will round down
+                    //    iSeconds = 59 ;
+                    }
+                    else
+                    {
+                        df.formatString = "JJ:NN" ;
+                        df2.formatString = "JJNN" ;
+                    }
+
+                    addHourInterval() ;
+
+                     //--- iterate minute increments for each hour if they exist
+                    if(iIncCount > 1)
+                    {
+                        for(var j:int=1;j<iIncCount;j++)
+                        {
+                            //--- set minutes by increment and count
+                            iMinutes = j * iInc ;
+
+                            addHourInterval() ;
+                        }
+                    }
+                }
+                return a ;
+            }
+
+
+            // Event handler function to write the selected date to the Label control.
+            // Execute HTTP service to display the list of work tasks for the selected date
+            private function displayDate(date:Date):void
+            {
+            	/* var passin_date = date.getFullYear().toString() + (date.getMonth()+1).toString() + date.getDate(); */
+ 				var passin_date:String = date_yyyymmdd.format(date);
+ 				var ts_passin_act:String = "refresh_grid" ;
+				var ts_param_cnt:String = "3";
+				var ts_param_sep:String = ",";
+				var ts_passin_param:String = "" ;
+            	            	           	            	
+                if (date == null) {
+                    date_selected.text = "Please Select A Date ";
+                    }
+                else {
+                    date_selected.text = date.toLocaleDateString();
+ 					ts_upd_date = passin_date;
+ 					
+/* 					ts_passin_param  =	ts_param_cnt + ts_param_sep +
+									ts_passin_act + ts_param_sep +
+									passin_date + ts_param_sep ;
+                   	worktask_grid.url="wtimesheet_logic.php?ts_passin_param="+ts_passin_param;
+					worktask_grid.send();
+ */					
+ 					ts_passin_act = "refresh_grid2";
+					ts_passin_param  =	ts_param_cnt + ts_param_sep +
+										ts_passin_act + ts_param_sep +
+										passin_date + ts_param_sep ;
+                   	worktask_grid2.url="wtimesheet2_logic.php?ts_passin_param="+ts_passin_param;
+					worktask_grid2.send();					
+                }
+            }
+
+			// Event handler function to pass in selected work template's activity profile
+			// Display the list of activity codes in the selected profile
+			private function selectWktemplate(event:Event):void
+			{
+				var passin_actprof:String = event.target.selectedItem.wkt_actpro;			
+				if (passin_actprof != null) {
+				wkact_prof_grid.url="wkact_prof_loop.php?sel_actprof="+passin_actprof;
+				wkact_prof_grid.send();
+				}
+			}
+
+			// Event handler to default Work Task Description from Work Task Activity Description
+			private function selectWkact_prof(event:Event):void
+			{
+				ts_desc.text = event.target.selectedItem.wkact_desc;
+			}	
+			
+			// Event handler to calculate duration between start and end time
+			private function calDuration(event:Event):void
+			{
+				var ts_passin_act:String = "cal_duration" ;
+				var ts_param_cnt:String = "4";
+				var ts_param_sep:String = ",";
+				var ts_passin_param:String = "" ;
+
+				ts_upd_start_time = ts_start_time.selectedItem.data ;
+				ts_upd_comp_time = ts_comp_time.selectedItem.data ;
+				ts_passin_param  =	ts_param_cnt + ts_param_sep +
+									ts_passin_act + ts_param_sep +
+									ts_upd_start_time + ts_param_sep +
+									ts_upd_comp_time + ts_param_sep ;
+				
+				wtimesheet_logic.url = "wtimesheet_logic.php?ts_passin_param="+ts_passin_param;
+				wtimesheet_logic.send();				
+			}
+			
+			// Event handler when a work task is selected from the work task data grid
+			private function selectWorktask(event:Event):void
+			{
+				var selected_wt_stmp:String = event.target.selectedItem.wt_stmp;
+				var selected_wt_tempid:String = event.target.selectedItem.wt_tempid;
+				var selected_wt_activcd:String = event.target.selectedItem.wt_activcd;
+				var selected_wt_client:String = event.target.selectedItem.wt_client;
+				var selected_wt_explain:String = event.target.selectedItem.wt_explain;
+				var selected_wt_acurtim:String = event.target.selectedItem.wt_acurtim;
+				var selected_wt_explain:String = event.target.selectedItem.wt_explain;
+				var selected_wt_bill:String = event.target.selectedItem.wt_bill;
+				var selected_wt_actprof:String = "";
+				
+				ts_desc.text = selected_wt_explain;
+				
+				ts_duration.text = selected_wt_acurtim + " Hours";
+				if (selected_wt_bill == "Y") {
+					ts_billable.selected = true
+				}
+				else {
+					ts_billable.selected = false
+				}
+				
+				clientGrid.selectedIndex = 1; // Determine how to set index with the value in row
+				
+
+					wktemplateGrid.selectedIndex = 1; // Determine how to set index with known value in row
+					selected_wt_actprof = wktemplateGrid.selectedItem.wkt_actpro;					
+					wkact_prof_grid.url="wkact_prof_loop.php?sel_actprof="+selected_wt_actprof;
+					wkact_prof_grid.send();				
+				
+				wkact_profGrid.selectedIndex = 2; //Determine how to set index with known value in row
+				
+			}
+					
+			private function updateWorktask():void
+			{
+				
+				var ts_passin_act:String = "update";
+				var ts_param_cnt:String = "10";
+				var ts_param_sep:String = ",";
+				var ts_passin_param:String = "" ;
+				
+				/* ts_upd_date is set as today or during the event when calendar is clicked */
+				ts_upd_tempid = wktemplateGrid.selectedItem.wkt_tempid ;
+				ts_upd_actcode = wkact_profGrid.selectedItem.wkact_code ;
+				ts_upd_client = clientGrid.selectedItem.client_001 ;
+				ts_upd_start_time = ts_start_time.selectedItem.data ;
+				ts_upd_comp_time = ts_comp_time.selectedItem.data  ;
+				ts_upd_billable = "N" ;
+				if (ts_billable.selected == true) {
+					ts_upd_billable = "Y";
+				}								
+				ts_upd_desc = str_replace(" ","_blank_",ts_desc.text) ;
+				
+				
+				ts_upd_param = 	ts_upd_date + ts_param_sep +
+								ts_upd_tempid + ts_param_sep +
+								ts_upd_actcode + ts_param_sep +
+								ts_upd_client + ts_param_sep +
+								ts_upd_start_time + ts_param_sep +
+								ts_upd_comp_time + ts_param_sep +
+								ts_upd_billable + ts_param_sep +
+								ts_upd_desc + ts_param_sep;				
+				
+				ts_passin_param = 	ts_param_cnt + ts_param_sep +
+									ts_passin_act + ts_param_sep +
+									ts_upd_param;
+
+				worktask_grid.url = "wtimesheet_logic.php?ts_passin_param="+ts_passin_param;
+				worktask_grid.send();
+ 				
+ 								
+			}
+			
+            private function str_replace( replace_with:String, replace:String, original:String ):String
+			{
+				var replace_array:Array = original.split(replace_with);
+				return replace_array.join(replace);
+			}
+
+            // Holds a reference to the currently focussed
+            // control on the form.
+            private var focussedFormControl:DisplayObject;
+
+            // Validate the form
+            private function validateForm(event:Event):void
+            {
+                // Save a reference to the currently focussed form control
+                // so that the isValid() helper method can notify only
+                // the currently focussed form control and not affect
+                // any of the other form controls.
+
+                focussedFormControl = event.target as DisplayObject;
+
+                // Mark the form as valid to start with
+                formIsValid = true;
+
+                // Check if form is empty
+               // formIsEmpty = (ts_tempid.text == "" && ts_desc.text == "" && ts_actpro.text == "");
+
+                // Run each validator in turn, using the isValid()
+                // helper method and update the value of formIsValid accordingly.
+               //  validate(ts_tempidValidator);
+               // validate(ts_actproValidator);
+               // validate(ts_clientValidator);
+               // validate(ts_durationValidator);
+               // validate(ts_descValidator);
+            }
+
+             // Helper method. Performs validation on a passed Validator instance.
+             // Validator is the base class of all Flex validation classes so
+             // you can pass any validation class to this method.
+             private function validate(validator:Validator):Boolean
+             {
+                // Get a reference to the component that is the
+                // source of the validator.
+                 var validatorSource:DisplayObject = validator.source as DisplayObject;
+
+                // Suppress events if the current control being validated is not
+                // the currently focussed control on the form. This stops the user
+                // from receiving visual validation cues on other form controls.
+                var suppressEvents:Boolean = (validatorSource != focussedFormControl);
+
+                // Carry out validation. Returns a ValidationResultEvent.
+                // Passing null for the first parameter makes the validator
+                // use the property defined in the property tag of the
+                // <mx:Validator> tag.
+                var event:ValidationResultEvent = validator.validate(null, suppressEvents);
+
+                // Check if validation passed and return a boolean value accordingly
+                 var currentControlIsValid:Boolean = (event.type == ValidationResultEvent.VALID);
+
+                 // Update the formIsValid flag
+                 formIsValid = formIsValid && currentControlIsValid;
+
+                 return currentControlIsValid;
+              }
+
+              // Event handler: Gets called when all child components
+              // have been created.
+              private function creationCompleteHandler():void
+              {
+                // Set the focus on the first field so
+                // user does not have to mouse over to it.
+                // Note that the user still has to click on the
+                // Flex application to give it focus. This is
+                // a currently limitation in Flex.
+                  resetFocus();
+              }
+
+            // Helper method. Sets the focus on the first field so
+            // user does not have to mouse over to it.
+            private function resetFocus():void
+            {
+                focusManager.setFocus(ts_date);
+            }
+
+			// Close Application
+	        private function closeApp():void
+   			{
+		       var urlString:String = "javascript:self.close()";
+		       var request:URLRequest = new URLRequest(urlString);
+		       navigateToURL(request, "_self");
+  			 }
+
+       ]]>
+    </mx:Script>
+
+	<mx:HTTPService id="worktask_grid" url="wtimesheet_logic.php" result="worktaskArray = worktask_grid.lastResult.root.worktask" />	
+ 	<mx:HTTPService id="worktask_grid2" url="wtimesheet2_logic.php" result="worktaskArray2 = worktask_grid2.lastResult.root.worktask2" />
+ 	<mx:HTTPService id="wktemplate_grid" url="wktemplate_loop.php" result="wktemplateArray = wktemplate_grid.lastResult.root.wktemplate"  />	
+	<mx:HTTPService id="client_grid" url="client_loop.php" result="clientArray = client_grid.lastResult.root.client" />
+	<mx:HTTPService id="wkact_prof_grid" url="wkact_prof_loop.php" result="wkact_profArray = wkact_prof_grid.lastResult.root.wkact_prof" />
+	<mx:HTTPService id="wtimesheet_logic" url="wtimesheet_logic.php"/>
+	
+	<mx:DateFormatter id="date_yyyymmdd" formatString="YYYYMMDD" />
+	
+	<mx:Style source="css/main.css" />
+
+ <mx:VBox width="100%">
+
+	<mx:HBox width="100%" height="15%" >
+
+  	<mx:Panel id="panel0" title="Work Schedule"
+            height="100%" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10" width="30%">
+
+    <mx:HBox horizontalAlign="center" width="100%">	
+
+        	<mx:DateChooser id="ts_date" yearNavigationEnabled="true" showToday="true" textAlign="left" width="55%"
+                      change="displayDate(DateChooser(event.target).selectedDate)" />
+
+ 		<mx:DataGrid id="wktemplateGrid" dataProvider="{wktemplateArray}" height="100%" width="45%"
+ 				change="selectWktemplate(event)" >
+ 			<mx:columns>
+ 			<mx:Array>
+			<mx:DataGridColumn dataField="wkt_tempid" headerText="Work Task"/>
+ 			</mx:Array>
+			</mx:columns> 				
+		</mx:DataGrid>
+
+    </mx:HBox>
+
+    </mx:Panel>
+
+    <mx:Panel id="panel1" title="Task Entry"
+            height="100%" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10" width="70%">
+
+    	<mx:HBox width="100%" height="100%">
+ 	
+        <mx:DataGrid id="wkact_profGrid" dataProvider="{wkact_profArray}" height="100%" width="25%"
+        		change="selectWkact_prof(event)">
+			<mx:columns>
+			<mx:Array>
+			<mx:DataGridColumn dataField="wkact_code" headerText="Activity"/>
+			<mx:DataGridColumn dataField="wkact_desc" headerText="Description" wordWrap="true"/>
+			</mx:Array>
+			</mx:columns>
+		</mx:DataGrid>
+
+        <mx:DataGrid id="clientGrid" dataProvider="{clientArray}" height="100%" width="25%">
+			<mx:columns>
+			<mx:Array>
+			<mx:DataGridColumn dataField="client_001" headerText="Beneficiary Client" headerWordWrap="true"/>
+			<mx:DataGridColumn dataField="client_002" headerText="Client Name" headerWordWrap="true" wordWrap="true"/>				
+			</mx:Array>
+			</mx:columns>
+		</mx:DataGrid>
+
+		<mx:VBox height="100%" width="50%">
+            <mx:FormItem id="ts_start_time_fid" width="100%" label="Time Started" horizontalAlign="right">
+                 <mx:HBox width="100%">
+                 <mx:Spacer  width="5%"/>
+                 <mx:ComboBox id="ts_start_time" dataProvider="{this.aTime}" labelField="label" width="40%"
+                 	close="ts_stime_selectedItem=ComboBox(event.target).selectedItem" change="calDuration(event)" />
+                 <mx:Label id="ts_tiInterval_label" text="Interval" width="15%"/>
+                 <mx:TextInput id="tiInterval" change="{timeinit()}" text="15" borderStyle="solid" width="15%"/>
+                 </mx:HBox>
+             </mx:FormItem>
+            <mx:FormItem id="ts_comple_time_fid" label="Time Completed" width="100%" horizontalAlign="right">
+				<mx:HBox width="100%">
+                  <mx:ComboBox id="ts_comp_time" dataProvider="{this.aTime}" labelField="label" width="40%"
+                 	close="ts_ctime_selectedItem=ComboBox(event.target).selectedItem" change="calDuration(event)" />
+                  <mx:CheckBox id="ts_billable" label="Billable" />
+				</mx:HBox>
+            </mx:FormItem>	
+            <mx:FormItem id="ts_duration_fid" label="Duration" width="100%" horizontalAlign="right">
+            	<mx:HBox width="100%">
+                <mx:Label id="ts_duration" text="{wtimesheet_logic.lastResult.root.duration} Hours"/>
+                <mx:Label id="ts_duration_errmsg" color="red" text="{wtimesheet_logic.lastResult.root.duration_errmsg}"/>
+            	</mx:HBox>
+			</mx:FormItem>
+            <mx:FormItem id="ts_desc_fid" label="Explanation" width="100%" horizontalAlign="right">
+            <mx:HBox width="100%">
+            <mx:TextArea id="ts_desc" width="100%"/>
+            </mx:HBox>
+            </mx:FormItem>
+            <mx:FormItem id="ts_update_fid" direction="horizontal"  width="100%">
+			<mx:HBox>
+				<mx:Button id="ts_insert" label="Add" click="updateWorktask()" />
+            	<mx:Button id="ts_update" label="Update" />
+            	<mx:Button id="ts_delete" label="Delete"/>
+            	<mx:Button id="ts_clear" label="Clear" />
+            </mx:HBox>
+            </mx:FormItem>
+
+		</mx:VBox>
+
+	</mx:HBox>
+
+    </mx:Panel>
+
+</mx:HBox>
+
+<mx:HBox width="100%" backgroundColor="#ffffff" styleName="sectionHeader">
+	<mx:VBox width="25%" >
+  		<mx:Label id="date_selection_label"  text="Date selected:" styleName="sectionHeader"/>
+  	  	<mx:Label id="date_selected" color="blue" text="{display_date}" />
+  	</mx:VBox>
+  	<mx:VBox width="25%">
+  	  	<mx:Label id="ts_tempid_selection_label"  text="Work Task selected: "/>
+  	  	<mx:Label id="ts_tempid_desc" color="blue" text="{wktemplateGrid.selectedItem.wkt_desc}" />
+  	</mx:VBox>
+  	<mx:VBox width="25%">
+      	<mx:Label id="ts_wkact_code_label"  text="Activity selected: "/>
+       	<mx:Label id="ts_wkact_code" color="blue" text="{wkact_profGrid.selectedItem.wkact_desc}"/>
+  	</mx:VBox>
+  	<mx:VBox width="25%">
+      	<mx:Label id="ts_client_code_label"  text="Beneficary Client: "/>
+       	<mx:Label id="ts_client_code" color="blue" text="{clientGrid.selectedItem.client_002}"/>
+  	</mx:VBox>
+</mx:HBox>
+
+
+	<mx:Panel id="panel2" title="Responsible Tasks Summary" height="70%" width="100%"
+	            paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10">
+
+		
+<!--	
+		<mx:VBox width="100%">
+		<mx:HBox width="100%"  styleName="sectionHeader">
+			<mx:Label id="ts_completed_task" text="Completed Tasks" color="green" />
+			<mx:Label width="100%" height="10%" color="green"
+			   text="{worktask_grid.lastResult.root.wt_total_time}" styleName="sectionHeader"/>
+		</mx:HBox>
+		
+		<mx:DataGrid id="worktaskGrid" dataProvider="{worktaskArray}" width="100%" >
+	
+		<mx:columns>
+			<mx:Array>			
+				<mx:DataGridColumn dataField="wt_start" headerText="Task Started" minWidth="130"/>
+				<mx:DataGridColumn dataField="wt_complet" headerText="Task Completed" minWidth="130"/>
+				<mx:DataGridColumn dataField="wt_acurtim" headerText="Duration"/>
+				<mx:DataGridColumn dataField="wt_client" headerText="Client"/>
+				<mx:DataGridColumn dataField="wt_tempid" headerText="Task Template"/>
+				<mx:DataGridColumn dataField="wt_activcd" headerText="Activity Code"/>
+				<mx:DataGridColumn dataField="wt_explain" headerText="Comment" wordWrap="true" minWidth="300"/>
+			</mx:Array>
+			</mx:columns>
+		</mx:DataGrid>		
+		</mx:VBox>
+ -->		
+		<mx:VBox width="100%">
+		<mx:HBox width="100%"  styleName="sectionHeader">
+		<mx:Label id="ts_pending_task" text="In Process and Pending Tasks" color="#ff8000"  width="90%"/>
+		<mx:Button label="REFRESH" id="refresh" icon="@Embed('image/icon_refresh.png')"
+		    	fontFamily="Arial" textAlign="left" fontSize="12" width="10%" toolTip="Refresh"
+		    	click="init()" />
+		</mx:HBox>
+		<mx:DataGrid id="worktaskGrid2" dataProvider="{worktask_grid2.lastResult.root.worktask2}" width="100%" rowHeight="30" >
+		<mx:columns>		
+			<mx:Array>
+				<mx:DataGridColumn dataField="img" headerText="" width="30" itemRenderer="alertImageRenderer"/>					
+				<mx:DataGridColumn dataField="wt_latstmp2" headerText="Task Time" minWidth="130"/>
+				<mx:DataGridColumn dataField="wt_tempid2" headerText="Task Template"/>
+				<mx:DataGridColumn dataField="wt_explain2" headerText="Task Explanation" wordWrap="true" minWidth="250"/>
+				<mx:DataGridColumn dataField="wt_client2" headerText="Client"/>
+				<mx:DataGridColumn dataField="wt_doc_ref2" headerText="Reference Document"/>
+				<mx:DataGridColumn dataField="wt_status2" headerText="Status"/>
+			</mx:Array>
+		</mx:columns>
+		</mx:DataGrid>		
+		</mx:VBox>
+		
+	
+	<!--	<mx:Label width="100%" color="blue" text="{ts_passin_param}"/>
+	 -->
+		</mx:Panel>
+ 	
+ </mx:VBox>
+	
+</mx:Canvas>

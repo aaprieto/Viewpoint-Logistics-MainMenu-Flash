@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml"  toggle="false" > 
+		  
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			[Bindable]
+			public var doc_id:String;  
+			[Bindable]
+			public var command:String; 
+			[Bindable]
+			public var jobcode:String; 
+			[Bindable]
+			public var refresh:String; 
+			[Bindable]
+			public var numofrec:String; 
+			[Bindable]
+			public var datafield:String;
+			[Bindable]
+			public var actiongrid:String;
+			[Bindable]
+			public var index:int;  
+			[Bindable]
+			public var columnstart:int;
+			[Bindable]
+			public var loc_color:String;  
+			[Bindable]
+			public var extensible:String;  
+		]]>
+	</mx:Script>
+</mx:Button>

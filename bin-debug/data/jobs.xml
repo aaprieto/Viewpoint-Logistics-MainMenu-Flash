@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+<System label="Accounts Payable">
+<group label="Invoice Posting">
+<job label="Invoices - Batch Entry" id="G1AP20"/>
+<job label="Invoices - Already Posted" id="G1AP22"/>
+<job label="Invoices - Recurring" id="G1AP25"/>
+</group>
+<group label="Payment Processing">
+<job label="Cash Requirement - Report" id="G1AP31"/>
+<job label="Payments - Print" id="G1AP32"/>
+<job label="Payments - Register" id="G1AP33"/>
+</group>
+<group label="Manual Payment/Cancel Payment">
+<job label="Payments - Manual" id="G1AP35"/>
+<job label="Payments - Cancel" id="G1AP37"/>
+</group>
+<group label="Post-Dated Payment">
+<job label="Payments - Post-Dated - List" id="G1AP41"/>
+<job label="Payments - Post-Dated - Post" id="G1AP42"/>
+</group>
+<group label="Payment Reconciliation">
+<job label="Payments - Reconciliation" id="G1AP46"/>
+<job label="Payments Outstanding - Listing" id="G1AP47"/>
+</group>
+<group label="Close Fiscal Period">
+<job label="Aged Trial Balance" id="G1AP71"/>
+<job label="Deleted Vendors - Register" id="G1AP76"/>
+<job label="Vendor History - Report" id="G1AP77"/>
+</group>
+<group label="Inquiry and Reports">
+<job label="Account - Inquiry" id="G1AP10"/>
+<job label="Balance AP Subledger &amp; Control" id="G1AP17"/>
+<job label="Cash Flow Analysis - Print" id="G1AP73"/>
+<job label="Purchases MTD/YTD - Report" id="G1AP90"/>
+<job label="Vendor YTD Purchase Report" id="G1AP78"/>
+<job label="G/L Distributions - Display" id="G1AP23"/>
+</group>
+<group label="1099 Processing">
+<job label="1099 Worksheets - Printing" id="G1AP81"/>
+<job label="1099 Forms - Printing" id="G1AP84"/>
+</group>
+<group label="Set up Codes, Defaults, Etc.">
+<job label="Payment Terms" id="G1AP01"/>
+<job label="Vendor Types" id="G1AP02"/>
+<job label="Reference Codes" id="G1AP03"/>
+<job label="Bank Account Codes" id="G1AP08"/>
+</group>
+<group label="Set up Vendors &amp; GL">
+<job label="G/L Distribution Codes" id="G1AP04"/>
+<job label="Vendors" id="G1AP05"/>
+</group>
+<group label="Start-Up">
+<job label="Balance Forward - Enter" id="G1AP29"/>
+</group>
+<group label="Configuration">
+</group>
+<group label="Upgrade from Pre-A20">
+<job label="Payment Terms" id="G1AP01"/>
+<job label="Vendor Types" id="G1AP02"/>
+<job label="Bank Account Codes" id="G1AP08"/>
+<job label="Reference Codes" id="G1AP03"/>
+<job label="G/L Distribution Codes" id="G1AP04"/>
+</group>
+<group label="Upgrade from A20 to A32">
+</group>
+<group label="Upgrade from A32 to A33">
+</group>
+<group label="Upgrade from A32 to A33">
+</group>
+</System>
+<System label="Accounts Receivable           ">
+<group label="Enter Manual Invoices">
+<job label="Invoices - Print Batch" id="G1AR03"/>
+</group>
+<group label="Cash Receipts and Adjustments">
+<job label="Cash Receipts/Adjustment -Post" id="G1AR04"/>
+<job label="Cash Receipts/Adjustment-Print" id="G1AR05"/>
+</group>
+<group label="Customer Inquiry">
+<job label="Customer Account - Inquiry" id="G1AR06"/>
+</group>
+<group label="Statements and Reports">
+<job label="Statements - Print" id="G1AR07"/>
+<job label="Aging Report" id="G1AR09"/>
+<job label="Management Exception Reporting" id="G1AR14"/>
+<job label="Overdue Analysis - Report" id="G1AR31"/>
+</group>
+<group label="Month-End">
+<job label="A/R Trial Balance" id="G1AR90"/>
+<job label="Aging Report" id="G1AR09"/>
+<job label="Paid Invoices - Delete" id="G1AR21"/>
+<job label="Management Exception Reporting" id="G1AR14"/>
+</group>
+<group label="Optional">
+<job label="Service Charges - Audit" id="G1AR22"/>
+<job label="Statements - Print" id="G1AR07"/>
+<job label="Overdue Analysis - Report" id="G1AR31"/>
+<job label="Invoice Recap - Report" id="G1AR29"/>
+</group>
+<group label="Maintenance">
+<job label="Ancillary G/L Codes" id="G1AR52"/>
+<job label="Contact Names" id="G1AR98"/>
+<job label="A/R Terms Codes - Print" id="G1AR51"/>
+</group>
+<group label="Adjustments">
+<job label="Invoice Transfer - Audit" id="G1AR68"/>
+</group>
+<group label="Configuration">
+</group>
+<group label="Start-Up Entry">
+<job label="A/R Trial Balance" id="G1AR90"/>
+</group>
+<group label="Configuration">
+</group>
+<group label="Upgrade from Pre A31">
+</group>
+<group label="Upgrade from A32 to A33">
+</group>
+<group label="Upgrade AR to A35">
+</group>
+<group label="Convert from A35 to B05">
+</group>
+<group label="Convert from B05 to C01">
+</group>
+</System>
+<System label="Assembly Module               ">
+<group label="Assembly Operations">
+<job label="Assembly Work Order - Print" id="G1AS03"/>
+<job label="Assembly Definition - Print" id="G1AS78"/>
+</group>
+<group label="Disassembly Operations">
+<job label="Disassembly Work Order - Print" id="G1AS04"/>
+</group>
+<group label="System Setup">
+</group>
+</System>
+<System label="Billing System">
+<group label="Daily Operations">
+<job label="Billing - Enter" id="G1BL01"/>
+<job label="Manifest" id="G1BL03"/>
+<job label="Auto.Rating" id="G1BL07"/>
+<job label="Billing - Register" id="G1BL10"/>
+<job label="Invoices - (Individual) Print" id="G1BL14"/>
+<job label="Invoices - (Master) Print" id="G1BL15"/>
+</group>
+<group label="Queries &amp; Lookups">
+<job label="Bills - Listing" id="G1BL05"/>
+<job label="Manifests - Listing" id="G1BL04"/>
+</group>
+<group label="Reports">
+<job label="Pools Summary - Print" id="G1BL02"/>
+<job label="Shipper Delivery Report" id="G1BL06"/>
+<job label="Delivery Receipt (Batch) Print" id="G1BL08"/>
+<job label="Invoice / POD - Re-print" id="G1BL09"/>
+<job label="Billing Register - Analysis" id="G1BL11"/>
+<job label="Billing Revenue Report" id="G1BL12"/>
+<job label="Freight Profit &amp; Loss Report" id="G1BL13"/>
+<job label="Invoices - (Master) Re-print" id="G1BL17"/>
+</group>
+<group label="C.O.D. Log">
+<job label="C.O.D. - Reconciliation" id="G1BL40"/>
+</group>
+<group label="Contract Billing">
+<job label="Contracts" id="G1BL72"/>
+<job label="Contracts - Generate Invoices" id="G1BL74"/>
+</group>
+<group label="Receiving Operations">
+<job label="Manifests Received - Print" id="G1BL31"/>
+<job label="Client Codes - Conversion" id="G1BL33"/>
+<job label="Branch Codes - Conversion" id="G1BL34"/>
+</group>
+<group label="Period Closing">
+<job label="Cancelled Bills - List" id="G1BL69"/>
+</group>
+<group label="Purge Routines">
+<job label="Shipments History - Purge" id="G1BL81"/>
+<job label="Ships/Customers-Inactive,Purge" id="G1BL90"/>
+<job label="Clients/Carriers-Deleted,Purge" id="G1BL91"/>
+</group>
+<group label="Configuration">
+</group>
+</System>
+<System label="Company Control / Utilities   ">
+</System>
+<System label="Credit Management">
+<group label="Customer Credit Record">
+<job label="Print Customer Credit Records" id="G1CM03"/>
+</group>
+<group label="Miscellaneous Reports">
+<job label="Expired PST License List" id="G1CM06"/>
+<job label="Print Customer Payment Stats." id="G1CM07"/>
+<job label="Print Cust. Credit Information" id="G1CM08"/>
+<job label="Post-Dated Cheque Log" id="G1CM09"/>
+</group>
+</System>
+<System label="Company Setups">
+<group label="Financials">
+<job label="Currency Codes" id="G1CP01"/>
+<job label="Exchange Rates" id="G1CP02"/>
+</group>
+<group label="Notes">
+<job label="Note Types" id="G1CP10"/>
+</group>
+<group label="Transportation">
+<job label="Control Method" id="G1CP03"/>
+<job label="Railway Routing" id="G1CP04"/>
+<job label="Freight Type" id="G1CP05"/>
+<job label="Service Level" id="G1CP06"/>
+<job label="Carrier Service Designation" id="G1CP07"/>
+</group>
+<group label="Forms">
+<job label="Form Assignment" id="G1CP41"/>
+<job label="Form and Form Group Codes" id="G1CP40"/>
+</group>
+<group label="Branch/Voucher/Invoice# setup">
+<job label="Voucher Number Range" id="G1CP52"/>
+<job label="Branch/Traffic Codes" id="G1CP50"/>
+<job label="Register History" id="G1CP54"/>
+</group>
+</System>
+<System label="Client Related Set-up">
+<group label="Basic Client Set-up">
+<job label="Invoice Terms of Payment" id="G1CR02"/>
+<job label="Client Billing Cycle Groups" id="G1CR03"/>
+<job label="Account Managers" id="G1CR04"/>
+<job label="Sales Group Codes" id="G1CR05"/>
+<job label="Client Names and Addresses" id="G1CR06"/>
+<job label="Measuring Units" id="G1CR10"/>
+<job label="Conveyances" id="G1CR11"/>
+<job label="Storage Periods/Billing Dates" id="G1CR12"/>
+<job label="Storage Billing Schemas" id="G1CR14"/>
+<job label="Client-specific Data" id="G1CR15"/>
+<job label="Messages, Warnings, &amp; Hazards" id="G1CR16"/>
+</group>
+<group label="Rates and Billing Profiles">
+<job label="Revenue Analysis Codes" id="G1CR36"/>
+<job label="Separate Invoice Arrangements" id="G1CR20"/>
+<job label="Storage, Handling, Other Rates" id="G1CR22"/>
+<job label="Table of Charge Codes" id="G1CR17"/>
+<job label="Product Billing Profiles" id="G1CR63"/>
+<job label="Cumulative Quantity Breaks" id="G1CR19"/>
+</group>
+<group label="Customer Related Setups">
+<job label="Customer (Ship-To) Addresses" id="G1CR26"/>
+<job label="Customer Types" id="G1CR27"/>
+<job label="Customer Labels" id="G1CR28"/>
+<job label="Minimum Shelf Life by Customer" id="G1CR40"/>
+</group>
+<group label="Carrier Related Setups">
+<job label="National Motor Freight Classes" id="G1CR30"/>
+<job label="Routing Codes" id="G1CR37"/>
+<job label="Carriers" id="G1CR38"/>
+</group>
+<group label="Supporting Inventory Records">
+<job label="Date Code Conversion Methods" id="G1CR55"/>
+<job label="Hold Categories" id="G1CR56"/>
+<job label="Hold Codes" id="G1CR57"/>
+<job label="Inventory Adjustment Codes" id="G1CR58"/>
+<job label="Government Reports Definition" id="G1CR60"/>
+</group>
+<group label="Inventory Master">
+<job label="System-Generated Unit ID Setup" id="G1CR31"/>
+<job label="Product Code Formats" id="G1CR64"/>
+<job label="Maintain Product Shelf Life" id="G1CR66"/>
+<job label="AKA Definitions" id="G1CR68"/>
+<job label="Product Substitution Tables" id="G1CR69"/>
+<job label="Master Product Import" id="G1CR70"/>
+</group>
+<group label="Client Reporting">
+<job label="Client Name/Address Report" id="G1CR42"/>
+<job label="Client Arrangements Report" id="G1CR44"/>
+<job label="Inactive Client Deletion Rprt." id="G1CR52"/>
+</group>
+<group label="Client Designations">
+<job label="G/L Modifier Validation Report" id="G1CR23"/>
+<job label="Client's Own Order # Series" id="G1CR24"/>
+<job label="Client's Own BOL # Series" id="G1CR25"/>
+<job label="Order Types" id="G1CR29"/>
+<job label="Generic Classification Codes" id="G1CR32"/>
+<job label="System-Generated Lots,Maintain" id="G1CR33"/>
+<job label="Distribution Analysis Clients" id="G1CR34"/>
+<job label="Clients for Order Monitoring" id="G1CR35"/>
+</group>
+<group label="Inventory Related Reports">
+<job label="Client Rates Report" id="G1CR48"/>
+<job label="Inactive Rates-Deletion/Report" id="G1CR50"/>
+<job label="Current Computer Generated #'s" id="G1CR54"/>
+<job label="Product / Charges Changes Log" id="G1CR61"/>
+<job label="Delete Product if Zero Balance" id="G1CR67"/>
+</group>
+</System>
+<System label="Dispatch System               ">
+<group label="Shipments">
+<job label="Dispatch Ticket Entry" id="G1DP04"/>
+<job label="Additional Dispatch Info." id="G1DP02"/>
+<job label="Generate Future Shipment Order" id="G1DP03"/>
+<job label="Dispatch Tickets - Batch Print" id="G1DP12"/>
+<job label="Master Probill - Setup" id="G1DP14"/>
+<job label="Container Dispatch Entry" id="G1DP28"/>
+</group>
+<group label="Manifests">
+<job label="Manifest - Maintain" id="G1DP05"/>
+<job label="Manifest - Auto. Generation" id="G1DP06"/>
+<job label="Manifest Printing" id="G1DP07"/>
+</group>
+<group label="Lookup &amp; Tracing">
+<job label="Shipment Inquiry" id="G1DP10"/>
+<job label="Shipments by Location" id="G1DP15"/>
+<job label="Dispatch Action Display" id="G1DP16"/>
+<job label="Shipments by Route" id="G1DP19"/>
+<job label="Manifest Inquiry" id="G1DP18"/>
+</group>
+<group label="Dispatch">
+<job label="Dispatch Action Display" id="G1DP16"/>
+</group>
+<group label="Rail Car">
+<job label="Railcar Processing Report" id="G1DP87"/>
+</group>
+<group label="Pallet Control">
+<job label="Pallet Movement - Print" id="G1DP34"/>
+<job label="Pallet Types" id="G1DP36"/>
+</group>
+<group label="EDI Operations">
+<job label="214 Shipment Status Queue" id="G1DP51"/>
+<job label="204/214 EDI Partner Profiles" id="G1DP53"/>
+<job label="Shipment Status Reason Codes" id="G1DP50"/>
+<job label="Manifest Status Reason Codes" id="G1DP54"/>
+</group>
+<group label="Reports">
+<job label="Per Diem Report" id="G1DP39"/>
+<job label="Shipment Transit Analysis" id="G1DP40"/>
+<job label="Empty Runs Report" id="G1DP41"/>
+<job label="Delivery Detention Report" id="G1DP42"/>
+<job label="Inactive Equipment Report" id="G1DP43"/>
+<job label="Dispatch Report - Shipments" id="G1DP44"/>
+<job label="Dispatch Report - Equipment" id="G1DP45"/>
+<job label="Dispatch Report - Drivers" id="G1DP46"/>
+<job label="Shipment Cost Analysis" id="G1DP47"/>
+<job label="Dispatch Report - Trips" id="G1DP48"/>
+<job label="Inconsistent Mileage Report" id="G1DP49"/>
+</group>
+<group label="Periodic Routines">
+</group>
+<group label="Codes">
+<job label="Equipment" id="G1DP60"/>
+<job label="Drivers" id="G1DP64"/>
+</group>
+<group label="Setups">
+<job label="Routes" id="G1DP69"/>
+<job label="Carrier Assignment Grids" id="G1DP70"/>
+<job label="Carrier Groups" id="G1DP71"/>
+<job label="Location Distance and ETA" id="G1DP79"/>
+</group>
+<group label="System Parameters">
+</group>
+</System>
+<System label="Diagnostic System">
+<group label="Order/Inventory Diagnostic">
+<job label="Print Inventory Diagnostics" id="G1DS21"/>
+<job label="File Maintenance Report" id="G1DS23"/>
+<job label="Inventory Diagnostics EventLog" id="G1DS31"/>
+</group>
+<group label="Recurring and M/E Check">
+<job label="Customer Activity-Dates Check" id="G1DS80"/>
+<job label="Month-End Diagnostic Report" id="G1DS81"/>
+</group>
+<group label="Locations">
+</group>
+<group label="Other">
+</group>
+</System>
+<System label="EDI Data Capture">
+</System>
+<System label="File Maintenance">
+<group label="Client/Carrier/Customer">
+<job label="Clients / Carriers" id="G1FM15"/>
+<job label="Consignees / Customers" id="G1FM13"/>
+<job label="Miscellaneous Charges - Table" id="G1FM19"/>
+<job label="Accessorials - Client/Carrier" id="G1FM93"/>
+<job label="Client-Specific Data" id="G1FM96"/>
+</group>
+<group label="Standard Codes">
+<job label="Range Codes" id="G1FM80"/>
+<job label="Branch Codes" id="G1FM81"/>
+<job label="Revenue Analysis - Codes" id="G1FM14"/>
+<job label="Billing Cycles" id="G1FM17"/>
+<job label="Sales Regions" id="G1FM83"/>
+<job label="Commission Codes" id="G1FM32"/>
+<job label="Salespersons" id="G1FM84"/>
+<job label="Discount Codes" id="G1FM30"/>
+<job label="Class - Freight" id="G1FM63"/>
+<job label="Freight Description Codes" id="G1FM65"/>
+<job label="Operator Codes" id="G1FM69"/>
+<job label="Hazard Messages" id="G1FM67"/>
+<job label="Command Names" id="G1FM95"/>
+</group>
+<group label="Location Codes">
+<job label="Locations" id="G1FM85"/>
+<job label="Locations - Distance" id="G1FM88"/>
+</group>
+<group label="Maintain Display Selector">
+<job label="File Codes" id="G1FM57"/>
+<job label="Data Dictionary (Field Codes)" id="G1FM50"/>
+<job label="Form Codes" id="G1FM51"/>
+<job label="Sort Codes" id="G1FM52"/>
+<job label="File Structure Codes" id="G1FM53"/>
+<job label="Display Codes" id="G1FM56"/>
+<job label="Screen Codes" id="G1FM54"/>
+<job label="Screen Group Codes" id="G1FM55"/>
+<job label="Action Command Codes" id="G1FM58"/>
+<job label="Action Display" id="G1FM59"/>
+<job label="Pull-Down Menus and Buttons" id="G1FM60"/>
+</group>
+<group label="Start-Up">
+<job label="Data Dictionary (Field Codes)" id="G1FM50"/>
+<job label="Data Dictionary (Field Codes)" id="G1FM50"/>
+</group>
+<group label="Conversion">
+</group>
+<group label="Interface">
+<job label="External Charge Tables" id="G1FM20"/>
+</group>
+<group label="Configuration">
+</group>
+</System>
+<System label="Foreign Trade Zone            ">
+<group label="Reports">
+<job label="FTZ Annual Report" id="G1FZ71"/>
+</group>
+<group label="Modify CF Information">
+</group>
+<group label="Setups">
+</group>
+</System>
+<System label="General Ledger                ">
+<group label="Journals and Vouchers">
+<job label="Standard Journals - Post" id="G1GL31"/>
+<job label="Standard Journals - List" id="G1GL32"/>
+<job label="Journal Vouchers - Post" id="G1GL42"/>
+</group>
+<group label="Reporting Units">
+<job label="Reporting Units - Define" id="G1GL71"/>
+</group>
+<group label="Design Financial Statements">
+<job label="Report Parameters - Print" id="G1GL81"/>
+<job label="Report Parameters - Verify" id="G1GL86"/>
+</group>
+<group label="Generate &amp; Print Statements">
+<job label="Report - Print" id="G1GL83"/>
+<job label="Report Set - Print" id="G1GL85"/>
+</group>
+<group label="Month/Year End Closing">
+<job label="Preliminary/Final G/L - Report" id="G1GL48"/>
+<job label="YTD Transaction History" id="G1GL95"/>
+<job label="Fiscal Year-End" id="G1GL96"/>
+</group>
+<group label="Inquiry and Reports">
+<job label="Chart of Accounts - Print" id="G1GL07"/>
+<job label="Postings to Closed Periods" id="G1GL44"/>
+<job label="Selected GL Transactions Print" id="G1GL45"/>
+<job label="G/L Open Period - Report" id="G1GL49"/>
+<job label="Account - Inquiry" id="G1GL60"/>
+<job label="G/L Balance, Specified Dates" id="G1GL62"/>
+</group>
+<group label="Month/Year End Closing">
+<job label="G/L Error Transactions -Report" id="G1GL69"/>
+<job label="Postings to Closed Periods" id="G1GL44"/>
+<job label="Preliminary/Final G/L - Report" id="G1GL48"/>
+<job label="YTD Transaction History" id="G1GL95"/>
+<job label="Fiscal Year-End" id="G1GL96"/>
+</group>
+<group label="Set-up and Maintenance">
+<job label="Divisions" id="G1GL05"/>
+<job label="Chart of Accounts - Print" id="G1GL07"/>
+</group>
+<group label="Set up Sub-ledger">
+<job label="Sub-Ledger - Link to G/L Acct." id="G1GL15"/>
+<job label="Sub-Ledger - Categories" id="G1GL16"/>
+</group>
+<group label="Sub-ledger Report">
+<job label="Sub-Ledger - Reports" id="G1GL63"/>
+</group>
+<group label="Start-up">
+<job label="Journal Vouchers - Post" id="G1GL42"/>
+<job label="Preliminary/Final G/L - Report" id="G1GL48"/>
+</group>
+<group label="Configuration">
+</group>
+<group label="Upgrade FI GL to A32 Version">
+</group>
+<group label="Upgrade from A32 to A33">
+</group>
+<group label="Upgrade from A33 to A35">
+</group>
+<group label="Upgrade A34 to Open Year-End">
+</group>
+<group label="Upgrade from A34 to A35">
+</group>
+<group label="Conver. to Intercompany Post.">
+</group>
+</System>
+<System label="History File System">
+<group label="Inquiries">
+<job label="Receipt Invoice" id="G1HF01"/>
+<job label="Recurring Invoice" id="G1HF02"/>
+<job label="Accessorial Invoice" id="G1HF03"/>
+<job label="Shipped Order" id="G1HF04"/>
+<job label="Receipt" id="G1HF05"/>
+</group>
+<group label="Setups">
+<job label="Setup Program" id="G1HF99"/>
+</group>
+</System>
+<System label="Hazardous Materials           ">
+<group label="Product Setup">
+<job label="Print Product Code Setup" id="G1HM02"/>
+</group>
+<group label="Table Maintenance">
+<job label="Manufacturer File" id="G1HM20"/>
+</group>
+<group label="Optional Table Maintenance">
+</group>
+<group label="Reports">
+<job label="Stock Balance" id="G1HM31"/>
+</group>
+<group label="Sara Title III">
+<job label="Container Types" id="G1HM27"/>
+<job label="Sara Title III Report" id="G1HM70"/>
+</group>
+<group label="System Maintenance">
+</group>
+</System>
+<System label="Inventory Control">
+<group label="General Reporting">
+<job label="Purge Life-to-Date Activity" id="G1IC01"/>
+<job label="Inventory Product List" id="G1IC02"/>
+<job label="Activity Reports - On Request" id="G1IC03"/>
+<job label="Activity Reports - Period-End" id="G1IC04"/>
+<job label="Product / Lot Stock Balances" id="G1IC07"/>
+<job label="Activity Reports by Lot Seq." id="G1IC23"/>
+<job label="Stock Balances by Location" id="G1IC10"/>
+<job label="Product Activity Reporting" id="G1IC06"/>
+<job label="Stock Balances by Lot Sequence" id="G1IC27"/>
+</group>
+<group label="Sub-Unit Reporting">
+<job label="On-Hand Unit ID Report" id="G1IC08"/>
+<job label="Purge Archived Unit IDs" id="G1IC09"/>
+</group>
+<group label="Additional Reporting">
+<job label="Life-to-Date Expired Lots Rept" id="G1IC11"/>
+<job label="Below Minimum Levels Report" id="G1IC12"/>
+<job label="Products / Rates Report" id="G1IC16"/>
+<job label="Product Status Report" id="G1IC18"/>
+<job label="Lot Balances by Lot Number" id="G1IC25"/>
+<job label="Activity by Source/Destination" id="G1IC26"/>
+<job label="Product Summary Activity" id="G1IC30"/>
+<job label="Product Transaction Analysis" id="G1IC31"/>
+<job label="Lot Holds Report" id="G1IC35"/>
+<job label="Product Availability/Warehouse" id="G1IC46"/>
+<job label="Shelf Life Critical Report" id="G1IC47"/>
+<job label="Aged Lots Report" id="G1IC48"/>
+<job label="Physical Stock-Taking Report" id="G1IC50"/>
+</group>
+</System>
+<System label="Client Invoice Processing">
+<group label="Create">
+<job label="Access'l Chg/Credit -Immediate" id="G1IP13"/>
+</group>
+<group label="Trial">
+<job label="Recurring Storage -Inv.Preview" id="G1IP22"/>
+<job label="Accessorials -Invoices Preview" id="G1IP24"/>
+</group>
+<group label="Generate">
+</group>
+<group label="Print">
+<job label="Recurring Storage - Invoices" id="G1IP52"/>
+<job label="Accessorial Charges - Invoices" id="G1IP53"/>
+</group>
+<group label="Inquiry">
+</group>
+<group label="Audit">
+<job label="Register - Shipments" id="G1IP90"/>
+<job label="Register - G/L by Invoice No." id="G1IP91"/>
+<job label="Daily Sales - Report" id="G1IP92"/>
+<job label="Cyclical and Access'l Charges" id="G1IP93"/>
+</group>
+<group label="Removal">
+</group>
+</System>
+<System label="Carrier Interline Payables    ">
+<group label="Payable by Manifest">
+<job label="Manifest Payables - Query" id="G1IT02"/>
+<job label="Manifest Payables - Reconcile" id="G1IT12"/>
+<job label="Manifest Payables - Savings" id="G1IT15"/>
+<job label="Manifest Payables - Register" id="G1IT20"/>
+<job label="Manifests (by Carrier) Report" id="G1IT25"/>
+<job label="Manifest Accrual Cost Report" id="G1IT30"/>
+</group>
+<group label="Payable by Individual Probill">
+<job label="Probill Payables - Analysis" id="G1IT21"/>
+<job label="Probill Payables - Reconcile" id="G1IT22"/>
+<job label="Probill Payables - Batch Appr." id="G1IT23"/>
+<job label="Probill Payables - Register" id="G1IT24"/>
+</group>
+<group label="Setup">
+</group>
+</System>
+<System label="Label Interface               ">
+<group label="Receiving">
+</group>
+<group label="Shipping Labels">
+<job label="MH10 Label Print/Audit Report" id="G1LI86"/>
+</group>
+<group label="Receiving Labels">
+</group>
+<group label="MH10 Labels">
+</group>
+<group label="Printers and Labels">
+<job label="Printer Names" id="G1LI90"/>
+<job label="Label Format Codes" id="G1LI91"/>
+<job label="Directory To Drop Labels Into" id="G1LI92"/>
+</group>
+<group label="Receiving">
+</group>
+</System>
+<System label="Management Reporting">
+<group label="Tonnage">
+<job label="Warehouse Volume Analysis" id="G1MR06"/>
+<job label="Tonnage In and Out Report" id="G1MR11"/>
+<job label="Display Client Analysis" id="G1MR12"/>
+<job label="Client Analysis Report" id="G1MR13"/>
+</group>
+<group label="Inquiry">
+</group>
+<group label="Sales Reporting">
+<job label="Sales Report" id="G1MR89"/>
+<job label="Revenue - Unbilled and Billed" id="G1MR32"/>
+</group>
+<group label="Sales Budgeting">
+<job label="Budget Worksheets" id="G1MR43"/>
+<job label="Actuals vs. Budgets" id="G1MR44"/>
+</group>
+<group label="Shipment Reporting">
+<job label="Distribution Analysis Report" id="G1MR50"/>
+<job label="Product NMFC by Client" id="G1MR52"/>
+<job label="Order Monitoring Report" id="G1MR53"/>
+<job label="Client Activity Recap Report" id="G1MR54"/>
+<job label="Client Product Analysis" id="G1MR55"/>
+<job label="Unearned Outbound Handling" id="G1MR57"/>
+</group>
+<group label="Inquiry">
+<job label="Sales Activities Inquiry" id="G1MR71"/>
+</group>
+<group label="Setup">
+</group>
+</System>
+<System label="Warehouse Order Entry">
+<group label="Outbound Activity">
+<job label="Print BOL with Signature" id="G1OE15"/>
+<job label="Enter Orders (Shipping)" id="G1OE01"/>
+<job label="Enter Shipped Orders" id="G1OE21"/>
+<job label="Print Shipping Documents" id="G1OE03"/>
+<job label="Pick Confirmation" id="G1OE06"/>
+<job label="Print Shipping Labels" id="G1OE07"/>
+<job label="Orders On-Hold Report" id="G1OE10"/>
+<job label="Confirm or Modify Shipments" id="G1OE20"/>
+<job label="Modify Shipments" id="G1OE28"/>
+<job label="Shipping Schedule" id="G1OE79"/>
+</group>
+<group label="Master Order Documents">
+<job label="Master Pick Document" id="G1OE81"/>
+<job label="Master Pick Document - Print" id="G1OE82"/>
+<job label="Master BOL Document" id="G1OE83"/>
+<job label="Master BOL Document - Print" id="G1OE84"/>
+<job label="Open Master Document Report" id="G1OE85"/>
+</group>
+<group label="Deferred Order Analysis">
+<job label="Deferred Orders - Audit" id="G1OE92"/>
+<job label="Deferred Orders - Report" id="G1OE94"/>
+<job label="Client Fill Report" id="G1OE95"/>
+<job label="Cut Items Report" id="G1OE90"/>
+<job label="Committed Orders Report" id="G1OE93"/>
+</group>
+</System>
+<System label="Order Analysis and Adjustments">
+<group label="Order Analysis">
+<job label="Daily Sales Orders - Report" id="G1OR10"/>
+<job label="Shipping Documents Status" id="G1OR11"/>
+<job label="Open Orders - Report" id="G1OR12"/>
+<job label="Order Discrepancy - List" id="G1OR13"/>
+<job label="Shipped Orders - Report" id="G1OR14"/>
+<job label="Daily Summary of Orders" id="G1OR16"/>
+<job label="Products / Rates - Audit" id="G1OR18"/>
+</group>
+<group label="Inventory Adjustments">
+<job label="Lots - Maintain / Adjust" id="G1OR20"/>
+<job label="Holds - Adjustments" id="G1OR21"/>
+<job label="Holds - Set up Automatic" id="G1OR22"/>
+<job label="Inventory Adjustment Report" id="G1OR23"/>
+<job label="Billing Adjustments - Audit" id="G1OR26"/>
+<job label="Lot Billing Profile - Adjust" id="G1OR27"/>
+<job label="Unit ID - Rename" id="G1OR28"/>
+<job label="Stock Status - Unreconciled" id="G1OR24"/>
+</group>
+<group label="Sales Adjustments">
+<job label="Check for Minimum Billing" id="G1OR33"/>
+</group>
+<group label="Tonnage &amp; Activity Analysis">
+</group>
+<group label="Government Reports">
+<job label="Government Reports - Print" id="G1OR71"/>
+</group>
+<group label="Inquiries">
+<job label="Unit ID - Inquiry" id="G1OR48"/>
+<job label="Location History - Inquiry" id="G1OR49"/>
+</group>
+<group label="Reports">
+<job label="Detailed Shipped Orders Report" id="G1OR15"/>
+<job label="Dock Cut Report" id="G1OR19"/>
+<job label="Stock Availability" id="G1OR51"/>
+<job label="Archived Unit ID Report" id="G1OR52"/>
+<job label="Loose Stock Report" id="G1OR53"/>
+<job label="Conveyance Activity Print" id="G1OR55"/>
+</group>
+</System>
+<System label="Pallet Control                ">
+<group label="Operations">
+<job label="Enter Pallet Adj/Shp/Rct" id="G1PC01"/>
+</group>
+<group label="Reports">
+<job label="Activity Report" id="G1PC20"/>
+<job label="Pallet Exception Report" id="G1PC22"/>
+<job label="Month-End Report and Clearing" id="G1PC30"/>
+<job label="Account Code Listing" id="G1PC50"/>
+<job label="Transaction Listing" id="G1PC51"/>
+</group>
+<group label="Setups">
+<job label="Pallet Types" id="G1PC81"/>
+<job label="Account Parameters Report" id="G1PC89"/>
+</group>
+</System>
+<System label="Physical Inventory            ">
+<group label="Preparation">
+<job label="Tickets - Print by Tier" id="G1PI18"/>
+<job label="Count - Maintain/Generate" id="G1PI20"/>
+<job label="Cycle Count Statistics Inquiry" id="G1PI21"/>
+<job label="Tickets - Print" id="G1PI28"/>
+</group>
+<group label="Processing">
+</group>
+<group label="Reporting &amp; Validation">
+<job label="Uncounted Stock Report" id="G1PI39"/>
+<job label="A/B Ticket Discrepancy Reports" id="G1PI40"/>
+<job label="A vs B Variances - Report" id="G1PI53"/>
+<job label="Physical Tag Balances - Report" id="G1PI55"/>
+<job label="Missing Tickets-Report" id="G1PI51"/>
+<job label="Physical vs Book - Report" id="G1PI56"/>
+<job label="PI Diagnostics" id="G1PI60"/>
+<job label="Item Reconciliation Report" id="G1PI71"/>
+<job label="Display Count History" id="G1PI79"/>
+</group>
+<group label="Abort">
+</group>
+<group label="Update">
+<job label="Count - Update" id="G1PI72"/>
+</group>
+<group label="Purge">
+</group>
+<group label="Configuration &amp; Set-up">
+<job label="Cycle Count Class" id="G1PI91"/>
+<job label="Assign Cycle Count Class" id="G1PI92"/>
+</group>
+</System>
+<System label="Rate Tables Setup">
+<group label="Active Rates">
+<job label="Rate Tables" id="G1RA19"/>
+<job label="Rate Table - Pointers" id="G1RA30"/>
+<job label="Rates - Lookup" id="G1RA42"/>
+<job label="Tariff Codes" id="G1RA22"/>
+</group>
+<group label="Pending Rates">
+<job label="Rate Tables - Pending" id="G1RA27"/>
+</group>
+<group label="Other Features">
+<job label="Billing Revenue - Separate G/L" id="G1RA32"/>
+<job label="Discounts by Destination" id="G1RA31"/>
+<job label="Payable + Fee Billing" id="G1RA40"/>
+<job label="Tariffs -Assign to Client/Carr" id="G1RA37"/>
+<job label="Carrier Tariff by Client" id="G1RA45"/>
+<job label="Rate Quotes" id="G1RA50"/>
+<job label="Extra Payables" id="G1RA47"/>
+</group>
+</System>
+<System label="Receiving Processes           ">
+<group label="Inbound Freight Schedules">
+<job label="Appointment Log" id="G1RE01"/>
+<job label="Outstanding Appointments-Print" id="G1RE02"/>
+<job label="Appointment Activity Report" id="G1RE04"/>
+</group>
+<group label="In-Transit Receipts">
+<job label="In-Transit Receipts - Print" id="G1RE12"/>
+<job label="In-Transit Receipts - Purge" id="G1RE13"/>
+<job label="In-Transit Receipt Status Rept" id="G1RE14"/>
+</group>
+<group label="Pre-Receipts">
+<job label="Returned Goods BOL - Print" id="G1RE15"/>
+<job label="In-Transit Lots - Incomplete" id="G1RE17"/>
+</group>
+<group label="Receipts - Unrated">
+<job label="Receipts" id="G1RE21"/>
+<job label="Receipts - Print" id="G1RE22"/>
+<job label="Putaway Tally Receipts - Print" id="G1RE23"/>
+</group>
+<group label="Receipts - Rate and Invoice">
+<job label="Receipt Invoices" id="G1RE31"/>
+<job label="Receipt Invoices - Print" id="G1RE32"/>
+</group>
+<group label="Reports">
+<job label="Open Receipts Report" id="G1RE41"/>
+<job label="In-Transit vs Receipt Variance" id="G1RE80"/>
+</group>
+<group label="Blast Freezing">
+<job label="Take Readings Report" id="G1RE52"/>
+<job label="Lot Pull Report" id="G1RE53"/>
+</group>
+<group label="Setups">
+<job label="Receipt Number Ranges" id="G1RE91"/>
+<job label="In-Transit Number Ranges" id="G1RE92"/>
+<job label="Receipt Type" id="G1RE93"/>
+</group>
+</System>
+<System label="Radio Frequency Module">
+<group label="Operations">
+<job label="R.F. Menu" id="G1RF01"/>
+<job label="R.F. Exception Report" id="G1RF11"/>
+<job label="Shipment ID Report" id="G1RF55"/>
+</group>
+<group label="Shipment Conveyance">
+<job label="Shipment ID Report" id="G1RF55"/>
+</group>
+<group label="Utilities">
+</group>
+<group label="Parameters">
+</group>
+</System>
+<System label="Responsibility Management">
+</System>
+<System label="Reporting System (Sales)">
+<group label="Client Sales Reports">
+<job label="Sales - 24-Month, Detail" id="G1RS30"/>
+<job label="Sales - 12-Month, Summary" id="G1RS31"/>
+<job label="Sales - Month-to-Date, Report" id="G1RS33"/>
+<job label="Sales - Prior-Year, Report" id="G1RS34"/>
+</group>
+<group label="Client Tonnage Reports">
+<job label="Tonnage - 24-Month, Details" id="G1RS40"/>
+<job label="Tonnage - 12-Month, Summary" id="G1RS41"/>
+<job label="Tonnage - Month-to-Date,Report" id="G1RS43"/>
+<job label="Tonnage - Prior-Year, Report" id="G1RS44"/>
+</group>
+<group label="Sales Analysis">
+<job label="Activity - Client / Carrier" id="G1RS02"/>
+<job label="Consolidated Savings - Report" id="G1RS06"/>
+<job label="Rank - Shipper/Consignee $/Cwt" id="G1RS64"/>
+<job label="Rank - Client by Freight Class" id="G1RS04"/>
+<job label="Sales - By Region" id="G1RS10"/>
+<job label="Sales - By Freight Class" id="G1RS20"/>
+<job label="Sales - Shippers/Consignees" id="G1RS63"/>
+<job label="Sales - Compare Branches" id="G1RS59"/>
+<job label="Sales - Compare Clients" id="G1RS60"/>
+</group>
+<group label="Setup">
+</group>
+</System>
+<System label="Warehouse Floor Management    ">
+<group label="Queries/Reports">
+<job label="Order Status Display/Report" id="G1SF56"/>
+<job label="Order Status History" id="G1SF81"/>
+<job label="Receipt Status History" id="G1SF82"/>
+</group>
+<group label="Maintenance">
+<job label="Order Status Codes" id="G1SF15"/>
+<job label="Receipt Status Codes" id="G1SF16"/>
+</group>
+</System>
+<System label="Stock Location System">
+<group label="Adjustments">
+<job label="Location Moves - Print" id="G1SL02"/>
+<job label="Conveyance Adjustment (Move)" id="G1SL05"/>
+</group>
+<group label="Displays">
+<job label="Empty Locations - Display" id="G1SL22"/>
+</group>
+<group label="Reports">
+<job label="Location Contents Report" id="G1SL50"/>
+<job label="Replenishment Report" id="G1SL51"/>
+<job label="Inventory List - Pick Sequence" id="G1SL52"/>
+<job label="VPP Error Report" id="G1SL54"/>
+</group>
+<group label="Location Definition">
+<job label="Locations" id="G1SL90"/>
+<job label="Aisle Sides - Create" id="G1SL92"/>
+<job label="Pick-Line Products" id="G1SL95"/>
+<job label="Purge Archived Conveyances" id="G1SL97"/>
+</group>
+<group label="Warehouse Definition">
+</group>
+<group label="Parameters - Area Related">
+</group>
+<group label="Parameters - Product Related">
+</group>
+<group label="Locations - Definition">
+<job label="Aisle Sides - Create" id="G1SL92"/>
+<job label="Locations" id="G1SL90"/>
+</group>
+<group label="Preference Profiles">
+</group>
+<group label="Verified/Active Enable">
+<job label="Space Management Control" id="G1SL99"/>
+</group>
+</System>
+<System label="Job Streaming / Print Spooling">
+</System>
+<System label="Turns Analysis                ">
+<group label="Reporting">
+<job label="Enter Turns Budgets" id="G1TU02"/>
+<job label="Print Turns Report" id="G1TU10"/>
+</group>
+<group label="Generation">
+</group>
+<group label="Setup">
+</group>
+<group label="System Start-up">
+</group>
+</System>
+<System label="Warehousing Profiles">
+<group label="Step 1 - Client Defaults">
+<job label="Terms Codes" id="G1WP21"/>
+<job label="Account Managers" id="G1WP22"/>
+<job label="Billing and Inventory Dates" id="G1WP23"/>
+<job label="Storage Schemas" id="G1WP24"/>
+<job label="Measuring Units" id="G1WP71"/>
+</group>
+<group label="Step 2 - Profiles">
+<job label="Pick Confirmation Profiles" id="G1WP97"/>
+<job label="Location History Setup/Client" id="G1WP42"/>
+<job label="Shipping Label Printing" id="G1WP79"/>
+</group>
+<group label="Step 3 - Mandatory Codes">
+<job label="Warehouses" id="G1WP11"/>
+<job label="Revenue Analysis Codes" id="G1WP31"/>
+<job label="Mandatory Charge Codes" id="G1WP74"/>
+<job label="Shipping Document Forms" id="G1WP78"/>
+</group>
+<group label="Step 4 - Reporting Dates">
+</group>
+<group label="Step 5 - Printers">
+<job label="Assign Printers for Ghost" id="G1WP12"/>
+</group>
+<group label="Step 6 - Lotting Setups">
+<job label="Global Lot Components" id="G1WP43"/>
+<job label="Lotting Data Sets" id="G1WP44"/>
+<job label="Lotting Assignments" id="G1WP46"/>
+<job label="Commit Pre-check Report" id="G1WP49"/>
+</group>
+<group label="System Profiles">
+</group>
+</System>
+</root>

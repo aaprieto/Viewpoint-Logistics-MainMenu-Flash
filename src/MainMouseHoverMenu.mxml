@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Specials.mxml -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+        showCloseButton="true"
+        close="titleWindow_close(event);" x="500" y="180" width="496"  
+        creationComplete="init(event);" 
+        dropShadowEnabled="true"
+        borderAlpha="1.0"
+        layout="horizontal"
+        color="#010101"
+        backgroundImage="image/Blue1.png" title="Help Menu" fontSize="14">
+ 
+ <mx:HTTPService
+		id="http_mousehover"
+		url="ae_tlch_xmlreq.php" 
+		result="MouseHoverPopUpHandler(event)"
+		fault="MouseHoverPopUpHandlerfaultHandler(event)" 
+		method="POST"
+		contentType="application/xml"
+		
+		
+>
+		<mx:request>
+			<ezware_request>
+				<action>refreshData</action>
+				<company>{loc_ccode}</company>
+				<sid>{loc_sid}</sid>
+				<parameters>{req_parms}</parameters>
+				<systemAndJob></systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+	
+ <mx:Script> 
+ 	<![CDATA[
+ 		import mx.core.Application;
+ 		import mx.collections.ArrayCollection;
+ 			import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+		 	import mx.rpc.events.*; 
+		 	import mx.controls.*;
+		 	import mx.events.FlexMouseEvent;
+		 	import mx.utils.ArrayUtil;
+			import mx.utils.ObjectProxy;
+			
+		 	[Bindable]
+		 	public var helpfortitle:String;
+		 	[Bindable]
+		 	public var helpfortitleheader:String;
+		 	[Bindable]
+		 	public var object_type:String;
+		 	[Bindable]
+			public var item_code:String;
+		 
+		 	[Bindable]
+		 	public var req_parms:String;
+		 	/* passed object_type:
+		 		1.  SYSTEMS
+		 		2.  SUBSYSTEMS
+		 		3.  JOB
+		 	*/
+		 	[Bindable]
+		 	public var loc_ccode:String;
+		 
+		 	[Bindable]
+		 	public var loc_sid:String;
+		
+		 	[Bindable]
+		 	public var adcode:String;
+		 	private var helpWindow:TitleWindow;
+		 	public var ArrMH:ArrayCollection;
+		 	[Bindable]
+		 	private var mousepassedtitle:String = new String;
+
+ 		    private function titleWindow_close(evt:Event):void { 
+ 			//	parentApplication.mbctr = 0;
+                PopUpManager.removePopUp(this);
+           }
+            private function init(evt:Event):void {
+				//Alert.show(app_mylog);
+				//Alert.show("Check 1" +parentApplication.app_mylog);     
+				//Alert.show("Check 2" + item_code);  
+				//Alert.show(loc_ccode); 
+			
+				httpRequestUrlmmhm(parentApplication.app_mylog);  
+				//Alert.show("go here: " + parentApplication.app_mylog);     
+			
+				
+				var aloc_appcode:String = "";
+				
+				if (parentApplication.app_mylog == "ml"){
+					aloc_appcode = "ml-";	
+				} else {
+					aloc_appcode = "";	
+				}
+				
+				 
+            	 req_parms = "REFRESH,RETRIEVE|VISUALOBJ|" + object_type + "|" + aloc_appcode + item_code + "|";
+				 //Alert.show(req_parms);
+				 //req_parms = "REFRESH,RETRIEVE|VISUALOBJ|" + object_type + "|" + aloc_appcode + "|" + item_code + "|";
+				
+            	 http_mousehover.send();  
+          				
+          				//Alert.show(object_type);
+          				//if ((object_type == 'COLUMN') || (object_type == 'BUTTON_AG')){
+          					mousepassedtitle = helpfortitleheader;
+          				
+          				//} else {
+          				//	mousepassedtitle = helpfortitle;
+          				//}
+          				 //Alert.show(mousepassedtitle);
+          	
+            /*	
+            	if (object_type == 'COLUMN'){
+            	 req_parms = "REFRESH,RETRIEVE|VISUALOBJ|" + object_type + "|" + helpfortitle + "|" + adcode + "|";
+            	}else{
+            	 req_parms = "REFRESH,RETRIEVE|VISUALOBJ|" + object_type + "|" + helpfortitle + "|";
+            	}
+            	 http_mousehover.send();
+          				
+          				//Alert.show(object_type);
+          				if ((object_type == 'COLUMN') || (object_type == 'BUTTON_AG')){
+          					mousepassedtitle = helpfortitleheader;
+          				
+          				} else {
+          					mousepassedtitle = helpfortitle;
+          				}
+          				 //Alert.show(mousepassedtitle);
+          	*/			
+           }
+		private var myAlert:Alert =  new Alert;
+          	private function MouseHoverPopUpHandler(evt:ResultEvent):void
+			{
+				
+			
+						
+					if (evt.result.ezware_response.status == "OK"){
+				
+ 						ArrMH = new ArrayCollection();
+ 	
+ 						if (evt.result.ezware_response.refresh_data.hovers.hover == null)
+            			{
+                			ArrMH=new ArrayCollection()
+            			}
+            			else if (evt.result.ezware_response.refresh_data.hovers.hover is ArrayCollection)
+            			{
+              				ArrMH=evt.result.ezware_response.refresh_data.hovers.hover;
+            			}
+            			else if (evt.result.ezware_response.refresh_data.hovers.hover is ObjectProxy)
+            			{
+               				ArrMH = new ArrayCollection(ArrayUtil.toArray(evt.result.ezware_response.refresh_data.hovers.hover)); 
+            			}
+						
+							ArrMH.refresh(); 
+							
+					/////////////////////////////////////////////////////////////
+							
+					}else if (evt.result.ezware_response.status == "EXPIRED"){
+						Alert.buttonWidth =141; 
+						myAlert = Alert.show("Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.");  
+						myAlert.setStyle("backgroundColor", '#C3D9FA');
+						myAlert.setStyle("borderColor", 0xffffff);
+						myAlert.setStyle("borderAlpha", 0.75);
+						myAlert.setStyle("fontSize", 14); 
+						myAlert.setStyle("fontWeight", "bold");
+						myAlert.setStyle("color", 0x000000); // text color
+						titleWindow_close(evt);
+						return;
+					}else if (evt.result.ezware_response.status == "FAIL"){
+						Alert.buttonWidth =141;
+						myAlert = Alert.show(evt.result.ezware_response.reason + ". Please log out and log back in again to create a new session.");  
+						myAlert.setStyle("backgroundColor", '#C3D9FA');    
+						myAlert.setStyle("borderColor", 0xffffff);
+						myAlert.setStyle("borderAlpha", 0.75);
+						myAlert.setStyle("fontSize", 14); 
+						myAlert.setStyle("fontWeight", "bold");
+						myAlert.setStyle("color", 0x000000); // text color
+						titleWindow_close(evt);
+						return;
+					}
+					
+					//////////////////////////////////////////////////////////////		
+							
+							/*
+					} else if (evt.result.ezware_response.status == "FAIL"){
+						Alert.show("Retrieval failure.  Please contact your System Administrator.")
+						return;
+					} else if (evt.result.ezware_response.status == "EXPIRED"){
+						Alert.show("Session EXPIRED due to inactivity.  Please log out and log back in again to create a new session.");
+							return;
+					}
+					*/
+ 				DrawButton(evt);
+			
+		
+			}
+		private function MouseHoverPopUpHandlerfaultHandler(evt:FaultEvent):void
+		{
+			
+			var faultMessage:String = "Could not connect with e-Z Learn Menu Hover XML file checksum";
+			Alert.show(faultMessage, "Error")
+		}
+       
+       	public var newObject:MainHoverButton;
+		private function DrawButton(event:Event):void{
+			for (var i:int=0;i<ArrMH.length;i++){
+				
+				newObject = new MainHoverButton;
+				newObject.id = ArrMH[i].id;
+				newObject.label = ArrMH[i].label;
+				newObject.toolTip = ArrMH[i].tip;
+				newObject.linktype = ArrMH[i].linktype;
+				newObject.address = ArrMH[i].address;
+				newObject.dataelement = ArrMH[i].dataelement;
+				newObject.jobcode = ArrMH[i].jobcode;
+				newObject.flexcode = ArrMH[i].flexcode;
+				
+				newObject.ir_sid = loc_sid;
+				newObject.my_c_code = loc_ccode;
+				
+				vb.addChild(newObject);
+			}
+		}    
+		private function httpRequestUrlmmhm(str_app:String):void{
+			
+			
+			
+			/*  I will just leave this for vl and ml for now.  I believe there will be another one coming for the mobileweb */
+			if (str_app == 'ml'){
+				
+				
+				http_mousehover.url = 'ae_tlch_ml_req.php'; 
+				
+				
+				
+			} else {
+				
+				
+				http_mousehover.url = 'ae_tlch_xmlreq.php'; 
+			}
+			
+		}
+ 	]]>
+ </mx:Script>
+   
+    <mx:VBox id="vb" width="100%"> 
+       	<mx:Label text="{mousepassedtitle}" width="100%" textAlign="center"  fontSize="19" color="#F9FBFB" fontWeight="bold" fontFamily="Arial"/>
+
+    </mx:VBox>
+
+</mx:TitleWindow>

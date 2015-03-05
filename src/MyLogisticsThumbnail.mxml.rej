@@ -1,0 +1,28 @@
+--- src/MyLogisticsThumbnail.mxml	
++++ src/MyLogisticsThumbnail.mxml	
+@@ -108,25 +108,6 @@
+ 		</mx:request>
+ 	</mx:HTTPService>
+ 	
+-	<mx:HTTPService
+-		id="runNetView" 
+-		url="ae_tlch_xmlreq.php" 
+-		result="runNetViewHandler(event)" 
+-		method="POST"
+-		contentType="application/xml"
+-		> 
+-		<mx:request>
+-			<ezware_request>
+-				<action>refreshData</action>
+-				<company>{Application.application.comp_code}</company>
+-				<sid>{ir_sid}</sid>
+-				<parameters>REFRESH,RETRIEVE|NETVIEWURL</parameters> 
+-				<systemAndJob>{reqSJ}</systemAndJob>
+-				<version>1</version>
+-			</ezware_request>
+-		</mx:request>
+-	</mx:HTTPService>
+-
+ 	
+ 	<!-- *************************************************************************
+ 	END HTTPService Definitions for One Job per User

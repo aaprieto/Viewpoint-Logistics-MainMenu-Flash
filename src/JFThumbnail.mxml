@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
+// All Rights Reserved.
+// The following is Sample Code and is subject to all restrictions on such code
+// as contained in the End User License Agreement accompanying this product.
+// If you have received this file from a source other than Adobe,
+// then your use, modification, or distribution of it requires
+// the prior written permission of Adobe.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!-- mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+    width="520" height="350"
+    borderStyle="solid"
+    borderColor="#FFFFFF"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    click="clickHandler(event)"
+    mouseOver="mouseOverHandler(event)"
+    mouseOut="mouseOutHandler(event)" -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+    width="520" height="325"
+    borderColor="#FFFFFF"
+    borderStyle="solid"
+    horizontalScrollPolicy="off" verticalScrollPolicy="off"
+    mouseOver="mouseOverHandler(event)"
+    mouseOut="mouseOutHandler(event)"
+  	backgroundColor="white"
+     color="#FCFCFC">
+    
+
+<mx:HTTPService id="getSessionID" url="rd_getsid.php"  result="resultGetSID(event)"/>
+<mx:HTTPService
+		id="navigateJobProgram"
+		url="ae_tlch_xmlreq.php"
+		method="POST"
+		contentType="application/xml"
+		resultFormat="e4x"
+		
+> 
+		<mx:request>
+			<ezware_request>
+				<action>runJob</action>
+				<company>{my_c_code}</company>
+				<sid>{ir_sid}</sid> 
+				<parameters></parameters>
+				<systemAndJob>{reqSJ}</systemAndJob>
+				<version>1</version>
+			</ezware_request>
+		</mx:request>
+	</mx:HTTPService>
+
+    <mx:Script>
+        <![CDATA[
+        	import mx.rpc.events.ResultEvent;
+   //width="195" height="190"
+		import mx.events.*;
+        import mx.core.*;
+        import mx.controls.Alert;
+
+        [Bindable]
+        public var item:Object;
+ 		[Bindable]
+        public var my_c_code:String;
+        [Bindable]
+        public var reqSJ:String;
+        [Bindable]
+        public var ir_sid:String;
+        private function mouseOverHandler(event:MouseEvent):void
+		{
+            setStyle("borderColor", "#CCCCCC");
+            setStyle("dropShadowEnabled", "true");
+            setStyle("dropShadowColor", "#000000");
+            setStyle("shadowDistance", 6);
+        }
+
+        private function mouseOutHandler(event:MouseEvent):void
+		{
+            setStyle("borderColor", "#FFFFFF");
+            setStyle("dropShadowEnabled", "false");
+        }
+
+     /*
+        private function formatFeatures(item:Object):String
+        {
+        	var str:String = "";
+        	if (item.triband)
+        		str += "Tri-band ";
+
+    		if (item.camera)
+    			str += "Camera ";
+
+    		if (item.video)
+    			str += "Video";
+
+			return str;
+        }
+       */ 
+		public function clickRow(event:MouseEvent):void
+        {
+        	
+      
+        	
+      	//	Alert.show(adg_jf.selectedItem.job_id);
+      	//	Alert.show(adg_jf.selectedItem.job_program);
+      		
+        	
+        	if ((adg_jf.selectedItem.job_id).length == 1){
+      		//	Alert.show(item.job_program); 
+        	   // navigateToURL(new URLRequest(item.job_program),'_blank');
+        	   /*
+        	   if (item.job_program == "SYSTEMS"){
+        	    navigateToURL(new URLRequest('subsystemsmenu.php?sys=' + item.code),'_blank');
+        	   }
+        	   if (item.job_program == "SUBSYSTEMS"){
+        	    navigateToURL(new URLRequest('jobmenu.php?subsys=' + item.code),'_blank');
+        	   }
+        	   */ 
+        	  
+        	   navigateToURL(new URLRequest(adg_jf.selectedItem.job_program),'_blank');
+        	   adg_jf.selectedIndex = -1;
+        	}
+        	if ((adg_jf.selectedItem.job_id).length > 1){ 
+        		
+        		getSessionID.send();
+        	}
+        	//adg_jf.selectedIndex = -1;
+        	 
+        }
+        public function resultGetSID(evt:ResultEvent):void{
+        	var ret_sid:String = evt.result.toString();
+        	
+        	if (ret_sid.substr(0,2) == 'OK'){
+        	
+        		var int_ret_sid:int = ret_sid.length;
+        		ir_sid = ret_sid.substr(3,int_ret_sid);
+        		
+        		my_c_code = Application.application.parameters.c;
+        		if  ((adg_jf.selectedItem.job_id).length > 4){
+        			reqSJ = (adg_jf.selectedItem.job_id).substr(2,(adg_jf.selectedItem.job_id).length);
+        		} else {
+        		reqSJ = adg_jf.selectedItem.job_id;
+        		}
+        		//Alert.show(my_c_code + ":" + reqSJ);
+        		adg_jf.selectedIndex = -1;
+        		navigateJobProgram.send();
+        	}
+        }
+        /*
+        public function clickRow(evt:Event):void{
+        	Alert.show(adg_jf.selectedItem.job_id);
+        }
+        */
+
+	]]>
+    </mx:Script>
+<mx:Style source="css/main.css"/>
+    <mx:CurrencyFormatter id="cf"/>
+
+    <mx:VBox id="vb" width="100%" height="100%"
+        paddingLeft="6" paddingTop="4" paddingRight="8" paddingBottom="4"
+        verticalGap="0">
+   
+		<!-- mx:Label width="{h_image.width}" textAlign="center" text="{item.name}" fontWeight="bold" fontSize="26"/ -->
+		
+        <mx:HBox id="h_image" width="100%" height="100%" paddingTop="0" horizontalGap="4" >
+			<!-- mx:AdvancedDataGrid id="adg1" designViewDataType="tree">
+				<mx:columns>
+					<mx:AdvancedDataGridColumn headerText="Column 1" dataField="col1"/>
+					<mx:AdvancedDataGridColumn headerText="Column 2" dataField="col2"/>
+					<mx:AdvancedDataGridColumn headerText="Column 3" dataField="col3"/>
+				</mx:columns>
+			</mx:AdvancedDataGrid -->
+			<mx:AdvancedDataGrid id="adg_jf" dataProvider="{item.job}" width="100%" height="100%"  click="clickRow(event)"  fontSize="17"  borderStyle="solid" borderThickness="8">
+				<mx:columns> 
+					<mx:AdvancedDataGridColumn headerText="{item.name}" dataField="name" />
+					
+				</mx:columns>
+			</mx:AdvancedDataGrid>
+			
+		    <!-- mx:Image id="img" height="215" width="228" source="{'image/' + item.image}" / -->
+           <!-- mx:Image id="img" height="215" width="228" source="{item.image}" / -->
+
+            <!-- mx:VBox id="descr" width="100%" height="100%" verticalGap="0" paddingTop="0">
+
+				<mx:Spacer height="4"/>
+            </mx:VBox -->
+        </mx:HBox>
+    </mx:VBox>
+</mx:Canvas>

@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+$Id: wc_dashboard.mxml,v 1.11 2009/06/08 20:56:28 aprarn Exp $
+-->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="*"
+    layout="absolute"
+    preinitialize="loadStyle()"
+    creationComplete="startService();userData.send();labelData.send();initapptime();start_companycode();companyCode.send()"
+    applicationComplete="init(event)"
+    pageTitle="My Dashboard" backgroundImage="@Embed(source='image/Blue3.png')">
+
+    <mx:Script>
+    <![CDATA[
+        import mx.collections.IViewCursor; 
+        import mx.collections.ArrayCollection;
+        import samples.flexstore.Product;
+        import mx.rpc.events.ResultEvent;
+        import mx.events.StyleEvent;
+        import mx.styles.StyleManager;
+		import mx.managers.ToolTipManager;
+		import mx.utils.ObjectProxy;
+		import mx.utils.ArrayUtil;
+
+
+			//import flexlib.scheduling.scheduleClasses.utils.Selection;
+	import mx.containers.Accordion;
+	import flash.events.*;
+	import mx.rpc.events.ResultEvent;
+	import mx.controls.Alert;
+    import mx.events.CalendarLayoutChangeEvent;
+/////    import com.riaone.deval.D;
+    import mx.formatters.NumberBase;
+    import mx.events.ValidationResultEvent;
+	import mx.controls.dataGridClasses.DataGridColumn;
+	import mx.controls.DataGrid;
+   	import mx.controls.Button;
+	import mx.collections.XMLListCollection;
+   	import mx.collections.ArrayCollection;
+   	import mx.events.ItemClickEvent;
+   	import mx.collections.*;
+	import mx.rpc.events.*;
+	import mx.controls.*;
+	import mx.core.*;
+	import mx.core.IUIComponent;
+  	import mx.utils.ObjectUtil;
+    import mx.events.FlexEvent;
+	import mx.controls.TextInput;
+    import mx.events.IndexChangedEvent;
+    import mx.managers.PopUpManager;
+
+
+        [Bindable]
+        private var catalog:ArrayCollection;
+		[Bindable]
+		private var companycode:ArrayCollection;
+
+		[Bindable]
+		private var tdcompany:ArrayCollection;
+
+
+		private var current_company:String = "Company Q1";
+        private var currentTheme:String = "blue";
+
+        [Bindable]
+		public var _language:String = "English";
+		[Bindable]
+		public var lang_code:String = "001";
+		[Bindable]
+  		public var my_c_code:String;
+		private var changed_m_c_code:String;
+/*
+		public function select_lang(valueIndex:int):void
+        {
+
+                switch (valueIndex)
+                {
+                    case 0:
+                    	{
+                        _language = "English";
+                        lang_code = "001";
+                        english.alpha=0.5;
+						french.alpha=1;
+						spanish.alpha=1;
+						chinese_s.alpha=1;
+						chinese_t.alpha=1;
+						welcomePage.label=labelData.lastResult.label.home;
+						welcomePage.toolTip=labelData.lastResult.label.home;
+						bbView.label=labelData.lastResult.label.bbView;
+						alerts.label=labelData.lastResult.label.alerts;
+						respon.label=labelData.lastResult.label.respon;
+						timesheet.label=labelData.lastResult.label.timesheet;
+						pView.label=labelData.lastResult.label.jobmenu;
+						adHocQuery.label=labelData.lastResult.label.query;
+						}
+                        break;
+                    case 1:
+                    	{
+                        _language = "Français/French";
+                        lang_code = "002";
+                        english.alpha=1;
+						french.alpha=0.5;
+						spanish.alpha=1;
+						chinese_s.alpha=1;
+						chinese_t.alpha=1;
+						welcomePage.label=labelData.lastResult.label.home_fre;
+						welcomePage.toolTip=labelData.lastResult.label.home_fre;
+						bbView.label=labelData.lastResult.label.bbView_fre;
+						alerts.label=labelData.lastResult.label.alerts_fre;
+						respon.label=labelData.lastResult.label.respon_fre;
+						timesheet.label=labelData.lastResult.label.timesheet_fre;
+						pView.label=labelData.lastResult.label.jobmenu_fre;
+						adHocQuery.label=labelData.lastResult.label.query_fre;
+                        }
+                        break;
+                    case 2:
+                    	{
+                        _language = "Español/Spanish";
+                        lang_code = "003";
+                        english.alpha=1;
+						french.alpha=1;
+						spanish.alpha=0.5;
+						chinese_s.alpha=1;
+						chinese_t.alpha=1;
+						welcomePage.label=labelData.lastResult.label.home_spa;
+						welcomePage.toolTip=labelData.lastResult.label.home_spa;
+						bbView.label=labelData.lastResult.label.bbView_spa;
+						alerts.label=labelData.lastResult.label.alerts_spa;
+						respon.label=labelData.lastResult.label.respon_spa;
+						timesheet.label=labelData.lastResult.label.timesheet_spa;
+						pView.label=labelData.lastResult.label.jobmenu_spa;
+						adHocQuery.label=labelData.lastResult.label.query_spa;
+                    	}
+                        break;
+                    case 3:
+                    	{
+                        _language = "简体中文/Simplified Chinese";
+                        lang_code = "004";
+                        english.alpha=1;
+						french.alpha=1;
+						spanish.alpha=1;
+						chinese_s.alpha=0.5;
+						chinese_t.alpha=1;
+						welcomePage.label=labelData.lastResult.label.home_chi_s;
+						welcomePage.toolTip=labelData.lastResult.label.home_chi_s;
+						bbView.label=labelData.lastResult.label.bbView_chi_s;
+						alerts.label=labelData.lastResult.label.alerts_chi_s;
+						respon.label=labelData.lastResult.label.respon_chi_s;
+						timesheet.label=labelData.lastResult.label.timesheet_chi_s;
+						pView.label=labelData.lastResult.label.jobmenu_chi_s;
+						adHocQuery.label=labelData.lastResult.label.query_chi_s;
+                        }
+                        break;
+                    case 4:
+                    	{
+                        _language = "繁體中文/Traditional Chinese";
+                        lang_code = "005";
+                        english.alpha=1;
+						french.alpha=1;
+						spanish.alpha=1;
+						chinese_s.alpha=1;
+						chinese_t.alpha=0.5;
+						welcomePage.label=labelData.lastResult.label.home_chi_t;
+						welcomePage.toolTip=labelData.lastResult.label.home_chi_t;
+						timesheet.label=labelData.lastResult.label.timesheet_chi_t;
+						bbView.label=labelData.lastResult.label.bbView_chi_t;
+						alerts.label=labelData.lastResult.label.alerts_chi_t;
+						respon.label=labelData.lastResult.label.respon_chi_t;
+						pView.label=labelData.lastResult.label.jobmenu_chi_t;
+						adHocQuery.label=labelData.lastResult.label.query_chi_t;
+                         }
+                        break;
+                }
+        }
+*/
+
+        private function startService():void
+        {
+            productService.send();
+
+        }
+
+        private function loadStyle():void
+        {
+        	ToolTipManager.hideDelay = 999999999;
+            var eventDispatcher:IEventDispatcher =
+                StyleManager.loadStyleDeclarations(currentTheme + ".swf");
+            eventDispatcher.addEventListener(StyleEvent.COMPLETE, completeHandler);
+        }
+
+        private function completeHandler(event:StyleEvent):void
+        {
+
+            super.initialized = true;
+
+        }
+
+        private function productServiceResultHandler(event:ResultEvent):void
+        {
+            //HTTPService returns an ArrayCollection for nested arrays
+            var products:ArrayCollection = event.result.catalog.product;
+            var temp:ArrayCollection = new ArrayCollection();
+            var cursor:IViewCursor = products.createCursor();
+            while (!cursor.afterLast)
+            {
+                var product:Product = new Product();
+                product.fill(cursor.current);
+                temp.addItem(product);
+                cursor.moveNext();
+            }
+            catalog = temp;
+        }
+
+
+
+        override public function set initialized(value:Boolean):void
+        {
+            // Hold off until the Runtime CSS SWF is done loading.
+        }
+
+		import flash.display.StageDisplayState;
+
+			private function init(evt:Event):void {
+				/* Set up full screen handler. */
+
+				Application.application.stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenHandler);
+				dispState = Application.application.stage.displayState;
+				/* english.alpha=0.5; */
+
+			}
+
+			private function fullScreenHandler(evt:FullScreenEvent):void {
+				dispState = Application.application.stage.displayState + " (fullScreen=" + evt.fullScreen.toString() + ")";
+				if (evt.fullScreen) {
+					/* Do something specific here if we switched to full screen mode. */
+				} else {
+					/* Do something specific here if we switched to normal mode. */
+				}
+			}
+
+			private function toggleFullScreen():void {
+				try {
+					switch (Application.application.stage.displayState) {
+						case StageDisplayState.FULL_SCREEN:
+							/* If already in full screen mode, switch to normal mode. */
+							Application.application.stage.displayState = StageDisplayState.NORMAL;
+							break;
+						default:
+							/* If not in full screen mode, switch to full screen mode. */
+							Application.application.stage.displayState = StageDisplayState.FULL_SCREEN;
+							break;
+					}
+				} catch (err:SecurityError) {
+					// ignore
+				}
+			}
+
+
+
+//////  Are You There?
+		   import flash.utils.Timer;
+            import flash.events.TimerEvent;
+
+            private const MIN_MASK:String = "00";
+            private const SEC_MASK:String = "00";
+            private const MS_MASK:String = "000";
+            private const TIMER_INTERVAL:int = 10;
+
+            private var baseTimer:int;
+
+            private var t:Timer;
+
+            private function initapptime():void {
+                t = new Timer(TIMER_INTERVAL);
+                t.addEventListener(TimerEvent.TIMER, updateTimer);
+                startTimer();
+            }
+
+            private function updateTimer(evt:TimerEvent):void {
+                var d:Date = new Date(getTimer() - baseTimer);
+                var min:String = (MIN_MASK + d.minutes).substr(-MIN_MASK.length);
+                var sec:String = (SEC_MASK + d.seconds).substr(-SEC_MASK.length);
+                var ms:String = (MS_MASK + d.milliseconds).substr(-MS_MASK.length);
+                //counter.text = String(min + ":" + sec + "." + ms);
+                counter.text = String(min + ":" + sec);
+
+                if (counter.text >= "00:25"){
+                	//Alert.show("Pass Parameter");
+                	//stopTimer();
+                	takeCommand();
+                	startTimer();
+                //	 t.start();
+                }
+
+
+
+            }
+
+            private function startTimer():void {
+                baseTimer = getTimer();
+                t.start();
+            }
+
+            private function stopTimer():void {
+                t.stop();
+            }
+
+
+	import mx.controls.Alert;
+		private function takeCommand():void{
+		trigger_job_pro.url="/rd_runguijob.php?job=_ayt";
+		trigger_job_pro.send();
+	}
+    private var company_desc:String;
+		private function companyCodeHandler(evt:ResultEvent):void
+		
+		{
+		
+			if (evt.result.kpi_data.company_info == null)
+            {
+                tdcompany=new ArrayCollection()
+            }
+            else if (evt.result.kpi_data.company_info is ArrayCollection)
+            {
+              tdcompany=evt.result.kpi_data.company_info;
+            }
+            else if (evt.result.kpi_data.company_info is ObjectProxy)
+            {
+               tdcompany = new ArrayCollection(ArrayUtil.toArray(evt.result.kpi_data.company_info));
+            }
+
+			//tdcompany=evt.result.kpi_data.company_info;
+			tdcompany.refresh();
+			var notincc:int = 0;
+			for (var i:int=0;i<tdcompany.length;i++)  {
+    						if (my_c_code == tdcompany[i].company){
+    							company_code.selectedIndex = i;
+    							changed_m_c_code = tdcompany[i].company;
+								//cc_description.text = tdcompany[i].company_desc;
+    							notincc = notincc + 1;
+    						}
+ 			}
+ 			if (notincc == 0){
+ 				company_code.selectedIndex = 0
+ 				changeccode(evt);
+ 				//changed_m_c_code = tdcompany[0].company
+ 				//trigger_job_companycode.url="/rd_settings.php?newco=" + tdcompany[0].company;
+				//trigger_job_companycode.send();
+ 			}
+		}
+
+    	public function start_companycode():void {
+			my_c_code = Application.application.parameters.c_code;
+		//	Alert.show(my_c_code);
+		}
+    	public function changeccode(evt:Event):void {
+			changed_m_c_code = company_code.selectedItem.company;
+ 			//Alert.show(changed_m_c_code);
+ 			trigger_job_companycode.url="/rd_settings.php?newco=" + changed_m_c_code;
+			trigger_job_companycode.send();
+		}
+
+    ]]>
+    </mx:Script>
+
+    <mx:Style source="css/main.css" />
+    <mx:String id="dispState" />
+    <mx:HTTPService id="trigger_job_pro"/>
+    <mx:HTTPService id="trigger_job_companycode"/>
+   	<mx:HTTPService id="labelData" url="data/pagelabel.xml"/>
+	<mx:HTTPService id="userData" url="php/userData.php"/>
+    <mx:HTTPService id="productService" url="data/catalog.xml"
+        result="productServiceResultHandler(event)"/>
+    <!-- mx:HTTPService id="companyCode" url="data/z0wc_kpi_company.xml" result="companyCodeHandler(event)"/ -->
+    <mx:HTTPService id="companyCode" url="../report/Z0company.xml" result="companyCodeHandler(event)"/>
+
+	<mx:VBox width="{Application.application.width*0.99}" height="100%" paddingLeft="0"
+		paddingRight="0" horizontalCenter="0" top="12">
+<!--
+        <mx:ApplicationControlBar id="acb" width="100%"
+        	styleName="storeControlBar" >
+
+            <mx:ToggleButtonBar
+                paddingLeft="0"
+                height="100%"
+                buttonMode="true"
+                textAlign="left"
+                fontSize="{Application.application.width*0.009765625}"
+                buttonWidth="{Application.application.width*0.9885/11}"
+                dataProvider="storeViews" />
+
+        </mx:ApplicationControlBar>
+-->
+
+        <mx:ApplicationControlBar id="second" width="100%" styleName="storeControlBar">
+        <!--
+	        <mx:HBox width="100%" paddingLeft="5">
+	                <mx:Label text="{_language}" fontFamily="Arial" fontSize="14" height="24"
+	                	paddingTop="2" color="#0000a0" fontWeight="bold" width="205"/>
+
+	                <mx:Image source="@Embed('image/icon_english.png')" id="english" toolTip="English"
+	                	  buttonMode="true"
+	                      click="select_lang(0)" />
+	                <mx:Image source="@Embed('image/icon_french.png')" id="french" toolTip="Français/French"
+	                	buttonMode="true"
+	                	click="select_lang(1)"/>
+	                <mx:Image source="@Embed('image/icon_spanish.png')" id="spanish" toolTip="Español/Spanish"
+	                	buttonMode="true"
+	                	click="select_lang(2)"/>
+	                <mx:Image source="@Embed('image/icon_chinese.png')" id="chinese_s" toolTip="简体中文/Simplified Chinese"
+	                	buttonMode="true"
+	                	click="select_lang(3)"/>
+	            	<mx:Image source="@Embed('image/icon_chinese_t.png')" id="chinese_t" toolTip="繁體中文/Traditional Chinese"
+	            		buttonMode="true"
+	            		click="select_lang(4)"/>
+
+	        </mx:HBox>
+	-->
+	        <mx:Spacer width="10"/>
+	  		<mx:HBox width="300" paddingLeft="5">
+	  			<mx:Label text="User: {userData.lastResult.root.usercode} - {userData.lastResult.root.username}"
+	  				fontFamily="Arial"
+	  				fontSize="14" height="24" paddingTop="2" color="#0000a0" fontWeight="bold"/>
+	  		</mx:HBox>
+	  		<mx:Spacer width="100%"/>
+	  		<mx:Label text="Company: " fontFamily="Arial"
+	  				fontSize="12" paddingTop="2" color="#0000a0" fontWeight="bold"/>
+		<mx:ComboBox  id="company_code" dataProvider="{tdcompany}"  labelField="company_desc" change="{changeccode(event)}"/>
+		    <!-- mx:Spacer width="5%"/ -->
+		    <!-- mx:Label id="cc_description" fontFamily="Arial"
+	  				fontSize="14" height="24" paddingTop="2" color="#0000a0" fontWeight="bold" width="60%"/ -->
+        	<mx:Spacer width="100%"/>
+        	<mx:Button label="Full/Normal Screen" id="full_screen" icon="@Embed('image/icon_full.png')"
+            	toolTip="Full Screen/ Normal Screen Mode" textAlign="left" fontSize="12" height="35"
+            	click="toggleFullScreen()" />
+        	<mx:Button label="EXIT" id="logoff" icon="@Embed('image/logoff.png')"
+            	toolTip="LOGOFF/EXIT" textAlign="left" fontSize="10"
+            	click="navigateToURL(new URLRequest('../process.php'),'_self')"  height="35" />
+        </mx:ApplicationControlBar>
+
+	<!-- mx:Button label="Start timer" click="startTimer()" / -->
+    <!-- mx:Button label="Stop timer" click="stopTimer()" / -->
+
+        <mx:ViewStack id="storeViews" width="100%"
+            height="100%"
+        	creationPolicy="all">
+<!-- 
+        	<EzLearn id="supportView" label="e-Z Learn (FixMe)"
+        		width="100%" height="100%"
+        		toolTip="Reduces time/cost related to vendor/internal training.&#13;&#13;Provides web browser access to a single source of self-study materials available at convenient times and locations.&#13;&#13;Caters to different learning styles by offering multi-media&#13;
+ read documents and web pages,&#13;
+ view videos,&#13;
+ etc.
+"
+        		icon="@Embed('image/icon_help.png')"/>
+-->
+<!--
+           	<PreviewPanel
+           		 id="welcomePage" label="Connections" width="100%" height="100%"
+            	 toolTip = "Receive messages from the company, other employees or supervisors.
+            	 			&#13;&#13;View web-cams of floor operations and yard.
+							&#13;&#13;Send messages and receive real time replies."
+
+            	 icon="@Embed('image/icon_home.png')"
+            	 />
+-->
+
+<!--
+		<ResponMgt id="respon" label="Responsibility"
+				autoLayout="true"
+            	width="110%" height="100%"
+            	toolTip="A list of tasks for which you are responsible, past, present and future.
+            			&#13;&#13;Tasks may be added, updated, and cancelled at any time."
+            	icon="@Embed('image/icon_work_schedule.png')" />
+-->
+
+<!--
+           	<alertsDetails id="alerts" label="Alerts"
+            	width="100%" height="100%"
+            	toolTip="Conditions that do not comply with expectations will appear here. For example,&#13;&#13;
+ a task that is late or cannot be finished in time, or&#13;&#13;
+ a service KPI that is not met, such as the agreed minimum on-time shipping ratio for a client, or&#13;&#13;
+ insufficient time/resources to complete picking.
+
+            	"
+
+            	icon="@Embed('image/icon_alerts.png')"/>
+-->
+
+<!--
+           	<TimeLog id="timesheet" label="Time Log"
+            	width="100%" height="100%"
+        		toolTip="A personal record of tasks performed per work day, showing&#13;&#13;
+ sequence and overlapping&#13;&#13;
+ time elapsed,&#13;&#13;
+ actual time spent, and&#13;&#13;
+ gaps in the record that might represent un-recorded activities.&#13;&#13;
+Off line activities can be added at any time
+"
+        		icon="@Embed('image/icon_timesheet.png')"/>
+-->
+
+        	<!-- KPIMenu id="kpi" label="Transport Dispatch"
+            	width="100%" height="100%"
+            	toolTip="View and Manage Probills, Manifests, Drivers, etc."
+            	icon="@Embed('image/icon_bar1.png')"/ -->
+            	
+                	<KPIMenu id="kpi" label="Transport Dispatch"
+            	width="100%" height="100%"
+            
+            	icon="@Embed('image/icon_bar1.png')"/>	
+            	
+
+ <!-- 
+           	<ProductsView id="pView" label="Job Menu" catalog="{catalog}"
+            	width="100%" height="100%"
+            	toolTip="The Job Menu shows those computer jobs required in the performance of your responsibilities."
+            	icon="@Embed('image/icon_job_menu.png')" />
+ -->
+
+<!--
+           	<AdHocQuery id="adHocQuery" label="Ad-Hoc Query"
+        		width="100%" height="100%"
+        		toolTip="Ad-Hoc Query has the ability to find any and all information in the database using only your normal knowledge of the business and its functions.&#13;&#13;Technical knowledge is not required.
+"
+        		icon="@Embed('image/icon_adhoc_model.png')"/>
+
+           	<bb id="bbView" label="Bulletin Board"
+            	width="100%" height="100%"
+            	toolTip="An electronic posting board to hold computer produced documents relevant to your responsibilities. For example, reports and forms&#13;&#13;
+ that you do not want to print, or&#13;&#13;
+ want to review before forwarding to a client, or&#13;&#13;
+ just want to work with and then erase.
+"
+            	icon="@Embed('image/icon_bb1.png')" />
+-->
+<!--
+        	<SopMsds id="sops" label="Policy"
+            	width="100%" height="100%"
+        		toolTip="Contains Standard Operating Procedures for the company and for its individual clients, for a variety of situations&#13;&#13;
+It also contains Material Safety Data Sheets as provided by clients, or downloaded from the Web.&#13;&#13;It can be edited and altered by any authorized person. A permanent record of the editing is made.&#13;&#13;Edits can also be rolled back (removed) easily.
+"
+        		icon="@Embed('image/icon_sops.png')"/>
+-->
+<!--
+        	<Construction id="tasklist" label="Admin"
+            	width="100%" height="100%"
+            	toolTip="Admin allows you to alter passwords and your user profile.&#13;&#13;As well it allows you to view tasks that the computer is currently running for you.
+"
+            	icon="@Embed('image/icon_world.png')" />
+-->
+        </mx:ViewStack>
+
+    </mx:VBox>
+<mx:Label id="counter" fontSize="1" visible="true"/>
+</mx:Application>

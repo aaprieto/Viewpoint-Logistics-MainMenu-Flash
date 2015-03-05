@@ -1,0 +1,51 @@
+<root>
+<bbdetail>
+<date>2007/09/01</date>
+<job>A1OR51</job>
+<print_pdf>A1OR51_20070901.pdf</print_pdf>
+<description>Stock Location Report</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/09/01</date>
+<job>A2IC07</job>
+<print_pdf>A1IC07_20070901.pdf</print_pdf>
+<description>Background Task encountered an unexpected error</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/31</date>
+<job>A1IC06</job>
+<print_pdf>A1IC06_20070831.pdf</print_pdf>
+<description>Product Activities Report</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/31</date>
+<job>A3OE12</job>
+<print_pdf>A1OE12_20070831.pdf</print_pdf>
+<description>Order Details Report</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/30</date>
+<job>A1IC03</job>
+<print_pdf>A1IC03_20070831.pdf</print_pdf>
+<description>Inventory Report</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/20</date>
+<job>A2OR14</job>
+<print_pdf>A1OR14_20070820.pdf</print_pdf>
+<description>Shipped Orders Report</description>
+<action>Ready to Print</action>
+</bbdetail>
+<bbdetail>
+<date>2007/08/19</date>
+<job>A1OR23</job>
+<print_pdf>A1OR23_20070819.pdf</print_pdf>
+<description>Adjustment Report</description>
+<action>Printed</action>
+</bbdetail>
+</root>
